@@ -68,11 +68,11 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2";
+    "inline-flex items-center justify-center font-medium transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas";
 
   const variants = {
     primary:
-      "bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm hover:shadow active:bg-emerald-800",
+      "bg-emerald-600 text-white hover:bg-emerald-700 shadow-[0_10px_24px_-8px_rgba(22,101,52,0.4)] hover:shadow-[0_14px_28px_-10px_rgba(22,101,52,0.5)] active:bg-emerald-800",
     secondary:
       "bg-soil-100 text-soil-900 hover:bg-soil-200 active:bg-soil-300 border border-soil-200",
     outline:
@@ -80,7 +80,7 @@ export function Button({
     ghost: "bg-transparent text-soil-700 hover:bg-soil-100 hover:text-soil-900",
     danger: "bg-rose-600 text-white hover:bg-rose-700 shadow-sm",
     harvest:
-      "bg-amber-600 text-white hover:bg-amber-700 shadow-sm hover:shadow active:bg-amber-800",
+      "bg-amber-600 text-white hover:bg-amber-700 shadow-[0_10px_24px_-8px_rgba(217,119,6,0.4)] hover:shadow-[0_14px_28px_-10px_rgba(217,119,6,0.5)] active:bg-amber-800",
   };
 
   const sizes = {
@@ -132,9 +132,9 @@ export function Card({ className, hoverEffect = false, children, ...props }: Car
   return (
     <div
       className={cn(
-        "rounded-xl border border-soil-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]",
+        "rounded-xl border border-soil-200/80 bg-white p-5 shadow-card",
         hoverEffect &&
-          "transition-all duration-200 hover:border-emerald-300 hover:shadow-md",
+          "transition-all duration-200 hover:border-emerald-300 hover:shadow-card-hover",
         className
       )}
       {...props}

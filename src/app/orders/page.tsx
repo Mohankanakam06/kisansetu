@@ -82,7 +82,7 @@ export default function OrdersPage() {
                 Logistics & Settlement Agent Hub
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-soil-900 mt-2 sm:text-3xl">
+            <h1 className="font-display text-2xl font-semibold text-soil-900 mt-2 sm:text-3xl">
               Multi-Pickup Routing & Instant Payouts
             </h1>
             <p className="text-sm text-soil-600 mt-1">

@@ -22,7 +22,7 @@ export default function FarmerPage() {
                 Farmer Interface Module
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-soil-900 mt-2 sm:text-3xl">
+            <h1 className="font-display text-2xl font-semibold text-soil-900 mt-2 sm:text-3xl">
               Farm-Gate Listing & AI Quality Grading
             </h1>
             <p className="text-sm text-soil-600 mt-1">
@@ -31,7 +31,7 @@ export default function FarmerPage() {
           </div>
 
           {/* Quick Metrics */}
-          <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-soil-200 shadow-sm">
+          <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-soil-200 shadow-card">
             <div className="text-right">
               <span className="text-[11px] text-soil-400 block font-medium">AVERAGE MANDI REALIZATION</span>
               <span className="text-sm font-bold text-emerald-700">+28% vs Traditional Middleman</span>

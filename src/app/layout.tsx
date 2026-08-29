@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import Link from "next/link";
 import { Sprout, ShoppingCart, Truck, ShieldCheck } from "lucide-react";
+import SiteNav from "@/components/SiteNav";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,6 +13,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -27,9 +34,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-soil-50 text-soil-900">
+      <body className="min-h-dvh flex flex-col bg-canvas text-ink">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[1000] focus:rounded-lg focus:bg-sky-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+        >
+          Skip to main content
+        </a>
         {/* Navigation Bar */}
         <header className="sticky top-0 z-50 border-b border-soil-200 bg-white/90 backdrop-blur-md">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
@@ -47,31 +60,7 @@ export default function RootLayout({
               </div>
             </Link>
 
-            <nav className="flex items-center gap-1 sm:gap-2">
-              <Link
-                href="/buyer"
-                className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-soil-700 hover:bg-soil-100 hover:text-soil-900 transition-colors"
-              >
-                <ShoppingCart className="h-4 w-4 text-emerald-600" />
-                <span>Buyer Portal</span>
-              </Link>
-
-              <Link
-                href="/farmer"
-                className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-soil-700 hover:bg-soil-100 hover:text-soil-900 transition-colors"
-              >
-                <Sprout className="h-4 w-4 text-emerald-600" />
-                <span>Farmer Listing</span>
-              </Link>
-
-              <Link
-                href="/orders"
-                className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-soil-700 hover:bg-soil-100 hover:text-soil-900 transition-colors"
-              >
-                <Truck className="h-4 w-4 text-emerald-600" />
-                <span>Orders & Logistics</span>
-              </Link>
-            </nav>
+            <SiteNav />
 
             <div className="hidden sm:flex items-center gap-2">
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
@@ -83,7 +72,7 @@ export default function RootLayout({
         </header>
 
         {/* Main Content Area */}
-        <main className="flex-1 flex flex-col">{children}</main>
+        <main id="main-content" className="flex-1 flex flex-col">{children}</main>
 
         {/* Footer */}
         <footer className="border-t border-soil-200 bg-white py-4 text-center text-xs text-soil-500">

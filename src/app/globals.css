@@ -30,6 +30,23 @@
   --color-harvest: #f59e0b;
   --color-danger: #ef4444;
   --color-info: #3b82f6;
+
+  /* Display serif — premium editorial pairing with the Geist sans (body/UI) */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+
+  /* Semantic surface / ink tokens (map to the soil + brand palettes) */
+  --color-canvas: #fafaf9; /* page background          = soil-50 */
+  --color-surface: #ffffff; /* cards & panels            = white */
+  --color-surface-subtle: #f5f5f4; /* inset wells             = soil-100 */
+  --color-ink: #1c1917; /* primary text               = soil-900 */
+  --color-ink-soft: #57534e; /* secondary text          = soil-600 */
+  --color-ink-faint: #78716c; /* tertiary / captions     = soil-500 */
+
+  /* Elevation system — layered, low-key shadows (premium, not flashy) */
+  --shadow-card: 0 1px 2px rgba(28, 25, 23, 0.05), 0 10px 30px -18px rgba(28, 25, 23, 0.14);
+  --shadow-card-hover: 0 2px 4px rgba(28, 25, 23, 0.06), 0 20px 40px -20px rgba(28, 25, 23, 0.2);
+  --shadow-popover: 0 4px 8px rgba(28, 25, 23, 0.06), 0 24px 56px -24px rgba(28, 25, 23, 0.32);
+  --shadow-cta: 0 10px 24px -8px rgba(22, 101, 52, 0.5);
 }
 
 /* This demo adopts a fixed light theme for consistent, high-contrast rendering.
@@ -38,8 +55,13 @@
    `soil`-toned text — flipping the body alone hid headings inside sections that
    have no explicit background. */
 :root {
-  --background: #fafaf9; /* soil-50 */
-  --foreground: #1c1917; /* soil-900 */
+  --background: var(--color-canvas);
+  --foreground: var(--color-ink);
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 html,
@@ -51,6 +73,20 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Branded text selection */
+::selection {
+  background: #bbf7d0;
+  color: #14532d;
+}
+
+/* Tabular figures for prices / counts (prevents layout shift) */
+.tnum {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Leaflet container needs explicit height */

@@ -11,6 +11,13 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
+const trustStats = [
+  { value: "₹0", label: "middlemen on every lot" },
+  { value: "A / B / C", label: "verified AI grading" },
+  { value: "24h", label: "simulated settlement" },
+  { value: "1:1", label: "farmer→buyer price link" },
+];
+
 const agents = [
   {
     icon: Mic,
@@ -42,19 +49,19 @@ export default function Home() {
   return (
     <div className="flex-1 flex flex-col">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-brand-700 text-white">
+      <section className="relative overflow-hidden bg-[radial-gradient(1200px_600px_at_85%_-10%,rgba(52,211,153,0.35),transparent),linear-gradient(135deg,#064e3b,#065f46_55%,#166534)] text-white">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
           <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-emerald-100 ring-1 ring-inset ring-white/20">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-emerald-100 ring-1 ring-inset ring-white/20 backdrop-blur">
               <ShieldCheck className="h-3.5 w-3.5" />
               SIH 2026 • Problem Statement 26033
             </span>
-            <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+            <h1 className="mt-6 font-display text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
               Farmers earn more.
               <br />
               <span className="text-emerald-300">Buyers pay less.</span>
             </h1>
-            <p className="mt-5 max-w-2xl text-lg text-emerald-100/90">
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-emerald-100/90">
               KisanSetu replaces the four jobs middlemen do — aggregation, quality
               assurance, cash-flow, and logistics — with AI agents, connecting
               farmers directly to buyers. No middleman in between.
@@ -62,19 +69,29 @@ export default function Home() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/buyer"
-                className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-emerald-800 shadow-sm transition hover:bg-emerald-50"
+                className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-emerald-800 shadow-lg transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-900"
               >
                 <ShoppingCart className="h-4 w-4" />
                 Browse the Marketplace
               </Link>
               <Link
                 href="/farmer"
-                className="inline-flex items-center gap-2 rounded-lg bg-emerald-600/80 px-5 py-3 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-emerald-500"
+                className="inline-flex items-center gap-2 rounded-lg bg-emerald-600/80 px-5 py-3 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 backdrop-blur transition hover:bg-emerald-500"
               >
                 <Mic className="h-4 w-4" />
                 List Your Crop
               </Link>
             </div>
+          </div>
+
+          {/* Trust stats strip */}
+          <div className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-xl bg-white/15 ring-1 ring-white/20 sm:grid-cols-4">
+            {trustStats.map((s) => (
+              <div key={s.label} className="bg-emerald-950/40 px-5 py-4 backdrop-blur">
+                <p className="font-display text-2xl font-semibold text-emerald-100">{s.value}</p>
+                <p className="mt-0.5 text-xs text-emerald-200/70">{s.label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -82,10 +99,11 @@ export default function Home() {
       {/* The 5-step value chain */}
       <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-soil-900 sm:text-3xl">
+          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700">How it works</p>
+          <h2 className="mt-2 font-display text-2xl font-semibold text-soil-900 sm:text-3xl">
             From Farm Gate to Buyer — In Five Steps
           </h2>
-          <p className="mt-2 text-soil-500">
+          <p className="mt-2 max-w-xl mx-auto text-soil-500 leading-relaxed">
             A fully connected flow, no intermediaries, live end-to-end.
           </p>
         </div>
@@ -100,15 +118,15 @@ export default function Home() {
           ].map(([n, title, desc], i) => (
             <div
               key={n}
-              className={`relative rounded-xl border border-soil-200 bg-white p-5 shadow-sm ${
+              className={`group relative rounded-xl border border-soil-200 bg-white p-5 shadow-card transition-all duration-200 hover:border-emerald-300 hover:shadow-card-hover ${
                 i === 4 ? "sm:col-span-2 lg:col-span-1" : ""
               }`}
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50 text-sm font-bold text-emerald-700 ring-1 ring-emerald-600/10 transition-colors group-hover:bg-emerald-600 group-hover:text-white group-hover:ring-0">
                 {n}
               </span>
               <h3 className="mt-3 font-semibold text-soil-900">{title}</h3>
-              <p className="mt-1 text-sm text-soil-500">{desc}</p>
+              <p className="mt-1 text-sm leading-relaxed text-soil-500">{desc}</p>
               {i < 4 && (
                 <ArrowRight className="absolute -right-3 top-1/2 hidden h-5 w-5 -translate-y-1/2 text-soil-300 lg:block" />
               )}
@@ -118,18 +136,19 @@ export default function Home() {
       </section>
 
       {/* Agent cards */}
-      <section className="border-t border-soil-200 bg-white">
+      <section className="border-t border-soil-200 bg-surface-subtle">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-soil-900 sm:text-3xl">
+              <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700">AI backbone</p>
+              <h2 className="mt-1 font-display text-2xl font-semibold text-soil-900 sm:text-3xl">
                 Four AI Agents, One Market
               </h2>
-              <p className="mt-2 max-w-2xl text-soil-500">
+              <p className="mt-2 max-w-2xl text-soil-500 leading-relaxed">
                 Each agent replaces a function the middleman once performed.
               </p>
             </div>
-            <div className="hidden items-center gap-2 rounded-lg bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 sm:flex">
+            <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 ring-1 ring-emerald-600/10 sm:w-fit shrink-0">
               <TrendingUp className="h-4 w-4" />
               Farmer share ↑ · Buyer price ↓
             </div>
@@ -140,9 +159,9 @@ export default function Home() {
               <a
                 key={agent.title}
                 href={agent.href}
-                className="group rounded-xl border border-soil-200 p-5 transition hover:border-emerald-300 hover:shadow-md"
+                className="group rounded-xl border border-soil-200 bg-white p-5 shadow-card transition-all duration-200 hover:border-emerald-300 hover:shadow-card-hover"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-100 text-emerald-700 transition group-hover:bg-emerald-600 group-hover:text-white">
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-100 text-emerald-700 transition-all duration-200 group-hover:bg-emerald-600 group-hover:text-white group-hover:shadow-lg">
                   <agent.icon className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 font-semibold text-soil-900">{agent.title}</h3>
@@ -150,7 +169,7 @@ export default function Home() {
                 <div className="mt-4 flex items-center gap-1 text-sm font-medium text-emerald-700">
                   <Layers className="h-4 w-4" />
                   Explore demo
-                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
                 </div>
               </a>
             ))}

@@ -5,7 +5,7 @@ import { Lot, CropType, QualityGrade } from "@/types";
 import { apiService } from "@/services/api";
 import LotCard from "@/components/buyer/LotCard";
 import LotDetailModal from "@/components/buyer/LotDetailModal";
-import { Button, Badge } from "@/components/ui";
+import { Button, Badge, Card } from "@/components/ui";
 import {
   Search,
   Filter,
@@ -92,7 +92,7 @@ export default function BuyerPage() {
                 Buyer Marketplace
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-soil-900 mt-1">
+            <h1 className="font-display text-2xl font-semibold text-soil-900 mt-1 sm:text-3xl">
               Aggregated Farm Produce Lots
             </h1>
             <p className="text-xs text-soil-500">
@@ -122,7 +122,7 @@ export default function BuyerPage() {
               <button
                 key={crop}
                 onClick={() => setCropFilter(crop)}
-                className={`px-3 py-1 text-xs font-semibold rounded-full transition-all ${
+                className={`px-3 py-1 text-xs font-semibold rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${
                   cropFilter === crop
                     ? "bg-emerald-600 text-white shadow-sm"
                     : "bg-soil-100 text-soil-700 hover:bg-soil-200"
@@ -158,7 +158,7 @@ export default function BuyerPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search district / crop..."
-                className="bg-white border border-soil-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-soil-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 w-44"
+                className="bg-white border border-soil-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-soil-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 w-44"
               />
               <Search className="w-3.5 h-3.5 text-soil-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
             </form>
@@ -221,13 +221,13 @@ export default function BuyerPage() {
           </div>
 
           {selectedLot && (
-            <div className="bg-white rounded-xl border border-soil-200 p-4 space-y-3">
+            <Card className="p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[10px] font-bold text-soil-400 uppercase tracking-wider">
                     Selected Lot Info
                   </span>
-                  <h4 className="font-bold text-soil-900">
+                  <h4 className="font-semibold text-soil-900">
                     {selectedLot.crop_type} • {selectedLot.centroid.district}
                   </h4>
                 </div>
@@ -252,7 +252,7 @@ export default function BuyerPage() {
               >
                 Order This Lot
               </Button>
-            </div>
+            </Card>
           )}
         </div>
       </div>
