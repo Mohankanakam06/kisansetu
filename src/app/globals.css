@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Brand palette — Agri marketplace (earth + harvest) */
+  --color-brand-50: #f0fdf4;
+  --color-brand-100: #dcfce7;
+  --color-brand-200: #bbf7d0;
+  --color-brand-300: #86efac;
+  --color-brand-400: #4ade80;
+  --color-brand-500: #22c55e;
+  --color-brand-600: #16a34a;
+  --color-brand-700: #15803d;
+  --color-brand-800: #166534;
+  --color-brand-900: #14532d;
+
+  --color-soil-50: #fafaf9;
+  --color-soil-100: #f5f5f4;
+  --color-soil-200: #e7e5e4;
+  --color-soil-300: #d6d3d1;
+  --color-soil-400: #a8a29e;
+  --color-soil-500: #78716c;
+  --color-soil-600: #57534e;
+  --color-soil-700: #44403c;
+  --color-soil-800: #292524;
+  --color-soil-900: #1c1917;
+
+  --color-harvest: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+}
+
+/* This demo adopts a fixed light theme for consistent, high-contrast rendering.
+   Auto-flipping to a system dark theme was removed because every component is
+   intentionally themed with explicit light surfaces (bg-white / bg-soil-50) and
+   `soil`-toned text — flipping the body alone hid headings inside sections that
+   have no explicit background. */
+:root {
+  --background: #fafaf9; /* soil-50 */
+  --foreground: #1c1917; /* soil-900 */
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Leaflet container needs explicit height */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+}
