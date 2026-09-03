@@ -124,16 +124,16 @@ export default function OrdersPage() {
             </h1>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-700">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-2 sm:gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 sm:px-4 py-2 text-xs font-semibold text-slate-700">
               <div className="flex items-center gap-1.5">
                 <Truck className="h-4 w-4 text-emerald-700" />
-                <span>3 Active Vehicles</span>
+                <span className="whitespace-nowrap">3 Vehicles</span>
               </div>
               <span className="text-slate-300">|</span>
               <div className="flex items-center gap-1.5">
                 <Leaf className="h-4 w-4 text-emerald-600" />
-                <span>-68% Carbon Footprint</span>
+                <span className="whitespace-nowrap">-68% Carbon</span>
               </div>
             </div>
             <Button variant="outline" size="sm" onClick={loadOrders} className="rounded-xl">
@@ -174,17 +174,17 @@ export default function OrdersPage() {
             <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200">
               <button
                 onClick={() => setRoutingViewMode("ai_clustered")}
-                className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition-all ${
+                className={`flex-1 rounded-lg py-2 px-1 text-[11px] sm:text-xs font-bold transition-all text-center leading-tight ${
                   routingViewMode === "ai_clustered"
                     ? "bg-emerald-700 text-white shadow-sm"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                ✨ KisanSetu AI Clustered (1 Trip)
+                ✨ AI Clustered (1 Trip)
               </button>
               <button
                 onClick={() => setRoutingViewMode("traditional")}
-                className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition-all ${
+                className={`flex-1 rounded-lg py-2 px-1 text-[11px] sm:text-xs font-bold transition-all text-center leading-tight ${
                   routingViewMode === "traditional"
                     ? "bg-amber-600 text-white shadow-sm"
                     : "text-slate-600 hover:text-slate-900"
@@ -369,7 +369,7 @@ export default function OrdersPage() {
                     { lat: 21.23, lng: 81.67, label: "Central Buyer Hub (Raipur)" },
                   ]
                 }
-                height="h-[460px]"
+                height="h-[300px] sm:h-[380px] md:h-[460px]"
               />
             </div>
           </div>

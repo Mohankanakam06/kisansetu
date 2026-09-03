@@ -318,6 +318,12 @@ header {
   box-shadow: var(--shadow-card-hover);
 }
 
+/* Global HTML reset for mobile responsiveness */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 /* Branded text selection */
 ::selection {
   background: var(--color-primary-fixed);

@@ -51,6 +51,12 @@ export default function BuyerPage() {
   const [orderSuccess, setOrderSuccess] = useState<any>(null);
   const [viewMode, setViewMode] = useState<"split" | "grid" | "map">("split");
   const [lastUpdated, setLastUpdated] = useState<string>(new Date().toLocaleTimeString());
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  const activeFiltersCount =
+    (cropFilter !== "All" ? 1 : 0) +
+    (gradeFilter !== "All" ? 1 : 0) +
+    (priceMin || priceMax ? 1 : 0);
 
   const fetchLots = async () => {
     setIsLoading(true);
@@ -109,6 +115,97 @@ export default function BuyerPage() {
   const totalQuantityKg = lots.reduce((acc, l) => acc + (l.total_quantity_kg || 0), 0);
   const totalFarmersPooled = lots.reduce((acc, l) => acc + (l.listings_count || 0), 0);
 
+  const renderFilterControls = () => (
+    <div className="space-y-6">
+      {/* Crop Type */}
+      <div>
+        <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2.5">
+          Produce Type
+        </label>
+        <div className="flex flex-wrap gap-1.5">
+          {CROPS.map((c) => {
+            const active = cropFilter === c;
+            return (
+              <button
+                key={c}
+                onClick={() => setCropFilter(c)}
+                className={`rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
+                  active
+                    ? "bg-emerald-700 text-white shadow-sm ring-2 ring-emerald-600/30"
+                    : "bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100"
+                }`}
+              >
+                {c}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="border-t border-slate-100" />
+
+      {/* Quality Grade */}
+      <div>
+        <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2.5">
+          AI Quality Grade
+        </label>
+        <div className="space-y-2">
+          {GRADES.map((g) => (
+            <label
+              key={g}
+              className="flex items-center justify-between rounded-xl border border-slate-200/80 px-3 py-2 text-xs font-semibold text-slate-700 cursor-pointer hover:bg-slate-50 transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="grade"
+                  value={g}
+                  checked={gradeFilter === g}
+                  onChange={() => setGradeFilter(g)}
+                  className="w-4 h-4 accent-emerald-700"
+                />
+                {g === "All" ? "All Grades" : `Grade ${g} (${g === "A" ? "Premium" : g === "B" ? "Standard" : "Commercial"})`}
+              </span>
+              {g === "A" && <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-800">Top Tier</span>}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="border-t border-slate-100" />
+
+      {/* Price Range */}
+      <div>
+        <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2.5">
+          Price Filter (₹/kg)
+        </label>
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">₹</span>
+            <input
+              type="number"
+              placeholder="Min"
+              value={priceMin}
+              onChange={(e) => setPriceMin(e.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-7 pr-3 py-2 text-xs font-bold text-slate-900 focus:border-emerald-600 focus:outline-none"
+            />
+          </div>
+          <span className="text-slate-400 font-bold">–</span>
+          <div className="relative flex-1">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">₹</span>
+            <input
+              type="number"
+              placeholder="Max"
+              value={priceMax}
+              onChange={(e) => setPriceMax(e.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-7 pr-3 py-2 text-xs font-bold text-slate-900 focus:border-emerald-600 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex-1 flex flex-col bg-[#f8faf9]">
       {/* Top Marketplace Header Banner */}
@@ -161,99 +258,14 @@ export default function BuyerPage() {
                 <span className="font-display text-sm font-bold text-slate-900 flex items-center gap-2">
                   <SlidersHorizontal className="h-4 w-4 text-emerald-700" /> Filter Lots
                 </span>
-                {(cropFilter !== "All" || gradeFilter !== "All" || priceMin || priceMax) && (
+                {activeFiltersCount > 0 && (
                   <button onClick={clearFilters} className="text-xs font-bold text-emerald-700 hover:text-emerald-800">
                     Reset
                   </button>
                 )}
               </div>
 
-              {/* Crop Type */}
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2.5">
-                  Produce Type
-                </label>
-                <div className="flex flex-wrap gap-1.5">
-                  {CROPS.map((c) => {
-                    const active = cropFilter === c;
-                    return (
-                      <button
-                        key={c}
-                        onClick={() => setCropFilter(c)}
-                        className={`rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
-                          active
-                            ? "bg-emerald-700 text-white shadow-sm ring-2 ring-emerald-600/30"
-                            : "bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100"
-                        }`}
-                      >
-                        {c}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="border-t border-slate-100" />
-
-              {/* Quality Grade */}
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2.5">
-                  AI Quality Grade
-                </label>
-                <div className="space-y-2">
-                  {GRADES.map((g) => (
-                    <label
-                      key={g}
-                      className="flex items-center justify-between rounded-xl border border-slate-200/80 px-3 py-2 text-xs font-semibold text-slate-700 cursor-pointer hover:bg-slate-50 transition-colors"
-                    >
-                      <span className="flex items-center gap-2">
-                        <input
-                          type="radio"
-                          name="grade"
-                          value={g}
-                          checked={gradeFilter === g}
-                          onChange={() => setGradeFilter(g)}
-                          className="w-4 h-4 accent-emerald-700"
-                        />
-                        {g === "All" ? "All Grades" : `Grade ${g} (${g === "A" ? "Premium" : g === "B" ? "Standard" : "Commercial"})`}
-                      </span>
-                      {g === "A" && <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-800">Top Tier</span>}
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="border-t border-slate-100" />
-
-              {/* Price Range */}
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2.5">
-                  Price Filter (₹/kg)
-                </label>
-                <div className="flex items-center gap-2">
-                  <div className="relative flex-1">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">₹</span>
-                    <input
-                      type="number"
-                      placeholder="Min"
-                      value={priceMin}
-                      onChange={(e) => setPriceMin(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-7 pr-3 py-2 text-xs font-bold text-slate-900 focus:border-emerald-600 focus:outline-none"
-                    />
-                  </div>
-                  <span className="text-slate-400 font-bold">–</span>
-                  <div className="relative flex-1">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">₹</span>
-                    <input
-                      type="number"
-                      placeholder="Max"
-                      value={priceMax}
-                      onChange={(e) => setPriceMax(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-7 pr-3 py-2 text-xs font-bold text-slate-900 focus:border-emerald-600 focus:outline-none"
-                    />
-                  </div>
-                </div>
-              </div>
+              {renderFilterControls()}
 
               <div className="border-t border-slate-100" />
 
@@ -361,6 +373,42 @@ export default function BuyerPage() {
                 ))}
               </div>
             )}
+
+            {/* Floating Filter Button for Mobile */}
+            <div className="xl:hidden fixed bottom-6 left-6 z-40">
+              <button
+                onClick={() => setMobileFiltersOpen(true)}
+                className="flex items-center gap-2 rounded-full bg-emerald-800 text-white px-4 py-2.5 shadow-xl hover:bg-emerald-700 transition active:scale-95 border border-emerald-600 font-bold text-xs"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                <span>Filters</span>
+                {activeFiltersCount > 0 && (
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-slate-900 font-black text-[10px]">
+                    {activeFiltersCount}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {/* Mobile Filter Bottom Sheet */}
+            {mobileFiltersOpen && (
+              <div className="fixed inset-0 z-[200] xl:hidden">
+                <div className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm" onClick={() => setMobileFiltersOpen(false)} />
+                <div className="absolute inset-x-0 bottom-0 max-h-[80vh] bg-white rounded-t-3xl p-6 overflow-y-auto animate-in slide-in-from-bottom">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="font-display text-lg font-bold">Filters</h3>
+                    <button onClick={() => setMobileFiltersOpen(false)} className="p-2 rounded-full hover:bg-slate-100">
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
+                  {renderFilterControls()}
+                  <Button variant="primary" className="w-full mt-6 rounded-xl" onClick={() => setMobileFiltersOpen(false)}>
+                    Apply Filters
+                  </Button>
+                </div>
+              </div>
+            )}
+
 
             {/* Shimmer Skeleton Loading */}
             {isLoading && (

@@ -326,8 +326,8 @@ export default function EarningsPage() {
 
       {/* UPI Digital Receipt Modal */}
       {showReceipt && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 z-[1000] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowReceipt(null)}>
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl animate-in slide-in-from-bottom sm:zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
             <div className="bg-gradient-to-br from-emerald-700 to-emerald-900 p-6 text-white text-center relative">
               <button
                 onClick={() => setShowReceipt(null)}

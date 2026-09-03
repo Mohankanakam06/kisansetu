@@ -247,7 +247,7 @@ export default function LotDetailPage() {
 
           {/* Right Column: Checkout Card (4 cols) */}
           <div className="lg:col-span-4">
-            <div className="sticky top-28 rounded-2xl border border-slate-200 bg-white p-6 shadow-card flex flex-col gap-4">
+            <div className="lg:sticky lg:top-28 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-card flex flex-col gap-4 mt-8 lg:mt-0">
               {orderSuccess ? (
                 <div className="flex flex-col items-center gap-3 py-6 text-center">
                   <span className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-glow">
@@ -294,13 +294,13 @@ export default function LotDetailPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <label className="text-xs font-bold text-slate-800">Order Quantity (kg)</label>
-                      <div className="flex gap-1">
+                      <div className="flex gap-1.5">
                         {[minOrder, 500, maxOrder].map((v) => (
                           <button
                             key={v}
                             type="button"
                             onClick={() => setQtyRaw(String(v))}
-                            className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-700 hover:bg-emerald-100 hover:text-emerald-800"
+                            className="rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] sm:text-[10px] font-bold text-slate-700 hover:bg-emerald-100 hover:text-emerald-800 active:scale-95 transition-all"
                           >
                             {v === maxOrder ? "Max" : `${v}kg`}
                           </button>

@@ -293,31 +293,31 @@ export default function FarmerPage() {
         </div>
 
         {/* Premium stepper */}
-        <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm">
           <div className="relative">
-            <div className="absolute top-[18px] left-6 right-6 h-1.5 rounded-full bg-slate-100" />
+            <div className="absolute top-[18px] left-4 sm:left-6 right-4 sm:right-6 h-1.5 rounded-full bg-slate-100" />
             <div
-              className="absolute top-[18px] left-6 h-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 transition-all duration-500"
-              style={{ width: `calc(${(step / 3) * 100}% - 3rem)` }}
+              className="absolute top-[18px] left-4 sm:left-6 h-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 transition-all duration-500"
+              style={{ width: `calc(${(step / 3) * 100}% - 2rem)` }}
             />
             <div className="relative flex justify-between">
               {STEPS.map((s, i) => {
                 const done = i < step;
                 const active = i === step;
                 return (
-                  <div key={s.label} className="flex flex-col items-center gap-1.5 bg-white px-1">
+                  <div key={s.label} className="flex flex-col items-center gap-1 bg-white px-1">
                     <div
-                      className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-black transition-all ${
+                      className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full text-xs font-black transition-all ${
                         done
                           ? "bg-emerald-700 text-white shadow-md"
                           : active
-                          ? "bg-emerald-700 text-white shadow-glow ring-4 ring-emerald-100 scale-105"
+                          ? "bg-emerald-700 text-white shadow-glow ring-3 ring-emerald-100 scale-105"
                           : "bg-slate-100 text-slate-400 border border-slate-200"
                       }`}
                     >
-                      {done ? <Check className="h-4 w-4" /> : i + 1}
+                      {done ? <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : i + 1}
                     </div>
-                    <span className={`text-[11px] font-bold leading-none ${i <= step ? "text-emerald-900" : "text-slate-400"}`}>{s.label}</span>
+                    <span className={`text-[10px] sm:text-[11px] font-bold leading-none ${i <= step ? "text-emerald-900" : "text-slate-400"}`}>{s.label}</span>
                     <span className="text-[10px] font-medium leading-none text-slate-400 hidden sm:block">{s.sub}</span>
                   </div>
                 );
@@ -325,15 +325,15 @@ export default function FarmerPage() {
             </div>
           </div>
           {/* Trust strip */}
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-[11px] font-semibold text-slate-500">
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-50 border border-slate-200 px-2.5 py-1">
-              <Leaf className="h-3.5 w-3.5 text-emerald-600" /> No commission on first lot
+          <div className="mt-3 sm:mt-4 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] font-semibold text-slate-500">
+            <span className="inline-flex items-center gap-1 rounded-full bg-slate-50 border border-slate-200 px-2 py-0.5 sm:px-2.5 sm:py-1">
+              <Leaf className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-600" /> No commission
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 border border-amber-200 px-2.5 py-1 text-amber-800">
-              <Zap className="h-3.5 w-3.5" /> UPI payout in 24h
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 sm:px-2.5 sm:py-1 text-amber-800">
+              <Zap className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> UPI payout in 24h
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-1 text-emerald-800">
-              <Eye className="h-3.5 w-3.5" /> AI grading • 94% accuracy
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 sm:px-2.5 sm:py-1 text-emerald-800">
+              <Eye className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> AI grading 94%
             </span>
           </div>
         </div>
@@ -414,7 +414,7 @@ export default function FarmerPage() {
                     value={searchQ}
                     onChange={(e) => setSearchQ(e.target.value)}
                     placeholder="Search crops… टमाटर, प्याज…"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 focus:outline-none"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-base sm:text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 focus:outline-none"
                   />
                 </div>
 
@@ -466,7 +466,7 @@ export default function FarmerPage() {
                       value={quantity}
                       onChange={(e) => setQuantity(Number(e.target.value))}
                       min={1}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-semibold text-slate-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 focus:outline-none"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-base sm:text-sm font-semibold text-slate-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 focus:outline-none"
                     />
                     <div className="flex gap-1.5">
                       {[50, 100, 500, 1000].map((q) => (
@@ -474,7 +474,7 @@ export default function FarmerPage() {
                           key={q}
                           type="button"
                           onClick={() => setQuantity(q)}
-                          className={`rounded-full px-3 py-1 text-xs font-bold border ${quantity === q ? "bg-emerald-700 text-white border-emerald-700" : "bg-white text-slate-600 border-slate-200 hover:border-emerald-300"}`}
+                          className={`rounded-full px-3 py-1.5 text-xs font-bold border ${quantity === q ? "bg-emerald-700 text-white border-emerald-700" : "bg-white text-slate-600 border-slate-200 hover:border-emerald-300"}`}
                         >
                           {q}kg
                         </button>
@@ -490,7 +490,7 @@ export default function FarmerPage() {
                         value={price}
                         onChange={(e) => setPrice(Number(e.target.value))}
                         min={1}
-                        className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-bold text-slate-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 focus:outline-none"
+                        className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-base sm:text-sm font-bold text-slate-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 focus:outline-none"
                       />
                     </div>
                     <p className="text-[11px] font-medium text-slate-500">You can negotiate after buyer inquiry — this is your ask price.</p>
@@ -544,7 +544,7 @@ export default function FarmerPage() {
                       center={location}
                       selectedLocation={location}
                       onLocationSelect={(loc) => setLocation({ ...loc, address: address || "Pinned Location" })}
-                      height="h-[280px]"
+                      height="h-[240px] sm:h-[280px] md:h-[320px]"
                     />
                   </div>
                 </div>
@@ -557,7 +557,7 @@ export default function FarmerPage() {
                       setLocation((prev) => ({ ...prev, address: e.target.value }));
                     }}
                     rows={3}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-base sm:text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 focus:outline-none"
                     placeholder="Village, block, district… e.g. Birgaon, Abhanpur, Raipur"
                   />
                   <p className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
@@ -582,7 +582,7 @@ export default function FarmerPage() {
                 >
                   {previewUrl ? (
                     <div className="relative">
-                      <img src={previewUrl} alt="Crop preview" className="h-[320px] w-full object-cover" />
+                      <img src={previewUrl} alt="Crop preview" className="h-[260px] sm:h-[320px] w-full object-cover" />
                       {/* Viewfinder overlay */}
                       <div className="absolute inset-0 pointer-events-none">
                         {/* Corner brackets */}

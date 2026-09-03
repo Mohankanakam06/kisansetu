@@ -50,9 +50,10 @@ export default function RootLayout({
 
         {/* Top APMC Mandi Live Rate Ticker */}
         <div className="fixed top-0 left-0 right-0 z-[60] bg-emerald-950 text-emerald-100 text-[11px] font-semibold tracking-wide border-b border-emerald-900/80 h-7 flex items-center overflow-hidden">
-          <div className="flex items-center gap-2 px-3 bg-emerald-900 text-amber-300 font-bold shrink-0 z-10 text-[10px] uppercase tracking-wider py-0.5">
+          <div className="flex items-center gap-1.5 px-2 sm:px-3 bg-emerald-900 text-amber-300 font-bold shrink-0 z-10 text-[10px] uppercase tracking-wider py-0.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
-            Live Mandi Rates
+            <span className="hidden sm:inline">Live Mandi Rates</span>
+            <span className="sm:hidden">Rates</span>
           </div>
           <div className="overflow-hidden flex-1 relative flex items-center">
             <div className="animate-marquee whitespace-nowrap flex items-center gap-8 py-1">
@@ -116,25 +117,25 @@ export default function RootLayout({
 
         {/* Fixed top navigation */}
         <header className="fixed top-7 left-0 z-50 w-full border-b border-emerald-900/10 bg-white/85 backdrop-blur-md shadow-xs transition-all">
-          <div className="mx-auto h-full w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 items-center justify-between gap-6">
+          <div className="mx-auto h-full w-full max-w-7xl px-3 sm:px-6 lg:px-8">
+            <div className="flex h-16 items-center justify-between gap-2 sm:gap-6">
               <Link
                 href="/"
-                className="flex items-center gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 rounded-lg"
+                className="flex items-center gap-2 sm:gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 rounded-lg"
               >
-                <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-800 to-emerald-600 shadow-md shadow-emerald-900/20 text-white font-black text-xl">
+                <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-800 to-emerald-600 shadow-md shadow-emerald-900/20 text-white font-black text-lg sm:text-xl">
                   🌾
                 </div>
                 <div className="flex flex-col">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-extrabold text-xl tracking-tight text-emerald-950 font-display group-hover:text-emerald-700 transition-colors">
+                  <div className="flex items-center gap-1 sm:gap-1.5">
+                    <span className="font-extrabold text-lg sm:text-xl tracking-tight text-emerald-950 font-display group-hover:text-emerald-700 transition-colors">
                       KisanSetu
                     </span>
-                    <span className="rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.2 border border-emerald-300">
+                    <span className="hidden sm:inline-block rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.2 border border-emerald-300">
                       PS 26033
                     </span>
                   </div>
-                  <span className="text-[10px] font-semibold text-emerald-800 tracking-wider uppercase -mt-0.5">
+                  <span className="hidden sm:block text-[10px] font-semibold text-emerald-800 tracking-wider uppercase -mt-0.5">
                     Direct Agri Marketplace
                   </span>
                 </div>
