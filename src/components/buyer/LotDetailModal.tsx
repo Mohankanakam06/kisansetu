@@ -1,16 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Lot } from "@/types";
-import { apiService } from "@/services/api";
-import { Button, Card } from "@/components/ui";
-import {
-  IndianRupee,
-  Truck,
-  MapPin,
-  X,
-  CheckCircle2,
-  AlertTriangle,
-} from "lucide-react";
+import { Button } from "@/components/ui";
+import { X, Truck, IndianRupee, AlertTriangle, Sparkles } from "lucide-react";
 
 interface LotDetailModalProps {
   lot: Lot;
@@ -19,63 +11,104 @@ interface LotDetailModalProps {
 }
 
 export default function LotDetailModal({ lot, onClose, onOrderConfirm }: LotDetailModalProps) {
-  const [qty, setQty] = useState(lot.total_quantity_kg);
+  const [qtyRaw, setQtyRaw] = useState<string>(lot.total_quantity_kg.toString());
   const [isPlacing, setIsPlacing] = useState(false);
+  const qty = Math.max(0, parseInt(qtyRaw) || 0);
+
+  // Close on ESC
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
+
+  const maxQty = lot.total_quantity_kg;
+  const minQty = Math.min(100, maxQty);
+
+  const isInvalid = qty < minQty || qty > maxQty;
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-        <div className="p-6 border-b border-soil-100 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-soil-900">Order Lot {lot.crop_type}</h2>
-          <button onClick={onClose} className="text-soil-400 hover:text-soil-600 transition-colors">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-emerald-950/40 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
+      <div
+        className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h2 className="font-display text-lg font-extrabold text-slate-950">Place B2B Order</h2>
+            <p className="text-xs font-medium text-slate-500">
+              Lot #{lot.id} • {lot.crop_type} • Grade {lot.grade}
+            </p>
+          </div>
+          <button onClick={onClose} className="rounded-full bg-slate-100 p-1.5 text-slate-500 hover:text-slate-900 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
+        {/* Body */}
         <div className="p-6 space-y-6">
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-soil-50 p-4 rounded-xl space-y-1">
-              <span className="text-[10px] font-bold text-soil-500 uppercase">Available Quantity</span>
-              <p className="text-xl font-bold text-soil-900">{lot.total_quantity_kg} kg</p>
+            <div className="rounded-xl bg-slate-50 border border-slate-100 p-4">
+              <p className="text-[10px] font-black uppercase text-slate-400">Available</p>
+              <p className="text-lg font-black text-slate-900">{lot.total_quantity_kg} kg</p>
             </div>
-            <div className="bg-emerald-50 p-4 rounded-xl space-y-1 border border-emerald-100">
-              <span className="text-[10px] font-bold text-emerald-700 uppercase">Settlement Rate</span>
-              <p className="text-xl font-bold text-emerald-700">₹{lot.price_per_kg} / kg</p>
+            <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
+              <p className="text-[10px] font-black uppercase text-emerald-800">Rate</p>
+              <p className="text-lg font-black text-emerald-900">₹{lot.price_per_kg}/kg</p>
             </div>
           </div>
 
           <div className="space-y-3">
-            <label className="text-sm font-semibold text-soil-800">Order Quantity (kg)</label>
+            <div className="flex justify-between items-center">
+              <label className="text-sm font-bold text-slate-900">Order Quantity (kg)</label>
+              <div className="flex gap-1.5">
+                {[100, 500, maxQty].map(v => (
+                  <button key={v} onClick={() => setQtyRaw(v.toString())} className="text-[10px] font-black uppercase bg-slate-100 px-2 py-0.5 rounded text-slate-600 hover:bg-emerald-100 hover:text-emerald-800">
+                    {v === maxQty ? "Max" : `${v}kg`}
+                  </button>
+                ))}
+              </div>
+            </div>
             <input
               type="number"
-              value={qty}
-              onChange={(e) => setQty(Number(e.target.value))}
-              className="w-full bg-white border border-soil-300 rounded-lg px-4 py-3 text-lg font-bold text-soil-900 focus:ring-2 focus:ring-emerald-500 shadow-sm"
-              max={lot.total_quantity_kg}
-              min={100}
+              value={qtyRaw}
+              onChange={(e) => setQtyRaw(e.target.value)}
+              className={`w-full rounded-xl border px-4 py-3 text-sm font-black focus:ring-2 focus:outline-none ${isInvalid ? "border-red-300 bg-red-50 text-red-900 ring-red-100" : "border-slate-200 bg-slate-50 text-slate-900 ring-emerald-100 focus:border-emerald-600"}`}
+              placeholder="Quantity in kg"
             />
+            {isInvalid && (
+              <p className="text-[11px] font-bold text-red-600 flex items-center gap-1">
+                <AlertTriangle className="h-3.5 w-3.5" /> Order must be between {minQty}kg and {maxQty}kg
+              </p>
+            )}
           </div>
 
-          <div className="bg-white border rounded-xl p-4 border-soil-100 shadow-sm">
-            <div className="flex justify-between py-2 border-b border-soil-100">
-              <span className="text-soil-600">Order Total</span>
-              <span className="font-bold text-soil-900">₹{(qty * lot.price_per_kg).toLocaleString("en-IN")}</span>
+          {/* Pricing breakdown */}
+          <div className="rounded-xl border border-slate-200 p-4 space-y-2">
+            <div className="flex justify-between text-sm py-1">
+              <span className="text-slate-600 font-medium">Order Total</span>
+              <span className="font-bold text-slate-950">₹{(qty * lot.price_per_kg).toLocaleString("en-IN")}</span>
             </div>
-            <div className="flex justify-between py-2 text-emerald-700">
-              <span className="flex items-center gap-1 font-semibold">
-                <Truck className="w-4 h-4" /> Logistics Estimate
+            <div className="flex justify-between text-sm py-1 text-emerald-700">
+              <span className="flex items-center gap-1.5 font-bold">
+                <Truck className="h-4 w-4" /> Logistics Est.
               </span>
               <span className="font-bold">₹{(qty * 0.5).toLocaleString("en-IN")}</span>
             </div>
           </div>
         </div>
 
-        <div className="p-6 bg-soil-50 flex gap-3">
-          <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
+        {/* Footer */}
+        <div className="p-6 bg-slate-50 flex gap-3">
+          <Button variant="outline" className="flex-1 rounded-xl" onClick={onClose}>Cancel</Button>
           <Button
             variant="primary"
-            className="flex-1 shadow-lg shadow-emerald-500/20"
+            className="flex-1 rounded-xl shadow-glow"
             isLoading={isPlacing}
+            disabled={isInvalid || qty === 0}
             onClick={async () => {
               setIsPlacing(true);
               await onOrderConfirm(lot, qty);

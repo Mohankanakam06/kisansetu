@@ -88,7 +88,7 @@ export default function CropPhoto({ crop, fallbackEmoji, className }: CropPhotoP
         loading="lazy"
         onError={() => setFailed(true)}
         className={cn(
-          "h-14 w-14 shrink-0 rounded-xl border border-soil-200 bg-white object-cover shadow-sm",
+          "h-14 w-14 shrink-0 rounded-xl border border-outline-variant bg-surface-container-lowest object-cover shadow-sm",
           className
         )}
       />
@@ -98,7 +98,7 @@ export default function CropPhoto({ crop, fallbackEmoji, className }: CropPhotoP
   return (
     <span
       className={cn(
-        "flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-soil-100 text-2xl",
+        "flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-surface-container text-headline-md",
         className
       )}
       aria-hidden="true"

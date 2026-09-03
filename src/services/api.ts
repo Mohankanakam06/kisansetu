@@ -189,11 +189,19 @@ class ApiService {
   private listings: Listing[] = [];
 
   // 1. Fetch Lots
-  async getLots(params?: { crop?: string; grade?: string; search?: string }): Promise<{ lots: Lot[] }> {
+  async getLots(params?: {
+    crop?: string;
+    grade?: string;
+    search?: string;
+    minPrice?: number;
+    maxPrice?: number;
+  }): Promise<{ lots: Lot[] }> {
     if (!USE_MOCK) {
       const query = new URLSearchParams();
       if (params?.crop) query.append("crop", params.crop);
       if (params?.grade) query.append("grade", params.grade);
+      if (params?.minPrice != null) query.append("minPrice", String(params.minPrice));
+      if (params?.maxPrice != null) query.append("maxPrice", String(params.maxPrice));
       const res = await fetch(`${API_BASE_URL}/lots?${query.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch lots");
       return res.json();
@@ -215,6 +223,12 @@ class ApiService {
           l.centroid.district?.toLowerCase().includes(q) ||
           l.centroid.address?.toLowerCase().includes(q)
       );
+    }
+    if (params?.minPrice != null) {
+      filtered = filtered.filter((l) => l.price_per_kg >= params!.minPrice!);
+    }
+    if (params?.maxPrice != null) {
+      filtered = filtered.filter((l) => l.price_per_kg <= params!.maxPrice!);
     }
     return { lots: filtered };
   }

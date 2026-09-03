@@ -8,7 +8,18 @@ export function cn(...inputs: ClassValue[]) {
 
 // Badge
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: "default" | "success" | "warning" | "danger" | "info" | "outline" | "gradeA" | "gradeB" | "gradeC";
+  variant?:
+    | "default"
+    | "neutral"
+    | "success"
+    | "warning"
+    | "danger"
+    | "info"
+    | "outline"
+    | "gradeA"
+    | "gradeB"
+    | "gradeC"
+    | "verified";
   size?: "sm" | "md";
 }
 
@@ -20,26 +31,28 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variants = {
-    default: "bg-soil-100 text-soil-800 border-soil-200",
-    success: "bg-emerald-50 text-emerald-700 border-emerald-200/60 ring-1 ring-emerald-500/10",
-    warning: "bg-amber-50 text-amber-800 border-amber-200 ring-1 ring-amber-500/10",
-    danger: "bg-rose-50 text-rose-700 border-rose-200 ring-1 ring-rose-500/10",
-    info: "bg-sky-50 text-sky-700 border-sky-200 ring-1 ring-sky-500/10",
-    outline: "bg-transparent text-soil-700 border-soil-300",
-    gradeA: "bg-emerald-600 text-white font-bold tracking-wider shadow-sm",
-    gradeB: "bg-amber-500 text-white font-bold tracking-wider shadow-sm",
-    gradeC: "bg-stone-500 text-white font-bold tracking-wider shadow-sm",
+    default: "bg-slate-100 text-slate-700 border-slate-300",
+    neutral: "bg-slate-100 text-slate-700 border-slate-300",
+    success: "bg-emerald-100 text-emerald-800 border-emerald-200 font-semibold",
+    warning: "bg-amber-100 text-amber-900 border-amber-200 font-semibold",
+    danger: "bg-red-100 text-red-800 border-red-200 font-semibold",
+    info: "bg-blue-100 text-blue-800 border-blue-200 font-semibold",
+    outline: "bg-transparent text-slate-700 border-slate-300",
+    gradeA: "bg-emerald-100 text-emerald-800 border-emerald-300 font-bold",
+    gradeB: "bg-amber-100 text-amber-900 border-amber-300 font-bold",
+    gradeC: "bg-slate-100 text-slate-700 border-slate-300 font-bold",
+    verified: "bg-emerald-50 text-emerald-700 border-emerald-200 font-semibold",
   };
 
   const sizes = {
-    sm: "px-2 py-0.5 text-[11px] font-medium",
-    md: "px-2.5 py-1 text-xs font-medium",
+    sm: "px-2 py-0.5 text-caption font-medium",
+    md: "px-2.5 py-1 text-caption font-medium",
   };
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-md border text-center transition-all",
+        "inline-flex items-center gap-1 rounded-full border text-center transition-all",
         variants[variant],
         sizes[size],
         className
@@ -68,26 +81,28 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas";
+    "inline-flex items-center justify-center rounded-xl font-bold transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 cursor-pointer select-none";
 
   const variants = {
     primary:
-      "bg-emerald-600 text-white hover:bg-emerald-700 shadow-[0_10px_24px_-8px_rgba(22,101,52,0.4)] hover:shadow-[0_14px_28px_-10px_rgba(22,101,52,0.5)] active:bg-emerald-800",
+      "bg-emerald-800 text-white font-bold hover:bg-emerald-900 shadow-md shadow-emerald-950/20 hover:shadow-lg active:scale-[0.98]",
     secondary:
-      "bg-soil-100 text-soil-900 hover:bg-soil-200 active:bg-soil-300 border border-soil-200",
+      "bg-white text-slate-800 border border-slate-300 font-semibold hover:bg-slate-50 hover:border-emerald-600 active:bg-slate-100",
     outline:
-      "border border-soil-300 bg-transparent text-soil-800 hover:bg-soil-50 hover:border-soil-400 active:bg-soil-100",
-    ghost: "bg-transparent text-soil-700 hover:bg-soil-100 hover:text-soil-900",
-    danger: "bg-rose-600 text-white hover:bg-rose-700 shadow-sm",
+      "border border-emerald-800 bg-transparent text-emerald-900 font-bold hover:bg-emerald-50 hover:border-emerald-900",
+    ghost:
+      "bg-transparent text-slate-700 font-semibold hover:bg-slate-100 hover:text-slate-900",
+    danger:
+      "bg-red-600 text-white font-bold hover:bg-red-700 shadow-sm active:scale-[0.98]",
     harvest:
-      "bg-amber-600 text-white hover:bg-amber-700 shadow-[0_10px_24px_-8px_rgba(217,119,6,0.4)] hover:shadow-[0_14px_28px_-10px_rgba(217,119,6,0.5)] active:bg-amber-800",
+      "bg-amber-500 text-slate-950 font-black hover:bg-amber-600 shadow-sm shadow-amber-900/20 active:scale-[0.98]",
   };
 
   const sizes = {
-    sm: "text-xs px-2.5 py-1.5 gap-1.5 h-8",
-    md: "text-sm px-4 py-2 gap-2 h-10",
-    lg: "text-base px-6 py-2.5 gap-2.5 h-12 font-semibold",
-    icon: "h-9 w-9 p-0",
+    sm: "text-xs px-3.5 py-2 gap-1.5 h-9 rounded-lg font-bold",
+    md: "text-sm px-4 py-2.5 gap-2 h-10 rounded-xl font-bold",
+    lg: "text-base px-6 py-3 gap-2.5 h-12 font-bold rounded-xl",
+    icon: "h-9 w-9 p-0 rounded-xl",
   };
 
   return (
@@ -132,9 +147,8 @@ export function Card({ className, hoverEffect = false, children, ...props }: Car
   return (
     <div
       className={cn(
-        "rounded-xl border border-soil-200/80 bg-white p-5 shadow-card",
-        hoverEffect &&
-          "transition-all duration-200 hover:border-emerald-300 hover:shadow-card-hover",
+        "rounded-2xl border border-outline-variant/70 bg-surface-container-lowest p-5 shadow-card",
+        hoverEffect && "transition-colors duration-200 hover:border-primary/40",
         className
       )}
       {...props}

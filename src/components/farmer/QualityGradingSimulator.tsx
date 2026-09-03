@@ -55,16 +55,16 @@ export default function QualityGradingSimulator() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2 text-emerald-700">
+          <div className="flex items-center gap-2 text-primary">
             <Sparkles className="w-5 h-5" />
-            <span className="text-xs font-bold uppercase tracking-widest">
+            <span className="text-caption font-bold uppercase tracking-widest">
               AI Vision Quality Agent
             </span>
           </div>
-          <h2 className="text-xl font-bold text-soil-900 mt-1">
+          <h2 className="text-headline-md text-on-surface mt-1">
             Produce Quality Grading Rubric
           </h2>
-          <p className="text-xs text-soil-500">
+          <p className="text-caption text-on-surface-variant">
             Computer vision rubric scoring for firmness, defects, and color uniformity
           </p>
         </div>
@@ -74,19 +74,19 @@ export default function QualityGradingSimulator() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         {/* Photo Viewport */}
         <Card className="p-4 space-y-4">
-          <div className="relative aspect-video rounded-lg overflow-hidden bg-soil-900 border border-soil-200">
+          <div className="relative aspect-video rounded-lg overflow-hidden bg-inverse-surface border border-outline-variant">
             <img
               src={selectedPhoto}
               alt="Crop Sample"
               className="w-full h-full object-cover"
             />
             {isScanning && (
-              <div className="absolute inset-0 bg-emerald-950/40 backdrop-blur-[2px] flex flex-col items-center justify-center text-white">
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex flex-col items-center justify-center text-white">
                 <div className="relative">
-                  <div className="w-16 h-16 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
-                  <Eye className="w-6 h-6 text-emerald-300 absolute inset-0 m-auto animate-pulse" />
+                  <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  <Eye className="w-6 h-6 text-on-surface absolute inset-0 m-auto animate-pulse" />
                 </div>
-                <p className="mt-3 text-xs font-mono text-emerald-300 tracking-wider">
+                <p className="mt-3 text-caption font-mono text-white/80 tracking-wider">
                   SCANNING PRODUCE TEXTURE & BLEMISHES...
                 </p>
               </div>
@@ -99,7 +99,7 @@ export default function QualityGradingSimulator() {
           </div>
 
           <div className="space-y-2">
-            <span className="text-xs font-semibold text-soil-700 block">
+            <span className="text-label-bold text-on-surface block">
               Try Sample Crops:
             </span>
             <div className="grid grid-cols-3 gap-2">
@@ -108,14 +108,14 @@ export default function QualityGradingSimulator() {
                   key={idx}
                   onClick={() => handleScan(crop.url)}
                   disabled={isScanning}
-                  className={`text-left p-2 rounded-lg border text-xs transition-all ${
+                  className={`text-left p-2 rounded-lg border text-caption transition-all ${
                     selectedPhoto === crop.url
-                      ? "border-emerald-500 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-500"
-                      : "border-soil-200 hover:border-soil-300 bg-white text-soil-700"
+                      ? "border-primary bg-primary/10 text-on-surface ring-1 ring-primary"
+                      : "border-outline-variant hover:border-outline bg-surface-container-lowest text-on-surface-variant"
                   }`}
                 >
                   <p className="font-medium truncate">{crop.name.split(" ")[1]}</p>
-                  <p className="text-[10px] text-soil-400">Target Grade {crop.expectedGrade}</p>
+                  <p className="text-[10px] text-on-surface-variant">Target Grade {crop.expectedGrade}</p>
                 </button>
               ))}
             </div>
@@ -135,17 +135,17 @@ export default function QualityGradingSimulator() {
         {/* Grading Results */}
         <div className="space-y-4">
           {gradeResult ? (
-            <Card className="border-emerald-200 bg-white space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-soil-100">
+            <Card className="space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-outline-variant">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-2xl shadow-md">
+                  <div className="w-12 h-12 rounded-xl bg-primary text-on-primary flex items-center justify-center font-bold text-headline-md shadow-md">
                     {gradeResult.grade}
                   </div>
                   <div>
-                    <h3 className="font-bold text-soil-900">
+                    <h3 className="font-bold text-on-surface">
                       Quality Grade {gradeResult.grade}
                     </h3>
-                    <p className="text-xs text-soil-500">
+                    <p className="text-caption text-on-surface-variant">
                       Confidence: {((gradeResult.confidence || 0.95) * 100).toFixed(0)}%
                     </p>
                   </div>
@@ -154,37 +154,37 @@ export default function QualityGradingSimulator() {
               </div>
 
               <div className="space-y-2">
-                <span className="text-xs font-bold text-soil-700 uppercase tracking-wider block">
+                <span className="text-caption font-bold text-on-surface uppercase tracking-wider block">
                   Detected Quality Parameters
                 </span>
                 <div className="space-y-1.5">
                   {gradeResult.defects?.map((defect, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-2 text-xs text-soil-700 bg-soil-50 p-2 rounded border border-soil-100"
+                      className="flex items-center gap-2 text-body-sm text-on-surface bg-surface-container-low p-2 rounded border border-outline-variant"
                     >
-                      <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-primary shrink-0" />
                       <span>{defect}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-emerald-50/80 rounded-lg p-3 border border-emerald-100 text-xs text-emerald-800">
+              <div className="bg-secondary-container/40 rounded-lg p-3 border border-secondary-fixed/50 text-body-sm text-amber-800">
                 <p className="font-medium flex items-center gap-1.5 mb-1">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <ShieldCheck className="w-4 h-4 text-primary" />
                   Buyer Quality Guarantee:
                 </p>
-                <p className="text-emerald-700 leading-relaxed">
+                <p className="text-on-surface-variant leading-relaxed">
                   {gradeResult.rubric_notes}
                 </p>
               </div>
             </Card>
           ) : (
-            <Card className="p-8 text-center border-dashed border-soil-300 bg-soil-50/50">
-              <Camera className="w-10 h-10 text-soil-400 mx-auto mb-2" />
-              <h4 className="font-semibold text-soil-700 text-sm">Ready for Analysis</h4>
-              <p className="text-xs text-soil-500 mt-1 max-w-xs mx-auto">
+            <Card className="p-8 text-center border-dashed border-outline-variant bg-surface-container-low">
+              <Camera className="w-10 h-10 text-on-surface-variant mx-auto mb-2" />
+              <h4 className="font-semibold text-on-surface text-body-md">Ready for Analysis</h4>
+              <p className="text-caption text-on-surface-variant mt-1 max-w-xs mx-auto">
                 Click "Re-Scan Current Photo" or choose a sample produce above to run the vision rubric agent.
               </p>
             </Card>
