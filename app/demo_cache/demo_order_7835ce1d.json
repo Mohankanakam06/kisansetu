@@ -1,0 +1,28 @@
+{
+  "order_id": "7835ce1d",
+  "timestamp": "2026-09-06T13:14:20.478225Z",
+  "comparison": {
+    "order_id": "7835ce1d-8c44-4a9e-b6df-7b6e0a8e3d5a",
+    "stops_count": 4,
+    "individual_trips": {
+      "total_distance_km": 37.52,
+      "total_duration_minutes": 45.6
+    },
+    "consolidated_route": {
+      "total_distance_km": 23.61,
+      "total_duration_minutes": 28.7
+    },
+    "savings": {
+      "distance_saved_km": 13.91,
+      "percentage_saved": 37.1,
+      "estimated_cost_saved_inr": 166.92,
+      "estimated_co2_saved_kg": 2.09
+    }
+  },
+  "settlement": {
+    "total_order_amount_inr": 1932.84,
+    "pickup_disbursement": 966.42,
+    "delivery_disbursement": 1932.85,
+    "farmers_paid": 4
+  }
+}

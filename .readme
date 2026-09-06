@@ -1,0 +1,291 @@
+# Kisan Setu — Direct-to-Market Agri Platform
+
+**SIH 2026, PS 26033** — Backend API for agricultural aggregation, routing, and settlement.
+
+## Overview
+
+This backend service enables farmers to cluster their produce listings into lots, optimizes multi-stop delivery routes via OpenRouteService, and processes proportional multi-farmer payouts upon order completion.
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    FastAPI Backend (Port 8000)              │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌──────────────────┐  ┌──────────────────┐               │
+│  │  app/routes/     │  │  app/agents/     │               │
+│  │                  │  │                  │               │
+│  │  • lots.py       │──│  • aggregations  │               │
+│  │  • routing.py    │──│  • routing       │               │
+│  │  • settlement.py │──│  • settlement    │               │
+│  └──────────────────┘  └──────────────────┘               │
+│           │                      │                          │
+│           └──────────┬───────────┘                          │
+│                      │                                      │
+│                 ┌────▼─────┐                                │
+│                 │ app/db.py │                                │
+│                 └────┬─────┘                                │
+│                      │                                      │
+└──────────────────────┼──────────────────────────────────────┘
+                       │
+                       ▼
+         ┌─────────────────────────┐
+         │  PostgreSQL + PostGIS   │
+         │                         │
+         │  Tables:                │
+         │  • users                │
+         │  • listings             │
+         │  • lots                 │
+         │  • lot_listings         │
+         │  • orders               │
+         │  • routes               │
+         │  • payments             │
+         │  • price_history        │
+         └─────────────────────────┘
+
+External Service:
+  OpenRouteService API (routing optimization)
+```
+
+## Quick Start
+
+### 1. Environment Setup
+
+Create a `.env` file in the `backend/` directory:
+
+```env
+DATABASE_URL=postgresql://user:pass@localhost:5432/agri_platform
+REDIS_URL=redis://localhost:6379/0
+ORS_API_KEY=your_openrouteservice_key_here
+```
+
+Get a free ORS API key at https://openrouteservice.org/dev/#/signup.
+
+### 2. Install Dependencies
+
+```bash
+pip install psycopg2-binary fastapi uvicorn python-dotenv requests
+```
+
+### 3. Start the Server
+
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+The API will be available at `http://localhost:8000`.
+
+### 4. Verify
+
+```bash
+# Health check
+curl http://localhost:8000/
+
+# Check database state
+python check_db.py
+```
+
+## Core Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | Health check |
+| `GET` | `/api/lots` | List lots (filter by crop/grade/lat/lng/radius) |
+| `POST` | `/api/internal/aggregate` | Run DBSCAN clustering |
+| `POST` | `/api/orders` | Create an order |
+| `GET` | `/api/orders/{id}` | Get order status |
+| `POST` | `/api/routing/optimize` | Get optimized delivery route |
+| `POST` | `/api/routing/compare` | Individual vs consolidated comparison |
+| `POST` | `/api/settlement/payout` | Process farmer payout |
+
+## Agent Workflows
+
+### Aggregation Agent
+
+Uses PostGIS `ST_ClusterDBSCAN` to cluster active listings of the same crop type into geographically cohesive lots.
+
+```python
+from app.agents.aggregations import run_aggregation
+lot_ids = run_aggregation(eps_km=3.0, min_points=2)
+```
+
+**Endpoint:** `POST /api/internal/aggregate`
+
+### Routing Agent
+
+Calls OpenRouteService to compute multi-pickup delivery routes with a 5km snap radius for rural coordinates.
+
+```python
+from app.agents.routing import optimize_route, compare_individual_vs_consolidated
+route = optimize_route(order_id="...")
+comparison = compare_individual_vs_consolidated(order_id="...")
+```
+
+**Endpoints:**
+- `POST /api/routing/optimize`
+- `POST /api/routing/compare`
+
+### Settlement Agent
+
+Processes multi-farmer proportional payouts: 50% on pickup, 100% on delivery.
+
+```python
+from app.agents.settlement import process_payout
+result = process_payout(order_id="...", stage="pickup")
+```
+
+**Endpoint:** `POST /api/settlement/payout`
+
+## Seed Data
+
+Generate realistic test data:
+
+```bash
+python -m app.seed
+```
+
+This creates:
+- 15 farmers across 3 geographic clusters (Nadiad, Gujarat area)
+- 3 buyers
+- 15 crop listings
+- 180 days of price history
+
+## Integration Testing
+
+Run the full end-to-end test:
+
+```bash
+python -m app.integration_check
+```
+
+This validates:
+- Lot creation via DBSCAN clustering
+- Order placement
+- Route optimization with savings comparison
+- Two-stage settlement (pickup + delivery)
+
+## Demo Presentation
+
+Display the cached demo scenario:
+
+```bash
+python -m app.demo_cache
+```
+
+To replay the cached demo without live ORS calls, modify the comparison function to return the cached data when a demo flag is set.
+
+## Project Structure
+
+```
+backend/
+  .env                      # Environment variables (not committed)
+  .env.example              # Template for team
+  check_db.py               # Database verification script
+  check_constraint.py       # Database constraint checker
+  app/
+    __init__.py
+    db.py                   # Shared database connection pool
+    main.py                 # FastAPI application
+    seed.py                 # Test data generation
+    integration_check.py    # End-to-end test suite
+    demo_cache.py           # Demo scenario caching
+    agents/
+      __init__.py
+      aggregations.py       # PostGIS DBSCAN clustering
+      routing.py            # OpenRouteService integration
+      settlement.py         # Multi-farmer payout processing
+    routes/
+      __init__.py
+      lots.py               # Lots and aggregation endpoints
+      routing.py            # Routing endpoints
+      settlement.py         # Settlement endpoints
+    demo_cache/             # Cached demo scenarios
+```
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@localhost:5432/agri_platform` |
+| `REDIS_URL` | Redis connection URL | `redis://localhost:6379/0` |
+| `ORS_API_KEY` | OpenRouteService API key | `your_api_key_here` |
+
+### Tuning Parameters
+
+- **Clustering radius:** Default `eps_km=3.0` in `run_aggregation()`. Increase if listings are not clustering.
+- **Snap radius:** Default `radius_m=5000` in routing. Adjust for rural vs urban areas.
+- **Payout stages:** 50% on pickup, 100% on delivery. Modify ratios in `settlement.py`.
+
+## Database Schema
+
+### Core Tables
+
+- **users:** Farmer/buyer profiles with `location` as `geography` type
+- **listings:** Active crop listings with `status` field (`active`, `clustered`)
+- **lots:** Aggregated lots with centroid (`geography` type)
+- **lot_listings:** Bridge table linking lots to listings
+- **orders:** Buyer orders with status lifecycle (`placed` → `picked_up` → `delivered`)
+- **routes:** Optimized routes with `route_geojson`, `distance_km`, `eta`
+- **payments:** Farmer payouts with `status` (`partial_paid`, `settled`)
+- **price_history:** Historical crop prices for market pricing
+
+## Troubleshooting
+
+### Server Won't Start
+
+```bash
+# Check if port is in use
+netstat -ano | findstr :8000
+
+# Kill process if needed
+taskkill /PID <pid> /F
+```
+
+### Database Connection Issues
+
+```bash
+# Verify PostgreSQL is running
+pg_isready -h localhost -p 5432
+
+# Check .env configuration
+type .env
+```
+
+### ORS API Errors
+
+```bash
+# Verify API key is set
+echo %ORS_API_KEY%
+
+# Test with curl
+curl -X POST https://api.openrouteservice.org/v2/directions/driving-car/geojson \
+  -H "Authorization: $ORS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"coordinates\": [[72.86, 22.69], [72.87, 22.70]]}"
+```
+
+### Clustering Issues
+
+If no lots are created, increase the clustering radius:
+
+```python
+lot_ids = run_aggregation(eps_km=5.0, min_points=2)
+```
+
+## Demo Scenario Metrics
+
+Cached demo scenario (Order `7835ce1d`):
+- **4 farmer pickups** → consolidated into 1 route
+- **Individual trips:** 37.52km
+- **Consolidated route:** 23.61km
+- **Savings:** 37.1% (13.91km)
+- **CO₂ saved:** 2.09kg
+- **Cost saved:** ₹166.92
+- **Settlement:** ₹1,932.84 distributed to 4 farmers
+
+## License
+
+SIH 2026 — PS 26033
