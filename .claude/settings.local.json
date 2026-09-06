@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(.\\\\.venv\\\\Scripts\\\\python.exe -c \"import psycopg2; conn = psycopg2.connect\\('postgresql://postgres:Shy%40m9101@localhost:5432/kisan_setu'\\); print\\('Connected to kisan_setu!'\\); conn.close\\(\\)\")",
+      "PowerShell(.\\\\.venv\\\\Scripts\\\\python.exe -c \"import psycopg2, os; from dotenv import load_dotenv; load_dotenv\\(\\); conn = psycopg2.connect\\(os.environ['DATABASE_URL']\\); print\\('SUCCESS! Connected via .env DATABASE_URL'\\); conn.close\\(\\)\")",
+      "PowerShell(.\\\\.venv\\\\Scripts\\\\python.exe -c \"import psycopg2, os; from dotenv import load_dotenv; load_dotenv\\(\\); conn = psycopg2.connect\\(os.environ['DATABASE_URL']\\); cur = conn.cursor\\(\\); cur.execute\\('CREATE EXTENSION IF NOT EXISTS postgis;'\\); conn.commit\\(\\); print\\('PostGIS extension enabled successfully!'\\); conn.close\\(\\)\")",
+      "PowerShell(.\\\\.venv\\\\Scripts\\\\python.exe -c \"import psycopg2, os; from dotenv import load_dotenv; load_dotenv\\(\\); conn = psycopg2.connect\\(os.environ['DATABASE_URL']\\); cur = conn.cursor\\(\\); sql = open\\('migration/001_init.sql'\\).read\\(\\); cur.execute\\(sql\\); conn.commit\\(\\); print\\('Migration 001_init.sql applied successfully!'\\); cur.execute\\(\\\\\"SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';\\\\\"\\); print\\('Tables in public schema:', [row[0] for row in cur.fetchall\\(\\)]\\); conn.close\\(\\)\")",
+      "PowerShell(.\\\\.venv\\\\Scripts\\\\uvicorn.exe app.main:app --reload --port 8000)"
+    ]
+  }
+}
