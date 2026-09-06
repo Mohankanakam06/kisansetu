@@ -55,7 +55,7 @@ External Service:
 Create a `.env` file in the `backend/` directory:
 
 ```env
-DATABASE_URL=postgresql://user:pass@localhost:5432/agri_platform
+DATABASE_URL=postgresql://user:postgre@localhost:5432/kisan_setu
 REDIS_URL=redis://localhost:6379/0
 ORS_API_KEY=your_openrouteservice_key_here
 ```
@@ -209,7 +209,7 @@ backend/
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@localhost:5432/agri_platform` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:postgre@localhost:5432/kisan_setu` |
 | `REDIS_URL` | Redis connection URL | `redis://localhost:6379/0` |
 | `ORS_API_KEY` | OpenRouteService API key | `your_api_key_here` |
 
