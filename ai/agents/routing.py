@@ -104,9 +104,12 @@ def optimize_route(order_id: str):
     ]
 
     return {
+        "route_id": str(route_row["id"]) if route_row and "id" in route_row else None,
         "route_geojson": geojson,
         "distance_km": round(distance_m / 1000.0, 2),
-        "eta": str(route_row["eta"]),
+        "duration_minutes": round(duration_s / 60.0, 1),
+        "stops_count": len(formatted_stops),
+        "eta": str(route_row["eta"]) if route_row and "eta" in route_row else None,
         "stops": formatted_stops,
     }
 

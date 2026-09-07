@@ -39,9 +39,46 @@ class MockDB:
                 "lng": 72.8700,
             },
         }
-        self.listings = {}
-        self.lots = {}
-        self.lot_listings = []
+        self.listings = {
+            "listing-default-1": {
+                "id": "listing-default-1",
+                "farmer_id": "farmer-uuid-1",
+                "crop_type": "tomato",
+                "quantity_kg": 200.0,
+                "price_expectation": 25.0,
+                "lat": 22.6939,
+                "lng": 72.8618,
+                "status": "clustered",
+                "created_at": "2026-09-07T10:00:00Z",
+            },
+            "listing-default-2": {
+                "id": "listing-default-2",
+                "farmer_id": "farmer-uuid-2",
+                "crop_type": "tomato",
+                "quantity_kg": 300.0,
+                "price_expectation": 25.0,
+                "lat": 22.6950,
+                "lng": 72.8630,
+                "status": "clustered",
+                "created_at": "2026-09-07T10:00:00Z",
+            }
+        }
+        self.lots = {
+            "lot-default-1": {
+                "id": "lot-default-1",
+                "crop_type": "tomato",
+                "total_quantity_kg": 500.0,
+                "grade": "A",
+                "lat": 22.6945,
+                "lng": 72.8624,
+                "status": "open",
+                "created_at": "2026-09-07T10:00:00Z",
+            }
+        }
+        self.lot_listings = [
+            {"lot_id": "lot-default-1", "listing_id": "listing-default-1"},
+            {"lot_id": "lot-default-1", "listing_id": "listing-default-2"}
+        ]
         self.quality_grades = {}
         self.orders = {}
         self.routes = {}
@@ -327,6 +364,13 @@ class MockCursor:
                 user_match = self.db.users.get(param_val)
                 if not user_match:
                     user_match = next((u for u in self.db.users.values() if u.get("phone") == param_val), None)
+            elif "role = 'buyer'" in q:
+                user_match = next((u for u in self.db.users.values() if u.get("role") == "buyer"), None)
+            elif "role = 'farmer'" in q:
+                user_match = next((u for u in self.db.users.values() if u.get("role") == "farmer"), None)
+            else:
+                user_match = next(iter(self.db.users.values()), None)
+
             if user_match:
                 self.last_result = [{
                     "id": user_match["id"],

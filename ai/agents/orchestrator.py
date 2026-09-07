@@ -11,6 +11,7 @@ if gemini_key:
     genai.configure(api_key=gemini_key)
 
 from ai.agents.farmer_interface import create_listing
+from backend.redis_client import get_chat_history, save_chat_history
 
 BASE_URL = os.environ.get("BASE_URL", "http://localhost:8000")
 
@@ -45,21 +46,38 @@ def call_tool(name: str, args: dict) -> dict:
 
 def handle_query(user_id: str, message: str, message_type: str = "text", media_url: str = None):
     try:
+        # Load prior conversation history from Redis / In-Memory cache
+        raw_history = get_chat_history(user_id)
+        gemini_history = []
+        for item in raw_history:
+            if isinstance(item, dict) and "role" in item and "parts" in item:
+                gemini_history.append(item)
+
         model = genai.GenerativeModel("gemini-3.6-flash", tools=TOOLS)
-        chat = model.start_chat()
+        chat = model.start_chat(history=gemini_history)
         prompt = f"User ({user_id}) says: {message}"
         if media_url:
             prompt += f" [attached media: {media_url}]"
 
         response = chat.send_message(prompt)
 
+        # Track turn for conversation memory
+        new_history = list(raw_history)
+        new_history.append({"role": "user", "parts": [prompt]})
+
         for part in response.candidates[0].content.parts:
             if fn := getattr(part, "function_call", None):
                 args = dict(fn.args)
                 args.setdefault("farmer_id", user_id)
                 result = call_tool(fn.name, args)
+                new_history.append({"role": "model", "parts": [f"Executed {fn.name}: {json.dumps(result)}"]})
+                save_chat_history(user_id, new_history)
                 return {"intent": fn.name, "agent_called": fn.name, "result": result}
 
-        return {"intent": "chat", "agent_called": None, "result": {"text": response.text}}
+        response_text = response.text if hasattr(response, "text") else "I am here to help you."
+        new_history.append({"role": "model", "parts": [response_text]})
+        save_chat_history(user_id, new_history)
+
+        return {"intent": "chat", "agent_called": None, "result": {"text": response_text}}
     except Exception as e:
         return {"intent": "error", "agent_called": None, "result": {"error": str(e)}}
