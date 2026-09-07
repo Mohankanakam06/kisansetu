@@ -2,12 +2,26 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   async rewrites() {
-    const backendUrl =
+    let rawUrl = (
       process.env.BACKEND_API_URL ||
-      process.env.API_BASE_URL ||
-      "https://kisansetu-1-bmg9.onrender.com";
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      "https://kisansetu-1-bmg9.onrender.com"
+    ).trim();
 
-    const cleanUrl = backendUrl.replace(/\/+$/, "").replace(/\/api$/, "");
+    // Strip leading/trailing quotes if passed from dashboard
+    rawUrl = rawUrl.replace(/^["']|["']$/g, "").trim();
+
+    // Fallback if empty
+    if (!rawUrl) {
+      rawUrl = "https://kisansetu-1-bmg9.onrender.com";
+    }
+
+    // Ensure scheme starts with http:// or https://
+    if (!rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
+      rawUrl = `https://${rawUrl}`;
+    }
+
+    const cleanUrl = rawUrl.replace(/\/+$/, "").replace(/\/api$/, "");
 
     return [
       {
