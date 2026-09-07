@@ -83,15 +83,17 @@ def optimize_route(order_id: str):
     route_row = cur.fetchone()
     conn.commit()
 
+    # build the response stops matching PRD
+    formatted_stops = [
+        {"listing_id": s["id"], "lat": float(s["lat"]), "lng": float(s["lng"])}
+        for s in stops
+    ]
+
     return {
-        "route_id": route_row["id"],
-        "order_id": order_id,
         "route_geojson": geojson,
         "distance_km": round(distance_m / 1000.0, 2),
-        "duration_minutes": round(duration_s / 60.0, 1),
         "eta": str(route_row["eta"]),
-        "stops_count": len(stops),
-        "stops": stops,
+        "stops": formatted_stops,
     }
 
 

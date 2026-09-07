@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
-from app.routes import lots, routing, settlement
+from app.routes import lots, routing, settlement, farmer, orchestrator, quality
 from app.db import get_conn
 
 app = FastAPI(
@@ -24,6 +24,9 @@ app.add_middleware(
 app.include_router(lots.router, tags=["Lots & Aggregation"])
 app.include_router(routing.router, tags=["Routing"])
 app.include_router(settlement.router, tags=["Settlement"])
+app.include_router(farmer.router, tags=["Farmer Interface"])
+app.include_router(orchestrator.router, tags=["Orchestrator"])
+app.include_router(quality.router, tags=["Quality Grading"])
 
 
 # Health check
@@ -89,6 +92,40 @@ def create_order(order: OrderCreate):
         "quantity_kg": float(new_order["quantity_kg"]),
         "status": new_order["status"],
         "created_at": str(new_order["created_at"])
+    }
+
+
+@app.get("/api/orders")
+def list_orders():
+    """List all orders."""
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT o.id, o.buyer_id, o.lot_id, o.quantity_kg, o.status, o.created_at,
+               l.crop_type, l.total_quantity_kg,
+               u.name AS buyer_name
+        FROM orders o
+        JOIN lots l ON o.lot_id = l.id
+        LEFT JOIN users u ON o.buyer_id = u.id
+        ORDER BY o.created_at DESC
+    """)
+    orders = cur.fetchall()
+    conn.close()
+    return {
+        "orders": [
+            {
+                "id": o["id"],
+                "order_id": o["id"],
+                "buyer_id": o["buyer_id"],
+                "buyer_name": o["buyer_name"] or "Buyer",
+                "lot_id": o["lot_id"],
+                "crop_type": o["crop_type"],
+                "quantity_kg": float(o["quantity_kg"]),
+                "status": o["status"],
+                "created_at": str(o["created_at"])
+            }
+            for o in orders
+        ]
     }
 
 

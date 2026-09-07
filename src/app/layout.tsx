@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
+import MobileBottomBar from "@/components/MobileBottomBar";
 import "./globals.css";
 
 const inter = Inter({
@@ -146,9 +147,12 @@ export default function RootLayout({
         </header>
 
         {/* Main Content Area */}
-        <main id="main-content" className="flex-1 flex flex-col pt-[5.75rem]">
+        <main id="main-content" className="flex-1 flex flex-col pt-[5.75rem] pb-20 md:pb-0">
           {children}
         </main>
+
+        {/* Mobile Fixed Bottom Action Bar & Navigation */}
+        <MobileBottomBar />
 
         {/* Footer */}
         <footer className="bg-surface-container-lowest border-t border-outline-variant/60 py-10 px-4 sm:px-6 lg:px-8">
