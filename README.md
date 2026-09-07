@@ -1,133 +1,180 @@
-# Kisan Setu — Agri Platform Backend
+# KisanSetu — Direct-to-Market Agri Platform
 
-> Direct-to-Market Multi-Agent Agricultural Ecosystem  
+> AI-powered agricultural aggregation, grading, and direct-to-buyer marketplace  
 > SIH 2026 · Problem Statement 26033
 
-A FastAPI backend that connects farmers to markets using multi-provider AI agents, multilingual voice/text input, and multimodal crop-quality grading.
+A full-stack platform connecting farmers to buyers using multi-agent AI orchestration, multilingual voice/text input, multimodal crop-quality grading, route optimization, and automated settlement.
+
+---
+
+## Repository Structure
+
+```
+kisansetu/
+├── frontend/              # Next.js 16 App Router (React 19, Tailwind, PWA)
+│   ├── src/
+│   │   ├── app/           # App Router pages (/, /login, /farmer, /buyer, /orders, etc.)
+│   │   ├── components/    # Shared React components (SiteNav, LeafletMap, PWAInstallPrompt)
+│   │   ├── services/      # API client layer (api.ts)
+│   │   └── types/         # TypeScript type definitions
+│   ├── public/            # Static assets (icons, logos, sw.js)
+│   ├── package.json       # Node.js dependencies
+│   ├── next.config.ts     # Next.js configuration
+│   └── tsconfig.json      # TypeScript configuration
+│
+├── backend/               # FastAPI Python server
+│   ├── main.py            # FastAPI app entry point, CORS, orders endpoints
+│   ├── db.py              # PostgreSQL connection (psycopg2 + PostGIS)
+│   ├── routes/            # API route handlers
+│   │   ├── auth.py        # Phone OTP + JWT authentication
+│   │   ├── farmer.py      # Farmer listing creation (voice/text)
+│   │   ├── lots.py        # Lot browsing, geofilter, aggregation trigger
+│   │   ├── quality.py     # AI quality grading endpoint
+│   │   ├── routing.py     # Route optimization (ORS)
+│   │   ├── settlement.py  # Payout settlement processing
+│   │   └── orchestrator.py# Multi-agent query dispatcher
+│   └── requirements.txt   # Python dependencies
+│
+├── ai/                    # AI/ML agents
+│   └── agents/
+│       ├── aggregations.py    # DBSCAN clustering via PostGIS
+│       ├── farmer_interface.py# Multilingual STT → structured listing
+│       ├── quality_grading.py # Gemini Vision crop grading (A/B/C/D)
+│       ├── routing.py         # OpenRouteService route optimization
+│       ├── settlement.py      # Payout calculation engine
+│       └── orchestrator.py    # Gemini tool-calling orchestrator
+│
+├── database/              # Database schema & seeding
+│   ├── migrations/
+│   │   └── 001_init.sql   # Full schema (users, listings, lots, orders, payments + PostGIS)
+│   └── seed.py            # Sample data seeder
+│
+├── tests/                 # Python test suite (pytest)
+│   ├── test_e2e_flow.py   # Full 8-step E2E marketplace test (mocked, hermetic)
+│   ├── test_aggregation.py# Aggregation unit test (needs live DB)
+│   ├── test_routing.py    # Routing unit test (needs live DB)
+│   ├── test_settlement.py # Settlement unit test (needs live DB)
+│   └── test_ors.py        # ORS integration test
+│
+├── scripts/               # Utility & debug scripts
+│   ├── generate-pwa-icons.py  # PWA icon generator (Pillow)
+│   ├── check_db.py        # Database connectivity check
+│   ├── check_constraint.py# DB constraint inspector
+│   ├── debug_coords.py    # Coordinate debugging tool
+│   ├── debug_ors.py       # ORS API debugging tool
+│   └── demo_cache/        # Cached demo order data
+│
+├── docs/                  # Documentation
+│   ├── BUG_AUDIT.md       # Full bug audit report (9 issues fixed)
+│   ├── FREE_DEPLOYMENT.md # Deployment guide (Supabase + Render + Vercel)
+│   ├── PRD.md             # Product Requirements Document
+│   ├── PERSON_C_COMPLETION_REPORT.md
+│   └── roadmap_status.html
+│
+├── config/                # Environment configuration templates
+│   └── (copy .env files here for reference)
+│
+├── .env                   # Backend env vars (gitignored)
+├── .env.local             # Frontend env vars (gitignored)
+├── .env.example           # Template for required env vars
+└── .gitignore
+```
 
 ---
 
 ## Tech Stack
 
 | Layer | Technology |
-|-------|------------|
-| Framework | Python 3.11+ / FastAPI |
-| Database | PostgreSQL (with PostGIS) |
-| Cache / Queue | Redis |
-| AI Providers | Google Gemini, Sarvam AI, Bhashini, OpenRouter |
-| Agents | Multi-agent orchestrator (`app/agents/`) |
-| Migration | SQL-based (`migration/`) |
-| Persona / Docs | `persona/` (separate `.git`) |
-
----
-
-## Project Structure
-
-```
-.
-├── app/                  # Main application
-│   ├── main.py           # FastAPI app, CORS, root HTML dashboard
-│   ├── db.py             # PostgreSQL connection (psycopg2)
-│   ├── agents/           # Multi-agent dispatch & logic
-│   └── routes/
-│       ├── orchestrator.py
-│       ├── farmer.py
-│       └── quality.py
-├── migration/            # DB migrations
-├── persona/              # Persona / documentation repo (submodule-like)
-├── .env                  # Environment (see below)
-├── .venv/                # Virtual environment
-└── README.md             # This file
-```
-
----
-
-## Environment Variables
-
-Copy or edit `.env` with your values:
-
-```bash
-DATABASE_URL=postgresql://postgres:Shy%40m9101@localhost:5432/kisan_setu
-REDIS_URL=redis://localhost:6379/0
-
-# AI / LLM Keys
-GEMINI_API_KEY=your_key_here
-SARVAM_API_KEY=your_key_here
-BHASHINI_API_KEY=your_key_here
-OPENROUTER_API_KEY=sk-or-v1-...
-```
-
-### Security Note
-- `.env` is loaded at startup but should be added to `.gitignore` for production.
-- The current `.env` contains live credentials; rotate them before public deployment.
+|---|---|
+| Frontend | Next.js 16.3.3 (Turbopack), React 19, Tailwind CSS 4 |
+| Backend | Python 3.14+ / FastAPI |
+| Database | PostgreSQL + PostGIS |
+| AI Providers | Google Gemini (Vision + LLM), Sarvam AI, Bhashini |
+| Routing | OpenRouteService (ORS) |
+| Auth | Phone OTP + JWT (HS256) |
+| PWA | Custom Service Worker, Web App Manifest |
 
 ---
 
 ## Quick Start
 
+### Backend
 ```bash
-# 1. Create / activate virtual env
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+# Install Python dependencies
+pip install -r backend/requirements.txt
 
-# 2. Install dependencies
-pip install -r requirements.txt  # if present; else pip install fastapi uvicorn psycopg2-binary redis python-dotenv
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your DATABASE_URL, GEMINI_API_KEY, ORS_API_KEY, JWT_SECRET
 
-# 3. Start services (PostgreSQL + Redis must be running)
-#    DB should have database: kisan_setu
+# Run the database migration (requires PostgreSQL + PostGIS)
+psql $DATABASE_URL < database/migrations/001_init.sql
 
-# 4. Run server
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+# Start the API server
+uvicorn backend.main:app --reload --port 8000
 ```
 
-Visit `http://localhost:8000/` for the live dashboard or `/docs` for Swagger UI.
+### Frontend
+```bash
+# Install Node.js dependencies
+npm install
+
+# Set up frontend env
+# Edit .env.local → NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+
+# Start the dev server
+npm run dev
+```
+
+### Run Tests
+```bash
+# Hermetic E2E tests (no database needed)
+py -m pytest tests/test_e2e_flow.py -v -s
+
+# Full suite (requires live PostgreSQL)
+py -m pytest tests/ -v
+```
 
 ---
 
-## Key Endpoints
+## Key API Endpoints
 
 | Method | Path | Purpose |
-|--------|------|---------|
-| GET | `/` | Landing page / status dashboard |
-| GET | `/health` | Health check |
-| POST | `/api/orchestrator/query` | Intent classification & agent dispatch (Gemini) |
-| POST | `/api/farmer/listing` | Multilingual STT → produce listing (PostGIS) |
-| POST | `/api/quality/grade` | Image grading (A/B/C) via multimodal AI |
+|---|---|---|
+| POST | `/api/auth/send-otp` | Send OTP to phone number |
+| POST | `/api/auth/verify-otp` | Verify OTP, receive JWT token |
+| POST | `/api/auth/register` | Register new farmer/buyer |
+| GET | `/api/auth/me` | Get current user (Bearer token) |
+| POST | `/api/farmer/listing` | Create produce listing (voice/text) |
+| GET | `/api/lots` | Browse aggregated lots (with geofilter) |
+| POST | `/api/quality/grade` | AI crop quality grading |
+| POST | `/api/orders` | Place a buyer order |
+| POST | `/api/routing/optimize` | Optimize delivery route |
+| POST | `/api/settlement/payout` | Process farmer payout |
 
 ---
 
-## Agents & Architecture
+## Where to Add New Code
 
-`app/agents/` contains the multi-agent orchestration layer.
-- **Orchestrator**: Routes user intents to the right agent.
-- **Farmer**: Handles multilingual voice/text input and produce listings.
-- **Quality**: Processes crop images for grading.
-
-Providers are abstracted so swapping Gemini ↔ OpenRouter ↔ Sarvam is configurable via env / agent config.
-
----
-
-## Database
-
-- `app/db.py` connects via `psycopg2` using `DATABASE_URL`.
-- PostGIS extensions expected for geospatial produce listings.
-- Migrations live in `migration/`; apply with `psql` or a migration tool.
+| What you're building | Where to put it |
+|---|---|
+| New frontend page | `frontend/src/app/your-page/page.tsx` |
+| New React component | `frontend/src/components/YourComponent.tsx` |
+| New API route | `backend/routes/your_route.py` (+ register in `backend/main.py`) |
+| New AI agent | `ai/agents/your_agent.py` |
+| New DB migration | `database/migrations/002_your_change.sql` |
+| New test | `tests/test_your_feature.py` |
 
 ---
 
-## Conventions
+## Deployment
 
-- CORS is open (`*`) for cross-origin web clients — restrict in production.
-- Root endpoint serves a self-contained HTML dashboard (no external build step required for status checks).
-- Persona / documentation lives in `persona/` with its own `.git`.
-
----
-
-## License / Attribution
-
-Built for SIH 2026 (Problem Statement 26033).  
-Contact: project team via `persona/` docs.
+See [`docs/FREE_DEPLOYMENT.md`](docs/FREE_DEPLOYMENT.md) for a complete free-tier deployment guide using:
+- **Supabase** (PostgreSQL + PostGIS)
+- **Render** (FastAPI backend)
+- **Vercel** (Next.js frontend + PWA)
 
 ---
 
-*Last updated: 2026-09-06*
+*Built for Smart India Hackathon 2026 · PS 26033*  
+*Last updated: 2026-09-07*

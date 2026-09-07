@@ -1,1 +1,7 @@
 .env
+.env.local
+.next/
+node_modules/
+__pycache__/
+*.pyc
+tsconfig.tsbuildinfo
