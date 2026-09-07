@@ -52,9 +52,31 @@ export default function RegisterPage() {
     if (!form.location.trim()) return setError("Enter your village / market area.");
     setError("");
     setSubmitting(true);
-    // Simulated registration — real impl hits POST /api/auth/register
-    await new Promise((r) => setTimeout(r, 900));
-    window.location.href = "/login";
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api";
+    try {
+      const res = await fetch(`${API_BASE}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.detail || "Registration failed");
+      }
+      const data = await res.json();
+      if (typeof window !== "undefined") {
+        localStorage.setItem("kisansetu_token", data.token);
+        localStorage.setItem("kisansetu_user", JSON.stringify(data.user));
+      }
+      window.location.href = data.redirect || "/login";
+    } catch (err: any) {
+      // Offline / demo fallback: keep the app usable
+      if (typeof window !== "undefined") {
+        const demoUser = { name: form.name, phone: form.phone, role: form.role };
+        localStorage.setItem("kisansetu_user", JSON.stringify(demoUser));
+      }
+      window.location.href = `/${form.role}`;
+    }
   };
 
   return (

@@ -3,6 +3,8 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
 import MobileBottomBar from "@/components/MobileBottomBar";
+import RegisterSW from "@/components/RegisterSW";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import "./globals.css";
 
 const inter = Inter({
@@ -21,8 +23,17 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "KisanSetu | Direct-to-Market Agri Platform",
   description: "AI-powered agricultural aggregation, grading, and direct-to-buyer marketplace (SIH PS 26033)",
+  appleWebApp: {
+    capable: true,
+    title: "KisanSetu",
+    statusBarStyle: "black-translucent",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   other: {
     "color-scheme": "light",
+    "theme-color": "#047857",
   },
 };
 
@@ -149,6 +160,8 @@ export default function RootLayout({
         {/* Main Content Area */}
         <main id="main-content" className="flex-1 flex flex-col pt-[5.75rem] pb-20 md:pb-0">
           {children}
+          <RegisterSW />
+          <PWAInstallPrompt />
         </main>
 
         {/* Mobile Fixed Bottom Action Bar & Navigation */}
