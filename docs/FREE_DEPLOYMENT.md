@@ -1,6 +1,6 @@
-# KisanSetu Free Deployment Guide
+            # KisanSetu Free Deployment Guide
 
-Deploy KisanSetu (backend + frontend) to **100% free** hosting with always-accessible URLs.
+            Deploy KisanSetu (backend + frontend) to **100% free** hosting with always-accessible URLs.
 
 ---
 
@@ -87,12 +87,12 @@ git push -u origin main
 6. Click **Create Web Service**
 7. Render auto-deploys. Once green, your backend URL will be:
    ```
-   https://kisansetu-1-bmg9.onrender.com
+   https://kisansetu-api.onrender.com
    ```
 8. Verify:
    ```bash
-   curl https://kisansetu-1-bmg9.onrender.com/
-   curl https://kisansetu-1-bmg9.onrender.com/api/lots
+   curl https://kisansetu-api.onrender.com/
+   curl https://kisansetu-api.onrender.com/api/lots
    ```
 
 ---
@@ -108,7 +108,7 @@ git push -u origin main
 
    | Key | Value |
    |---|---|
-   | `NEXT_PUBLIC_API_BASE_URL` | `https://kisansetu-1-bmg9.onrender.com` |
+   | `NEXT_PUBLIC_API_BASE_URL` | `https://kisansetu-api.onrender.com` |
    | `NEXT_PUBLIC_USE_MOCK_API` | `false` |
    | `NEXT_PUBLIC_GOOGLE_MAPS_KEY` | (optional, for live maps) |
 
@@ -152,15 +152,15 @@ Open `https://kisansetu.vercel.app` in your phone browser:
 
 ```bash
 # Backend health check
-curl -s https://kisansetu-1-bmg9.onrender.com/ | python -m json.tool
+curl -s https://kisansetu-api.onrender.com/ | python -m json.tool
 
 # Test auth
-curl -X POST https://kisansetu-1-bmg9.onrender.com/api/auth/send-otp \
+curl -X POST https://kisansetu-api.onrender.com/api/auth/send-otp \
   -H "Content-Type: application/json" \
   -d '{"phone":"9876543210","role":"farmer"}'
 
 # Test lots
-curl -s https://kisansetu-1-bmg9.onrender.com/api/lots | python -m json.tool
+curl -s https://kisansetu-api.onrender.com/api/lots | python -m json.tool
 ```
 
 ---
