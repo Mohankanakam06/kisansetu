@@ -11,7 +11,10 @@ import {
 } from "@/types";
 
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK_API !== "false";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api";
+const RAW_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, "").endsWith("/api")
+  ? RAW_API_BASE_URL.replace(/\/+$/, "")
+  : `${RAW_API_BASE_URL.replace(/\/+$/, "")}/api`;
 
 // Initial mock data: Raipur, Chhattisgarh agricultural belt & Nashik onion belt
 export const initialLots: Lot[] = [
