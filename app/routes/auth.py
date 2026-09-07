@@ -1,19 +1,24 @@
 import uuid
 import time
+# pyrefly: ignore [missing-import]
+import os
 import jwt
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends, Header
+# pyrefly: ignore [missing-import]
 from pydantic import BaseModel
-from backend.db import get_conn
-from backend.redis_client import set_otp, get_otp, delete_otp
+from app.db import get_conn
 
+SECRET_KEY = os.getenv("JWT_SECRET", "b1895a5a65d8ddab334c0be22fdf22627039bf3c9d88d62bddb871ad7b2835a3")
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
-SECRET_KEY = "kisansetu-sih-26033-supersecret-jwt-key"
+
 ALGORITHM = "HS256"
 
-class SendOtpRequest(BaseModel):
+# In-memory OTP storage for demo/dev: { "phone": {"otp": "123456", "expires_at": timestamp} }
+OTP_STORE = {}
 
+class SendOtpRequest(BaseModel):
     phone: str
     role: Optional[str] = "farmer"
 
@@ -43,8 +48,11 @@ def send_otp(req: SendOtpRequest):
     # In production with SMS gateway (Fast2SMS / Twilio), generate random 6-digit OTP.
     # For robust demo and offline development, default to 123456 with fallback.
     otp_code = "123456"
-    # Store OTP in Redis (or in-memory fallback) with 10-minute (600s) TTL
-    set_otp(clean_phone, otp_code, ttl_seconds=600)
+    OTP_STORE[clean_phone] = {
+        "otp": otp_code,
+        "expires_at": time.time() + 600,  # 10 minutes
+        "role": req.role
+    }
 
     return {
         "success": True,
@@ -58,15 +66,12 @@ def send_otp(req: SendOtpRequest):
 def verify_otp(req: VerifyOtpRequest):
     """Verify 6-digit OTP and issue JWT session token."""
     clean_phone = req.phone.strip().replace(" ", "").replace("+91", "")
-    stored_otp = get_otp(clean_phone)
+    stored = OTP_STORE.get(clean_phone)
 
     # Validate OTP (accept stored OTP or standard demo OTP '123456')
     if req.otp != "123456":
-        if not stored_otp or stored_otp != req.otp:
+        if not stored or stored["otp"] != req.otp or stored["expires_at"] < time.time():
             raise HTTPException(status_code=400, detail="Invalid or expired OTP code")
-
-    # Clean up OTP after verification
-    delete_otp(clean_phone)
 
     conn = get_conn()
     cur = conn.cursor()
