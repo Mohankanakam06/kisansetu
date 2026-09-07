@@ -10,11 +10,13 @@ import {
   RouteStop,
 } from "@/types";
 
-const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK_API !== "false";
-const RAW_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
-const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, "").endsWith("/api")
-  ? RAW_API_BASE_URL.replace(/\/+$/, "")
-  : `${RAW_API_BASE_URL.replace(/\/+$/, "")}/api`;
+const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK_API === "true";
+const API_BASE_URL =
+  typeof window !== "undefined"
+    ? "/api"
+    : (process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "https://kisansetu-1-bmg9.onrender.com")
+        .replace(/\/+$/, "")
+        .replace(/\/api$/, "") + "/api";
 
 // Initial mock data: Raipur, Chhattisgarh agricultural belt & Nashik onion belt
 export const initialLots: Lot[] = [

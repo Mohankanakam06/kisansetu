@@ -18,7 +18,7 @@ import { Button } from "@/components/ui";
 type Role = "farmer" | "buyer";
 type LoginState = "idle" | "submitting" | "otp";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api";
+const API_BASE = "/api";
 
 const ROLE_META: Record<Role, { label: string; tagline: string; icon: LucideIcon }> = {
   farmer: {
