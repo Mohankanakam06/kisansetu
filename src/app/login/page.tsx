@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { LucideIcon } from "lucide-react";
 import {
   Sprout,
   Smartphone,
@@ -20,7 +19,7 @@ type LoginState = "idle" | "submitting" | "otp";
 
 const API_BASE = "/api";
 
-const ROLE_META: Record<Role, { label: string; tagline: string; icon: LucideIcon }> = {
+const ROLE_META: Record<Role, { label: string; tagline: string; icon: any }> = {
   farmer: {
     label: "Farmer",
     tagline: "List your harvest & get paid directly",
@@ -104,30 +103,30 @@ export default function LoginPage() {
 
   if (state === "otp" || state === "submitting") {
     return (
-      <div className="flex-1 bg-background flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-16 w-full">
-        <div className="w-full max-w-md mx-auto">
-          <div className="text-center mb-8">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-on-primary shadow-md shadow-primary/20">
+      <div className="flex-1 bg-[#fafbf9] flex flex-col items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md mx-auto space-y-8">
+          <div className="text-center space-y-3">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
               <Sprout className="h-7 w-7" />
             </div>
-            <h1 className="mt-4 text-headline-lg text-on-surface">
+            <h1 className="text-2xl font-bold text-slate-900 font-display">
               {state === "submitting" ? "Sending code…" : "Verify your phone"}
             </h1>
-            <p className="mt-1 text-body-sm text-on-surface-variant">
-              We texted a 6-digit code to <span className="font-semibold text-on-surface">+91 {phone}</span>
+            <p className="text-sm text-slate-600">
+              We texted a 6-digit code to <span className="font-semibold text-slate-900">+91 {phone}</span>
             </p>
           </div>
 
           {state === "submitting" ? (
-            <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-8 text-center shadow-card">
-              <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-              <p className="mt-3 text-body-sm text-on-surface-variant">Sending OTP via SMS gateway…</p>
+            <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+              <Loader2 className="mx-auto h-8 w-8 animate-spin text-emerald-700" />
+              <p className="mt-4 text-sm font-medium text-slate-600">Sending OTP via SMS gateway…</p>
             </div>
           ) : (
             <form onSubmit={handleVerifyOtp} className="space-y-4">
-              <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-5 shadow-card space-y-3">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
                 <div>
-                  <label htmlFor="otp" className="block text-body-sm font-semibold text-on-surface">
+                  <label htmlFor="otp" className="block text-sm font-semibold text-slate-900 mb-2">
                     One-time password
                   </label>
                   <input
@@ -138,29 +137,25 @@ export default function LoginPage() {
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
                     placeholder="••••••"
-                    className="mt-1.5 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-center font-mono text-price-xl tracking-[0.5em] text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-center font-mono text-2xl tracking-[0.3em] text-slate-900 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
                   />
                 </div>
                 {error && (
-                  <p className="flex items-center gap-1.5 text-caption font-medium text-error">
-                    <AlertCircle className="h-3.5 w-3.5" /> {error}
+                  <p className="flex items-center gap-2 text-xs font-medium text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-100">
+                    <AlertCircle className="h-4 w-4" /> {error}
                   </p>
                 )}
-                <Button
-                  type="submit"
-                  variant="primary"
-                  className="w-full"
-                >
+                <Button type="submit" variant="primary" className="w-full py-2.5">
                   Verify & Sign In
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
-              <p className="text-center text-caption text-on-surface-variant">
+              <p className="text-center text-xs text-slate-500">
                 Didn&apos;t receive it?{" "}
                 <button
                   type="button"
                   onClick={() => setState("idle")}
-                  className="font-semibold text-primary hover:underline"
+                  className="font-semibold text-emerald-700 hover:text-emerald-800"
                 >
                   Resend or use a different number
                 </button>
@@ -173,24 +168,24 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex-1 bg-background flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-16 w-full">
-      <div className="w-full max-w-md mx-auto">
+    <div className="flex-1 bg-[#fafbf9] flex flex-col items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md mx-auto space-y-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-on-primary shadow-md shadow-primary/20">
+        <div className="text-center space-y-3">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
             <Sprout className="h-7 w-7" />
           </div>
-          <h1 className="mt-4 text-headline-lg font-bold text-on-surface font-display">
+          <h1 className="text-2xl font-bold text-slate-900 font-display">
             Welcome back to KisanSetu
           </h1>
-          <p className="mt-1 text-body-sm text-on-surface-variant">
+          <p className="text-sm text-slate-600">
             Sign in to continue to your marketplace
           </p>
         </div>
 
-        <form onSubmit={handleSendOtp} className="space-y-4">
+        <form onSubmit={handleSendOtp} className="space-y-5">
           {/* Role selection */}
-          <div className="rounded-2xl border border-outline-variant/80 bg-surface-container-lowest p-6 shadow-card space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
             <div className="grid grid-cols-2 gap-3">
               {(Object.keys(ROLE_META) as Role[]).map((r) => {
                 const meta = ROLE_META[r];
@@ -201,87 +196,86 @@ export default function LoginPage() {
                     type="button"
                     onClick={() => setRole(r)}
                     aria-pressed={role === r}
-                    className={`flex flex-col items-center justify-center gap-1.5 rounded-xl border p-3.5 text-body-sm font-semibold transition-all duration-200 active:scale-[0.98] ${
+                    className={`flex flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 text-sm font-semibold transition-all duration-200 ${
                       role === r
-                        ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/30 shadow-sm"
-                        : "border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:border-primary/40 hover:bg-surface-container-low"
+                        ? "border-emerald-700 bg-emerald-50/50 text-emerald-900"
+                        : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100"
                     }`}
                   >
                     <Icon className="h-5 w-5" />
                     <span>{meta.label}</span>
-                    <span className="text-[11px] font-normal leading-tight text-center text-on-surface-variant line-clamp-2">{meta.tagline}</span>
+                    <span className="text-[11px] font-normal text-center text-slate-500 leading-tight">
+                      {meta.tagline}
+                    </span>
                   </button>
                 );
               })}
             </div>
 
             <div>
-              <label htmlFor="phone" className="block text-body-sm font-semibold text-on-surface">
+              <label htmlFor="phone" className="block text-sm font-semibold text-slate-900 mb-2">
                 Mobile number
               </label>
-              <div className="mt-1.5 flex items-center rounded-lg border border-outline-variant bg-surface-container-lowest focus-within:ring-2 focus-within:ring-primary">
-                <span className="pl-3 text-body-sm font-semibold text-on-surface-variant">+91</span>
+              <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-100 transition-all">
+                <span className="pl-4 text-sm font-semibold text-slate-500">+91</span>
                 <input
                   id="phone"
                   inputMode="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
                   placeholder="98765 43210"
-                  className="w-full rounded-lg border-none bg-transparent px-3 py-3 text-body-sm text-on-surface focus:outline-none"
+                  className="w-full rounded-lg border-none bg-transparent px-4 py-3 text-sm text-slate-900 focus:outline-none"
                 />
               </div>
               {error && (
-                <p className="mt-2 flex items-center gap-1.5 text-caption font-medium text-error">
+                <p className="mt-2 flex items-center gap-1.5 text-xs font-medium text-red-600">
                   <AlertCircle className="h-3.5 w-3.5" /> {error}
                 </p>
               )}
             </div>
 
-            <Button
-              type="submit"
-              variant="primary"
-              className="w-full"
-            >
+            <Button type="submit" variant="primary" className="w-full py-2.5">
               <Smartphone className="h-4 w-4" />
               Send OTP
             </Button>
           </div>
 
-          {/* Password sign-in */}
-          <div className="flex items-center gap-3 text-caption text-on-surface-variant">
-            <div className="h-px flex-1 bg-outline-variant" />
+          <div className="flex items-center gap-3 text-xs text-slate-400 font-medium">
+            <div className="h-px flex-1 bg-slate-200" />
             OR
-            <div className="h-px flex-1 bg-outline-variant" />
+            <div className="h-px flex-1 bg-slate-200" />
           </div>
+
           <button
             type="button"
             onClick={() => setShowOtp((v) => !v)}
-            className="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-body-sm font-semibold text-on-surface transition hover:bg-surface-container-low"
+            className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 shadow-sm"
           >
             {showOtp ? "Use OTP instead" : "Sign in with password"}
           </button>
+
           {showOtp && (
-            <p className="flex items-center gap-1.5 rounded-lg bg-warning/15 px-3 py-2 text-caption text-amber-800 ring-1 ring-warning/30">
-              <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+            <p className="flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800 border border-amber-100">
+              <AlertCircle className="h-4 w-4 shrink-0" />
               Email/password auth ships with the full backend. This demo uses OTP.
             </p>
           )}
 
-          <p className="text-center text-body-sm text-on-surface-variant">
+          <p className="text-center text-sm text-slate-600">
             New to KisanSetu?{" "}
-            <Link href="/register" className="font-semibold text-primary hover:underline">
+            <Link href="/register" className="font-semibold text-emerald-700 hover:text-emerald-800">
               Create an account
             </Link>
           </p>
         </form>
 
-        <div className="mt-8 flex items-center justify-center gap-3 text-caption text-on-surface-variant">
-          <span className="flex items-center gap-1">
-            <ShieldCheck className="h-3.5 w-3.5 text-primary" /> UPI-secured
+        <div className="flex items-center justify-center gap-4 text-xs font-semibold text-slate-500 pt-4">
+          <span className="flex items-center gap-1.5">
+            <ShieldCheck className="h-4 w-4 text-emerald-600" /> UPI-secured
           </span>
-          <span className="h-3 w-px bg-outline-variant" />
-          <span className="flex items-center gap-1">
-            <CheckCircle2 className="h-3.5 w-3.5 text-primary" /> Farmer identity verified
+          <span className="h-4 w-px bg-slate-200" />
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600" /> Identity verified
           </span>
         </div>
       </div>

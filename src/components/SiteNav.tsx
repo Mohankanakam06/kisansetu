@@ -12,7 +12,9 @@ import {
   LayoutDashboard,
   Wallet,
   ChevronDown,
+  LogIn,
 } from "lucide-react";
+import { Button } from "@/components/ui";
 
 interface NavItem {
   href: string;
@@ -38,17 +40,18 @@ export default function SiteNav() {
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [selectedLang, setSelectedLang] = useState("hi");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
-  // Listen to mobile bottom bar toggle event
   useEffect(() => {
-    const handleToggle = () => {
-      setMobileMenuOpen((prev) => !prev);
-    };
-    window.addEventListener("toggle-mobile-drawer", handleToggle);
-    return () => {
-      window.removeEventListener("toggle-mobile-drawer", handleToggle);
-    };
-  }, []);
+    try {
+      const stored = localStorage.getItem("kisansetu_user");
+      if (stored) {
+        setUser(JSON.parse(stored));
+      }
+    } catch (e) {
+      // Ignore
+    }
+  }, [pathname]);
 
   // Close drawer on path change
   useEffect(() => {
@@ -68,7 +71,7 @@ export default function SiteNav() {
   }, [mobileMenuOpen]);
 
   return (
-    <nav aria-label="Primary" className="flex flex-1 items-center justify-end gap-1 sm:gap-6">
+    <nav aria-label="Primary" className="flex flex-1 items-center justify-end gap-2 sm:gap-6">
       {/* Desktop navigation links */}
       <div className="hidden md:flex items-center gap-6">
         {NAV_ITEMS.map((item) => {
@@ -128,6 +131,23 @@ export default function SiteNav() {
           )}
         </div>
 
+        {/* Login / Profile button */}
+        {user ? (
+          <Link
+            href="/login"
+            className="flex items-center gap-1.5 h-9 px-3 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-xs font-semibold"
+          >
+            <CircleUser className="h-4 w-4 text-emerald-700" />
+            <span className="hidden sm:inline">{user.name || "My Account"}</span>
+          </Link>
+        ) : (
+          <Link href="/login">
+            <Button size="sm" variant="secondary" className="h-9 px-3 text-xs font-semibold">
+              <LogIn className="h-3.5 w-3.5 mr-1" /> Sign In
+            </Button>
+          </Link>
+        )}
+
         {/* Mobile Hamburger Button */}
         <button
           type="button"
@@ -147,14 +167,14 @@ export default function SiteNav() {
             onClick={() => setMobileMenuOpen(false)}
           />
           <div className="fixed inset-y-0 right-0 z-[210] w-72 bg-white shadow-xl p-6">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-6">
               <span className="font-bold text-emerald-800 text-lg">Menu</span>
               <button onClick={() => setMobileMenuOpen(false)} className="p-1 text-slate-400 hover:text-slate-600">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-1 mb-6">
               {NAV_ITEMS.map((item) => {
                 const isActive = pathname === item.href;
                 const Icon = item.icon || Store;
@@ -173,6 +193,15 @@ export default function SiteNav() {
                   </Link>
                 );
               })}
+            </div>
+
+            <div className="border-t border-slate-100 pt-4">
+              <Link href="/login" className="w-full">
+                <Button variant="primary" className="w-full justify-center">
+                  <LogIn className="h-4 w-4 mr-2" />
+                  {user ? "Manage Account" : "Sign In / Register"}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

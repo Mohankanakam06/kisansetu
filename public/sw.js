@@ -49,6 +49,11 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Skip Next.js development endpoints (HMR) to avoid infinite reload loops
+  if (url.pathname.includes("/_next/webpack-hmr") || url.pathname.includes("/__nextjs")) {
+    return;
+  }
+
   // A. Real-time API & Auth Calls: Network-Only (No stale caching)
   if (url.pathname.startsWith("/api/") || url.pathname.includes("/auth/")) {
     event.respondWith(
