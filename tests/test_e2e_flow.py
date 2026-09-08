@@ -466,7 +466,7 @@ def test_full_end_to_end_flow():
          patch("ai.agents.aggregations.get_conn", side_effect=get_mock_conn), \
          patch("ai.agents.quality_grading.get_conn", side_effect=get_mock_conn), \
          patch("ai.agents.quality_grading.requests.get", return_value=MagicMock(content=b"fake_jpeg_bytes")), \
-         patch("ai.agents.quality_grading.genai.GenerativeModel", return_value=mock_model_instance), \
+         patch("ai.agents.quality_grading._genai_client", MagicMock()), \
          patch("ai.agents.routing.get_conn", side_effect=get_mock_conn), \
          patch("ai.agents.settlement.get_conn", side_effect=get_mock_conn), \
          patch("backend.main.get_conn", side_effect=get_mock_conn), \

@@ -2,14 +2,14 @@ import os
 import json
 import requests
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from backend.db import get_conn
 
 load_dotenv()
 
 gemini_key = os.environ.get("GEMINI_API_KEY", "")
-if gemini_key:
-    genai.configure(api_key=gemini_key)
+_genai_client = genai.Client(api_key=gemini_key) if gemini_key else None
 
 GRADING_RUBRIC = """You are a produce quality inspector. Given this crop photo,
 grade it A, B, or C:
@@ -28,16 +28,22 @@ def grade_photo(lot_id: str, photo_url: str):
         raise ValueError("photo_url is required")
 
     try:
-        model = genai.GenerativeModel("gemini-3.6-flash")
         img_bytes = requests.get(photo_url, timeout=10).content
         if len(img_bytes) > 5 * 1024 * 1024:
             raise ValueError("Image too large (max 5MB)")
-        response = model.generate_content([
-            GRADING_RUBRIC,
-            {"mime_type": "image/jpeg", "data": img_bytes}
-        ])
-        text = response.text.strip().strip("```json").strip("```").strip()
-        result = json.loads(text)
+
+        if _genai_client:
+            response = _genai_client.models.generate_content(
+                model="gemini-3.6-flash",
+                contents=[
+                    GRADING_RUBRIC,
+                    types.Part.from_bytes(data=img_bytes, mime_type="image/jpeg"),
+                ]
+            )
+            text = response.text.strip().strip("```json").strip("```").strip()
+            result = json.loads(text)
+        else:
+            raise ValueError("Gemini client not configured")
     except ValueError:
         raise
     except Exception as e:

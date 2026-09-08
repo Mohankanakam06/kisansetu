@@ -2,15 +2,15 @@ import os
 import json
 import requests
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from backend.db import get_conn
 
 load_dotenv()
 
-# Configure Gemini
+# Configure Gemini client
 gemini_key = os.environ.get("GEMINI_API_KEY", "")
-if gemini_key:
-    genai.configure(api_key=gemini_key)
+_genai_client = genai.Client(api_key=gemini_key) if gemini_key else None
 
 BHASHINI_ENDPOINT = "https://dhruva-api.bhashini.gov.in/services/inference/pipeline"
 BHASHINI_KEY = os.environ.get("BHASHINI_API_KEY", "")
@@ -65,7 +65,6 @@ def transcribe_audio(audio_url: str, language: str = "hi") -> str:
 def parse_listing(transcript: str, language: str = "hi") -> dict:
     """Use Gemini to extract structured fields from the transcript."""
     try:
-        model = genai.GenerativeModel("gemini-3.6-flash")
         prompt = f"""Extract a farm produce listing from this {language} transcript.
 Transcript: "{transcript}"
 
@@ -73,9 +72,16 @@ Return ONLY valid JSON, no markdown, no explanation:
 {{"crop_type": "string (lowercase english, e.g. tomato)",
   "quantity_kg": number,
   "price_expectation": number (total INR per kg)}}"""
-        response = model.generate_content(prompt)
-        text = response.text.strip().strip("```json").strip("```").strip()
-        return json.loads(text)
+
+        if _genai_client:
+            response = _genai_client.models.generate_content(
+                model="gemini-3.6-flash",
+                contents=prompt
+            )
+            text = response.text.strip().strip("```json").strip("```").strip()
+            return json.loads(text)
+        else:
+            raise ValueError("Gemini client not configured")
     except Exception as e:
         print("Gemini parsing failed, using heuristic/fallback:", e)
         return {

@@ -32,7 +32,7 @@ try:
 except Exception as e:
     _redis_instance = None
     _redis_available = False
-    logger.warning("Redis not available (%s). Using in-memory fallback cache.", str(e))
+    logger.info("Redis not available (%s). Using in-memory fallback cache.", str(e))
 
 
 def is_redis_available() -> bool:
