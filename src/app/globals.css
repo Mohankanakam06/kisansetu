@@ -1,172 +1,51 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* ––– Layout –––
-     Single source of truth for the fixed header height so pages don't
-     hardcode the 4rem push-off. */
   --header-h: 4rem;
 
-  /* ––– Fonts –––
-     Heading display font uses Plus Jakarta Sans, body uses Inter. */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-display: var(--font-plus-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display-lg: var(--font-plus-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-headline-lg: var(--font-plus-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-headline-lg-mobile: var(--font-plus-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-headline-md: var(--font-plus-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-price-xl: var(--font-plus-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-body-lg: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-body-md: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-body-sm: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-label-bold: var(--font-plus-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-caption: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  /* ––– Typography scale –––
-     Fluid sizes so hero/headlines scale down gracefully on narrow phones
-     instead of falling through to a fixed desktop cap. */
-  --text-display-lg: clamp(2.25rem, 5vw, 3rem);
-  --text-display-lg--line-height: 1.15;
-  --text-display-lg--font-weight: 800;
-  --text-display-lg--letter-spacing: -0.025em;
-
-  --text-headline-lg: clamp(1.75rem, 3.2vw, 2rem);
-  --text-headline-lg--line-height: 1.2;
-  --text-headline-lg--font-weight: 700;
-
-  --text-headline-md: clamp(1.25rem, 2.4vw, 1.5rem);
-  --text-headline-md--line-height: 1.3;
-  --text-headline-md--font-weight: 600;
-
-  --text-price-xl: clamp(1.375rem, 2.6vw, 1.75rem);
-  --text-price-xl--line-height: 1.25;
-  --text-price-xl--font-weight: 700;
-  --text-price-xl--letter-spacing: -0.01em;
-
-  --text-body-lg: 18px;
-  --text-body-lg--line-height: 28px;
-  --text-body-lg--font-weight: 400;
-
-  --text-body-md: 16px;
-  --text-body-md--line-height: 24px;
-  --text-body-md--font-weight: 400;
-
-  --text-body-sm: 14px;
-  --text-body-sm--line-height: 20px;
-  --text-body-sm--font-weight: 400;
-
-  --text-label-bold: 14px;
-  --text-label-bold--line-height: 20px;
-  --text-label-bold--font-weight: 600;
-
-  --text-caption: 12px;
-  --text-caption--line-height: 16px;
-  --text-caption--font-weight: 500;
-
-  /* ––– Brand / surface roles ––– */
-  --color-primary: #064E3B; /* Rich Forest Emerald */
+  /* Natural, trustworthy agricultural palette */
+  --color-primary: #15803d; /* Natural Leaf Green (green-700) */
   --color-on-primary: #ffffff;
-  --color-primary-container: #D1FAE5;
-  --color-on-primary-container: #064E3B;
+  --color-primary-container: #dcfce7;
+  --color-on-primary-container: #14532d;
 
-  --color-secondary: #059669; /* Bright Jade */
+  --color-secondary: #047857; /* Emerald (emerald-700) */
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #D1FAE5;
-  --color-on-secondary-container: #064E3B;
+  --color-secondary-container: #d1fae5;
+  --color-on-secondary-container: #064e3b;
 
-  --color-tertiary: #D97706; /* Harvest Gold */
+  --color-tertiary: #d97706; /* Warm Amber / Harvest (amber-600) */
   --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #FEF3C7;
-  --color-on-tertiary-container: #78350F;
+  --color-tertiary-container: #fef3c7;
+  --color-on-tertiary-container: #78350f;
 
-  --color-error: #dc2626;
-  --color-on-error: #ffffff;
-  --color-error-container: #fee2e2;
-  --color-on-error-container: #991b1b;
-
-  --color-primary-fixed: #dcfce7;
-  --color-primary-fixed-dim: #bbf7d0;
-  --color-on-primary-fixed: #052e16;
-  --color-on-primary-fixed-variant: #14532d;
-
-  --color-secondary-fixed: #bbf7d0;
-  --color-secondary-fixed-dim: #86efac;
-  --color-on-secondary-fixed: #052e16;
-  --color-on-secondary-fixed-variant: #166534;
-
-  --color-tertiary-fixed: #fef3c7;
-  --color-tertiary-fixed-dim: #fde68a;
-  --color-on-tertiary-fixed: #451a03;
-  --color-on-tertiary-fixed-variant: #78350f;
-
-  --color-inverse-primary: #86efac;
-
-  --color-surface: #f8faf9;
-  --color-surface-dim: #f1f5f3;
+  --color-surface: #f8fafc;
+  --color-surface-dim: #f1f5f9;
   --color-surface-bright: #ffffff;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f1f5f3;
-  --color-surface-container: #e2e8f0;
-  --color-surface-container-high: #cbd5e1;
-  --color-surface-container-highest: #94a3b8;
-  --color-surface-variant: #e2e8f0;
+  --color-surface-container-low: #f8fafc;
+  --color-surface-container: #f1f5f9;
+  --color-surface-container-high: #e2e8f0;
+  --color-surface-container-highest: #cbd5e1;
   --color-on-surface: #0f172a;
   --color-on-surface-variant: #475569;
 
-  --color-inverse-surface: #0f172a;
-  --color-inverse-on-surface: #f8faf9;
-
-  --color-outline: #94a3b8;
+  --color-outline: #cbd5e1;
   --color-outline-variant: #e2e8f0;
-  --color-surface-tint: #005f39;
 
-  --color-background: #f8faf9;
-  --color-on-background: #0f172a;
-
-  /* Status colors */
-  --color-success: #16a34a;
-  --color-warning: #d97706;
-
-  /* ––– Elevation ––– */
-  --shadow-card: 0 2px 8px rgba(6, 78, 59, 0.06), 0 1px 2px rgba(6, 78, 59, 0.04);
-  --shadow-card-hover: 0 16px 40px -8px rgba(6, 78, 59, 0.18), 0 4px 12px rgba(6, 78, 59, 0.08);
-  --shadow-popover: 0 24px 60px -20px rgba(6, 78, 59, 0.28), 0 8px 16px rgba(6, 78, 59, 0.08);
-  --shadow-cta: 0 12px 32px -8px rgba(6, 78, 59, 0.5);
-  --shadow-glow: 0 0 0 4px rgba(6, 78, 59, 0.15), 0 8px 24px -4px rgba(6, 78, 59, 0.3);
-  --shadow-gold-glow: 0 0 0 4px rgba(217, 119, 6, 0.15), 0 8px 24px -4px rgba(217, 119, 6, 0.3);
-
-  /* ––– Radius ––– */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-full: 9999px;
-
-  /* ––– Spacing scale –––
-     Semantic aliases over the Tailwind numeric scale so routes share one
-     vertical rhythm instead of mixing gap-md / gap-6 / space-y-lg.
-     NOTE: Named --space-* (not --spacing-*) to avoid colliding with
-     Tailwind v4's built-in --spacing-* namespace, which is used as
-     fallback by max-w-*, gap-*, p-* and other sizing utilities. */
-  --space-3xs: 0.25rem;
-  --space-2xs: 0.5rem;
-  --space-xs: 0.75rem;
-  --space-sm: 1rem;
-  --space-md: 1.5rem;
-  --space-lg: 2rem;
-  --space-xl: 2.5rem;
-  --space-2xl: 3rem;
-
-  /* ––– Font weight –––
-     One weight per role: 500 kickers, 600 labels/CTAs, 700 card titles,
-     800 display headlines. */
-  --font-weight-label: 600;
-  --font-weight-kicker: 500;
+  /* Natural clean shadows */
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  --shadow-popover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
 
 :root {
-  --background: var(--color-background);
-  --foreground: var(--color-on-background);
+  --background: #fcfdfc;
+  --foreground: #0f172a;
   color-scheme: light;
 }
 
@@ -174,165 +53,27 @@ html {
   scroll-behavior: smooth;
 }
 
-html,
-body {
-  height: 100%;
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Headings display font override */
-h1, h2, h3, .font-display {
+h1, h2, h3, h4, .font-display {
   font-family: var(--font-plus-jakarta), var(--font-sans), sans-serif;
 }
 
-/* Header height stays in sync everywhere via the token */
-header {
-  height: var(--header-h);
+/* Subtle transitions */
+.transition-standard {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Consistent inter-section vertical rhythm for stacked page regions */
-.section-stack > * + * {
-  margin-top: var(--space-lg);
-}
-
-/* Micro labels — single shared style, avoids ad-hoc 10/11px values */
-.micro-label {
-  font-size: var(--text-caption);
-  line-height: var(--text-caption--line-height);
-  font-weight: var(--font-weight-kicker);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-/* Keyframe Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleUp {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(6, 78, 59, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 0 14px rgba(6, 78, 59, 0);
-  }
-}
-
-@keyframes scanLaser {
-  0% {
-    top: 0%;
-    opacity: 0.8;
-  }
-  50% {
-    top: 100%;
-    opacity: 1;
-  }
-  100% {
-    top: 0%;
-    opacity: 0.8;
-  }
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-/* Animation utilities */
-.animate-scan {
-  animation: scanLaser 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.animate-marquee {
-  display: flex;
-  width: max-content;
-  animation: marquee 35s linear infinite;
-}
-
-.animate-marquee:hover {
-  animation-play-state: paused;
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 2s infinite;
-}
-
-/* Animation utilities */
-.animate-fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-scale-up {
-  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.hover-lift {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover);
-}
-
-/* Global HTML reset for mobile responsiveness */
-html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
-}
-
-/* Branded text selection */
-::selection {
-  background: var(--color-primary-fixed);
-  color: var(--color-on-primary-fixed);
-}
-
-/* Leaflet container needs explicit height */
+/* Leaflet container */
 .leaflet-container {
   height: 100%;
   width: 100%;
   z-index: 0;
+  border-radius: inherit;
 }

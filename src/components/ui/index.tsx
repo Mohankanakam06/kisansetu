@@ -11,15 +11,13 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?:
     | "default"
     | "neutral"
+    | "outline"
     | "success"
     | "warning"
     | "danger"
-    | "info"
-    | "outline"
     | "gradeA"
     | "gradeB"
-    | "gradeC"
-    | "verified";
+    | "gradeC";
   size?: "sm" | "md";
 }
 
@@ -31,22 +29,20 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variants = {
-    default: "bg-slate-100 text-slate-700 border-slate-300",
-    neutral: "bg-slate-100 text-slate-700 border-slate-300",
-    success: "bg-emerald-100 text-emerald-800 border-emerald-200 font-semibold",
-    warning: "bg-amber-100 text-amber-900 border-amber-200 font-semibold",
-    danger: "bg-red-100 text-red-800 border-red-200 font-semibold",
-    info: "bg-blue-100 text-blue-800 border-blue-200 font-semibold",
-    outline: "bg-transparent text-slate-700 border-slate-300",
-    gradeA: "bg-emerald-100 text-emerald-800 border-emerald-300 font-bold",
-    gradeB: "bg-amber-100 text-amber-900 border-amber-300 font-bold",
-    gradeC: "bg-slate-100 text-slate-700 border-slate-300 font-bold",
-    verified: "bg-emerald-50 text-emerald-700 border-emerald-200 font-semibold",
+    default: "bg-slate-100 text-slate-700",
+    neutral: "bg-slate-100 text-slate-700",
+    outline: "border border-slate-200 text-slate-600 bg-transparent",
+    success: "bg-emerald-50 text-emerald-800 border-emerald-100",
+    warning: "bg-amber-50 text-amber-800 border-amber-100",
+    danger: "bg-red-50 text-red-800 border-red-100",
+    gradeA: "bg-emerald-100 text-emerald-900 border-emerald-200",
+    gradeB: "bg-amber-100 text-amber-900 border-amber-200",
+    gradeC: "bg-slate-100 text-slate-800 border-slate-200",
   };
 
   const sizes = {
-    sm: "px-2 py-0.5 text-caption font-medium",
-    md: "px-2.5 py-1 text-caption font-medium",
+    sm: "px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider",
+    md: "px-2.5 py-1 text-xs font-semibold",
   };
 
   return (
@@ -81,28 +77,28 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center rounded-xl font-bold transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 cursor-pointer select-none";
+    "inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 cursor-pointer select-none";
 
   const variants = {
     primary:
-      "bg-emerald-800 text-white font-bold hover:bg-emerald-900 shadow-md shadow-emerald-950/20 hover:shadow-lg active:scale-[0.98]",
+      "bg-emerald-700 text-white hover:bg-emerald-800 shadow-sm",
     secondary:
-      "bg-white text-slate-800 border border-slate-300 font-semibold hover:bg-slate-50 hover:border-emerald-600 active:bg-slate-100",
+      "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300",
     outline:
-      "border border-emerald-800 bg-transparent text-emerald-900 font-bold hover:bg-emerald-50 hover:border-emerald-900",
+      "border border-emerald-700 bg-transparent text-emerald-800 hover:bg-emerald-50",
     ghost:
-      "bg-transparent text-slate-700 font-semibold hover:bg-slate-100 hover:text-slate-900",
+      "bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900",
     danger:
-      "bg-red-600 text-white font-bold hover:bg-red-700 shadow-sm active:scale-[0.98]",
+      "bg-red-600 text-white hover:bg-red-700",
     harvest:
-      "bg-amber-500 text-slate-950 font-black hover:bg-amber-600 shadow-sm shadow-amber-900/20 active:scale-[0.98]",
+      "bg-amber-600 text-white hover:bg-amber-700",
   };
 
   const sizes = {
-    sm: "text-xs px-3.5 py-2 gap-1.5 h-9 rounded-lg font-bold",
-    md: "text-sm px-4 py-2.5 gap-2 h-10 rounded-xl font-bold",
-    lg: "text-base px-6 py-3 gap-2.5 h-12 font-bold rounded-xl",
-    icon: "h-9 w-9 p-0 rounded-xl",
+    sm: "text-xs px-3 py-1.5 gap-1.5 h-8",
+    md: "text-sm px-4 py-2 gap-2 h-9",
+    lg: "text-base px-6 py-3 gap-2.5 h-11",
+    icon: "h-9 w-9 p-0",
   };
 
   return (
@@ -139,16 +135,13 @@ export function Button({
 }
 
 // Card
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  hoverEffect?: boolean;
-}
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function Card({ className, hoverEffect = false, children, ...props }: CardProps) {
+export function Card({ className, children, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-2xl border border-outline-variant/70 bg-surface-container-lowest p-5 shadow-card",
-        hoverEffect && "transition-colors duration-200 hover:border-primary/40",
+        "rounded-2xl border border-slate-200 bg-white p-5 shadow-card",
         className
       )}
       {...props}
