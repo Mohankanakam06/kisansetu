@@ -1,5 +1,4 @@
 import os
-import razorpay
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
@@ -9,9 +8,12 @@ router = APIRouter()
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "rzp_test_your_key_id")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "your_key_secret")
 
-# Initialize Razorpay Client
-# NOTE: If keys are placeholders, the order creation will fail gracefully.
-client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+try:
+    import razorpay
+    client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+except Exception:
+    razorpay = None
+    client = None
 
 class CreateOrderRequest(BaseModel):
     amount: float  # Amount in INR (e.g., 100.50)

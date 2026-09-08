@@ -10,7 +10,8 @@ tsconfig.tsbuildinfo
 .graphify/needs_update
 .graphify/cache/
 .graphify/*.log
-.graphify/.graphify_*.json
-.graphify/.graphify_*.txt
+.graphify/.graphify_*
+.graphify/manifest.json
+.graphify/scope.json
 .graphify/transcripts/
 .graphify/converted/

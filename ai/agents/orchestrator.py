@@ -2,13 +2,18 @@ import os
 import json
 import requests
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types
+
+try:
+    from google import genai
+    from google.genai import types
+    gemini_key = os.environ.get("GEMINI_API_KEY", "")
+    _genai_client = genai.Client(api_key=gemini_key) if gemini_key else None
+except Exception:
+    genai = None
+    types = None
+    _genai_client = None
 
 load_dotenv()
-
-gemini_key = os.environ.get("GEMINI_API_KEY", "")
-_genai_client = genai.Client(api_key=gemini_key) if gemini_key else None
 
 from ai.agents.farmer_interface import create_listing
 from backend.redis_client import get_chat_history, save_chat_history

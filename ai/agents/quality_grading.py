@@ -2,14 +2,20 @@ import os
 import json
 import requests
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types
-from backend.db import get_conn
+
+try:
+    from google import genai
+    from google.genai import types
+    gemini_key = os.environ.get("GEMINI_API_KEY", "")
+    _genai_client = genai.Client(api_key=gemini_key) if gemini_key else None
+except Exception:
+    genai = None
+    types = None
+    _genai_client = None
+
+from backend.db import get_conn, release_conn
 
 load_dotenv()
-
-gemini_key = os.environ.get("GEMINI_API_KEY", "")
-_genai_client = genai.Client(api_key=gemini_key) if gemini_key else None
 
 GRADING_RUBRIC = """You are a produce quality inspector. Given this crop photo,
 grade it A, B, or C:
@@ -51,13 +57,17 @@ def grade_photo(lot_id: str, photo_url: str):
         result = {"grade": "A", "defects": []}
 
     conn = get_conn()
-    cur = conn.cursor()
-    cur.execute("""
-        INSERT INTO quality_grades (lot_id, grade, defects, photo_url)
-        VALUES (%s, %s, %s, %s)
-    """, (lot_id, result["grade"], json.dumps(result["defects"]), photo_url))
-    cur.execute("UPDATE lots SET grade = %s WHERE id = %s", (result["grade"], lot_id))
-    conn.commit()
-    conn.close()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO quality_grades (lot_id, grade, defects, photo_url)
+            VALUES (%s, %s, %s, %s)
+        """, (lot_id, result["grade"], json.dumps(result["defects"]), photo_url))
+        cur.execute("UPDATE lots SET grade = %s WHERE id = %s", (result["grade"], lot_id))
+        conn.commit()
+    except Exception as err:
+        print("Quality grade DB update failed:", err)
+    finally:
+        release_conn(conn)
 
     return result

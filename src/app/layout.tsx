@@ -5,6 +5,7 @@ import SiteNav from "@/components/SiteNav";
 import MobileBottomBar from "@/components/MobileBottomBar";
 import RegisterSW from "@/components/RegisterSW";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import HydrationGuard from "@/components/HydrationGuard";
 import { LanguageProvider } from "@/lib/language";
 import "./globals.css";
 
@@ -56,8 +57,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${plusJakartaSans.variable} h-full antialiased`}>
-      <body className="min-h-dvh flex flex-col bg-surface text-on-background">
+    <html lang="en" data-scroll-behavior="smooth" className={`${inter.variable} ${plusJakartaSans.variable} h-full antialiased`}>
+      <body className="min-h-dvh flex flex-col bg-surface text-on-background" suppressHydrationWarning>
+        <HydrationGuard />
         <LanguageProvider>
           <a
             href="#main-content"
