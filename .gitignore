@@ -5,3 +5,12 @@ node_modules/
 __pycache__/
 *.pyc
 tsconfig.tsbuildinfo
+.graphify/branch.json
+.graphify/worktree.json
+.graphify/needs_update
+.graphify/cache/
+.graphify/*.log
+.graphify/.graphify_*.json
+.graphify/.graphify_*.txt
+.graphify/transcripts/
+.graphify/converted/

@@ -10,9 +10,11 @@ import {
   Menu,
   Sparkles,
 } from "lucide-react";
+import { useLanguage } from "@/lib/language";
 
 export default function MobileBottomBar() {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   const handleOpenDrawer = () => {
     if (typeof window !== "undefined") {
@@ -23,26 +25,26 @@ export default function MobileBottomBar() {
   const navItems = [
     {
       href: "/buyer",
-      label: "Market",
+      label: t("Market", "बाजार", "बाजार"),
       icon: Store,
       badge: null,
     },
     {
       href: "/orders",
-      label: "Dispatch",
+      label: t("Dispatch", "लॉजिस्टिक्स", "लॉजिस्टिक्स"),
       icon: LayoutDashboard,
       badge: "LIVE",
     },
     // Center Action Button: Sell / List Produce
     {
       href: "/farmer",
-      label: "Sell",
+      label: t("Sell", "बेचें", "बेचंव"),
       icon: Sprout,
       isCenter: true,
     },
     {
       href: "/earnings",
-      label: "Payouts",
+      label: t("Payouts", "कमाई", "कमाई"),
       icon: Wallet,
       badge: null,
     },
@@ -68,7 +70,7 @@ export default function MobileBottomBar() {
               <div className="relative">
                 <Icon className={`h-5 w-5 transition-transform ${isActive ? "scale-110 text-emerald-700" : ""}`} />
                 {item.badge && (
-                  <span className="absolute -top-1 -right-2 flex h-2 w-2">
+                  <span className="absolute -top-1.5 -right-2 flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
                   </span>
@@ -92,7 +94,7 @@ export default function MobileBottomBar() {
             <Sprout className="h-6 w-6" />
           </Link>
           <span className="text-[10px] font-black tracking-tight text-emerald-900 mt-1">
-            + List
+            + {t("List", "दर्ज", "लिखव")}
           </span>
         </div>
 
@@ -120,14 +122,14 @@ export default function MobileBottomBar() {
         <button
           type="button"
           onClick={handleOpenDrawer}
-          aria-label="All Options and Functions"
+          aria-label={t("All Options and Functions", "सभी विकल्प और कार्य", "सब विकल्प आ काम")}
           className="flex flex-col items-center justify-center flex-1 py-1.5 transition-all text-slate-600 hover:text-emerald-800 active:scale-95 cursor-pointer font-medium"
         >
           <div className="relative">
             <Menu className="h-5 w-5" />
             <span className="absolute -top-1 -right-1 flex h-2 w-2 rounded-full bg-amber-500" />
           </div>
-          <span className="text-[10px] tracking-tight mt-1 leading-none font-bold">Options</span>
+          <span className="text-[10px] tracking-tight mt-1 leading-none font-bold">{t("Options", "विकल्प", "विकल्प")}</span>
         </button>
       </div>
     </nav>

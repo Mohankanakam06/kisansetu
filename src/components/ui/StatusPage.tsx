@@ -5,7 +5,7 @@ import { LucideIcon } from "lucide-react";
 import { Button } from "./index";
 
 interface StatusPageProps {
-  icon: LucideIcon;
+  icon?: LucideIcon | React.ReactNode;
   accent?: "emerald" | "amber" | "rose";
   code?: string;
   eyebrow?: string;
@@ -23,7 +23,7 @@ const ACCENTS = {
 };
 
 export default function StatusPage({
-  icon: Icon,
+  icon,
   accent = "emerald",
   code,
   eyebrow,
@@ -34,6 +34,19 @@ export default function StatusPage({
   children,
 }: StatusPageProps) {
   const a = ACCENTS[accent];
+
+  const renderIcon = () => {
+    if (!icon) return null;
+    if (React.isValidElement(icon)) {
+      return icon;
+    }
+    if (typeof icon === "function" || typeof icon === "object") {
+      const IconComp = icon as LucideIcon;
+      return <IconComp className={`h-8 w-8 ${a.icon}`} />;
+    }
+    return null;
+  };
+
   return (
     <div className="flex-1 bg-background flex flex-col items-center justify-center px-4 sm:px-6 py-16 w-full">
       <div className="w-full max-w-md mx-auto text-center">
@@ -43,7 +56,7 @@ export default function StatusPage({
         <div
           className={`mx-auto mt-4 flex h-16 w-16 items-center justify-center rounded-full ${a.bg} ${a.ring} ring-8`}
         >
-          <Icon className={`h-8 w-8 ${a.icon}`} />
+          {renderIcon()}
         </div>
         {eyebrow && (
           <p className="mt-4 text-caption font-bold uppercase tracking-widest text-primary">{eyebrow}</p>

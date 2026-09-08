@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { Order, OptimizeRouteResponse, SettlementPayoutResponse } from "@/types";
 import { apiService } from "@/services/api";
 import { Button, Card, Badge } from "@/components/ui";
+import { useLanguage } from "@/lib/language";
 import {
   Truck,
   Route,
@@ -49,6 +50,7 @@ const statusPillColor: Record<string, string> = {
 };
 
 export default function OrdersPage() {
+  const { t } = useLanguage();
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [routeData, setRouteData] = useState<OptimizeRouteResponse | null>(null);
@@ -113,14 +115,14 @@ export default function OrdersPage() {
           <div>
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 border border-emerald-300">
-                <Activity className="h-3.5 w-3.5 text-emerald-600 animate-pulse" /> Live Telemetry
+                <Activity className="h-3.5 w-3.5 text-emerald-600 animate-pulse" /> {t("Live Telemetry", "लाइव टेलीमेट्री", "लाइव टेलीमेट्री")}
               </span>
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                Raipur Cluster Dispatch Control
+                {t("Raipur Cluster Dispatch Control", "रायपुर क्लस्टर प्रेषण नियंत्रण", "रायपुर क्लस्टर गाड़ी नियंत्रण")}
               </span>
             </div>
             <h1 className="mt-1 font-display text-2xl font-extrabold tracking-tight text-emerald-950">
-              Logistics & Route Optimization Engine
+              {t("Logistics & Route Optimization Engine", "लॉजिस्टिक्स एवं मार्ग अनुकूलन इंजन", "लॉजिस्टिक्स आ रस्ता अनुकूलन इंजन")}
             </h1>
           </div>
 
@@ -128,12 +130,12 @@ export default function OrdersPage() {
             <div className="flex items-center gap-2 sm:gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 sm:px-4 py-2 text-xs font-semibold text-slate-700">
               <div className="flex items-center gap-1.5">
                 <Truck className="h-4 w-4 text-emerald-700" />
-                <span className="whitespace-nowrap">3 Vehicles</span>
+                <span className="whitespace-nowrap">3 {t("Vehicles", "गाड़ियां", "गाड़ी मन")}</span>
               </div>
               <span className="text-slate-300">|</span>
               <div className="flex items-center gap-1.5">
                 <Leaf className="h-4 w-4 text-emerald-600" />
-                <span className="whitespace-nowrap">-68% Carbon</span>
+                <span className="whitespace-nowrap">-68% {t("Carbon", "कार्बन", "कार्बन")}</span>
               </div>
             </div>
             <Button variant="outline" size="sm" onClick={loadOrders} className="rounded-xl">
@@ -152,10 +154,10 @@ export default function OrdersPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-800">
-                  Routing Comparison Engine
+                  {t("Routing Comparison Engine", "रूटिंग तुलना इंजन", "रूटिंग तुलना इंजन")}
                 </p>
                 <h3 className="font-display text-base font-bold text-slate-900">
-                  AI Clustered vs Traditional Trips
+                  {t("AI Clustered vs Traditional Trips", "AI क्लस्टर्ड बनाम पारंपरिक यात्राएं", "AI क्लस्टर्ड बनाम पुराना तरीका")}
                 </h3>
               </div>
               <Button
@@ -166,7 +168,7 @@ export default function OrdersPage() {
                 onClick={() => selectedOrder && handleOptimizeRoute(selectedOrder.id)}
                 className="rounded-xl shadow-glow"
               >
-                <Navigation className="h-4 w-4 mr-1" /> Optimize
+                <Navigation className="h-4 w-4 mr-1" /> {t("Optimize", "रूट बनाएं", "रस्ता बनाव")}
               </Button>
             </div>
 
@@ -180,7 +182,7 @@ export default function OrdersPage() {
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                ✨ AI Clustered (1 Trip)
+                ✨ {t("AI Clustered (1 Trip)", "AI क्लस्टर्ड (1 ट्रिप)", "AI क्लस्टर्ड (1 ट्रिप)")}
               </button>
               <button
                 onClick={() => setRoutingViewMode("traditional")}
@@ -190,7 +192,7 @@ export default function OrdersPage() {
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                ⚠️ Traditional (4 Trips)
+                ⚠️ {t("Traditional (4 Trips)", "पारंपरिक (4 ट्रिप)", "पुराना (4 ट्रिप)")}
               </button>
             </div>
 
@@ -199,56 +201,56 @@ export default function OrdersPage() {
               <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-extrabold uppercase tracking-wide text-emerald-800 flex items-center gap-1.5">
-                    <Zap className="h-4 w-4 text-emerald-600" /> Clustered Single Loop
+                    <Zap className="h-4 w-4 text-emerald-600" /> {t("Clustered Single Loop", "क्लस्टर्ड सिंगल लूप", "क्लस्टर्ड सिंगल लूप")}
                   </span>
                   <span className="rounded-full bg-emerald-600 text-white px-2 py-0.5 text-[10px] font-black">
-                    72% SAVINGS
+                    72% {t("SAVINGS", "बचत", "बचत")}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="rounded-lg bg-white p-2 border border-emerald-100">
-                    <p className="text-[10px] font-bold text-slate-400">Total Dist.</p>
-                    <p className="text-base font-black text-emerald-900">{routeData?.distance_km || 38.4} km</p>
+                    <p className="text-[10px] font-bold text-slate-400">{t("Total Dist.", "कुल दूरी", "कुल दूरी")}</p>
+                    <p className="text-base font-black text-emerald-900">{routeData?.distance_km || 38.4} {t("km", "किमी", "किमी")}</p>
                   </div>
                   <div className="rounded-lg bg-white p-2 border border-emerald-100">
-                    <p className="text-[10px] font-bold text-slate-400">Duration</p>
-                    <p className="text-base font-black text-emerald-900">{routeData?.duration_minutes || 64} min</p>
+                    <p className="text-[10px] font-bold text-slate-400">{t("Duration", "समय", "समै")}</p>
+                    <p className="text-base font-black text-emerald-900">{routeData?.duration_minutes || 64} {t("min", "मिनट", "मिनट")}</p>
                   </div>
                   <div className="rounded-lg bg-white p-2 border border-emerald-100">
-                    <p className="text-[10px] font-bold text-slate-400">CO₂ Saved</p>
-                    <p className="text-base font-black text-emerald-600">+{routeData?.carbon_saved_kg || 28.4} kg</p>
+                    <p className="text-[10px] font-bold text-slate-400">{t("CO₂ Saved", "CO₂ बचत", "CO₂ बचत")}</p>
+                    <p className="text-base font-black text-emerald-600">+{routeData?.carbon_saved_kg || 28.4} {t("kg", "किग्रा", "किलो")}</p>
                   </div>
                 </div>
                 <p className="text-xs font-medium text-emerald-800/80">
-                  Consolidates 4 separate smallholder pickups into 1 optimized electric/diesel route.
+                  {t("Consolidates 4 separate smallholder pickups into 1 optimized electric/diesel route.", "4 अलग-अलग किसानों के पिकअप को 1 अनुकूलित वाहन रूट में समेकित करता है।", "4 अलग-अलग किसान के पिकअप ला 1 बढ़िया गाड़ी रस्ता म जमा करथे।")}
                 </p>
               </div>
             ) : (
               <div className="rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-extrabold uppercase tracking-wide text-amber-800 flex items-center gap-1.5">
-                    <Fuel className="h-4 w-4 text-amber-600" /> Individual Farm Trips
+                    <Fuel className="h-4 w-4 text-amber-600" /> {t("Individual Farm Trips", "व्यक्तिगत खेत यात्राएं", "अलग-अलग खेत के फेरा")}
                   </span>
                   <span className="rounded-full bg-amber-600 text-white px-2 py-0.5 text-[10px] font-black">
-                    HIGH COST
+                    {t("HIGH COST", "उच्च लागत", "ज्यादा खर्चा")}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="rounded-lg bg-white p-2 border border-amber-100">
-                    <p className="text-[10px] font-bold text-slate-400">Total Dist.</p>
-                    <p className="text-base font-black text-amber-900">{routeData?.individual_distance_km || 136.2} km</p>
+                    <p className="text-[10px] font-bold text-slate-400">{t("Total Dist.", "कुल दूरी", "कुल दूरी")}</p>
+                    <p className="text-base font-black text-amber-900">{routeData?.individual_distance_km || 136.2} {t("km", "किमी", "किमी")}</p>
                   </div>
                   <div className="rounded-lg bg-white p-2 border border-amber-100">
-                    <p className="text-[10px] font-bold text-slate-400">Duration</p>
-                    <p className="text-base font-black text-amber-900">240 min</p>
+                    <p className="text-[10px] font-bold text-slate-400">{t("Duration", "समय", "समै")}</p>
+                    <p className="text-base font-black text-amber-900">240 {t("min", "मिनट", "मिनट")}</p>
                   </div>
                   <div className="rounded-lg bg-white p-2 border border-amber-100">
-                    <p className="text-[10px] font-bold text-slate-400">Fuel Cost</p>
+                    <p className="text-[10px] font-bold text-slate-400">{t("Fuel Cost", "ईंधन खर्च", "तेल खर्चा")}</p>
                     <p className="text-base font-black text-amber-900">₹2,840</p>
                   </div>
                 </div>
                 <p className="text-xs font-medium text-amber-800/80">
-                  Every farmer independently drives to APMC mandi, causing traffic congestion &amp; fuel waste.
+                  {t("Every farmer independently drives to APMC mandi, causing traffic congestion & fuel waste.", "प्रत्येक किसान स्वतंत्र रूप से मंडी जाता है, जिससे भीड़भाड़ और ईंधन की बर्बादी होती है।", "हर किसान अलग-अलग मंडी जाथे, जेकर से भीड़ आ डीजल के नुकसानी होथे।")}
                 </p>
               </div>
             )}
@@ -258,7 +260,7 @@ export default function OrdersPage() {
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h3 className="font-display text-base font-bold text-slate-900">Orders in Dispatch</h3>
+                <h3 className="font-display text-base font-bold text-slate-900">{t("Orders in Dispatch", "प्रेषण में ऑर्डर", "गाड़ी म ऑर्डर")}</h3>
                 <span className="rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 text-xs font-bold text-slate-700">
                   {filteredOrders.length}
                 </span>
@@ -268,18 +270,18 @@ export default function OrdersPage() {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none focus:border-emerald-600"
               >
-                <option value="All">All Status</option>
-                <option value="placed">Placed</option>
-                <option value="routed">Routed</option>
-                <option value="picked_up">Picked Up</option>
-                <option value="delivered">Delivered</option>
-                <option value="settled">Settled</option>
+                <option value="All">{t("All Status", "सभी स्थिति", "सब स्थिति")}</option>
+                <option value="placed">{t("Placed", "दर्ज", "दर्ज")}</option>
+                <option value="routed">{t("Routed", "रूट बना", "रस्ता बन गे")}</option>
+                <option value="picked_up">{t("Picked Up", "पिकअप हुआ", "उठा ले गे")}</option>
+                <option value="delivered">{t("Delivered", "पहुंच गया", "पहुंच गे")}</option>
+                <option value="settled">{t("Settled", "भुगतान पूरा", "पैसा मिल गे")}</option>
               </select>
             </div>
 
             <div className="space-y-2.5">
               {filteredOrders.length === 0 ? (
-                <p className="py-6 text-center text-xs text-slate-400">No orders matching filter.</p>
+                <p className="py-6 text-center text-xs text-slate-400">{t("No orders matching filter.", "कोई ऑर्डर नहीं मिला।", "कोनो ऑर्डर नइ मिलिस।")}</p>
               ) : (
                 filteredOrders.map((ord) => {
                   const isSelected = selectedOrder?.id === ord.id;
@@ -297,7 +299,7 @@ export default function OrdersPage() {
                         <div className="min-w-0">
                           <span className="font-mono text-[11px] font-bold text-slate-400">#{ord.id}</span>
                           <p className="text-sm font-bold text-slate-900 truncate">
-                            {ord.crop_type} Lot · {ord.quantity_kg} kg
+                            {ord.crop_type} {t("Lot", "लॉट", "लॉट")} · {ord.quantity_kg} {t("kg", "किग्रा", "किलो")}
                           </p>
                           <p className="text-xs font-black text-emerald-700 mt-1">
                             ₹{ord.total_amount.toLocaleString("en-IN")}
@@ -323,12 +325,12 @@ export default function OrdersPage() {
               <div className="flex items-center gap-2">
                 <Layers className="h-4 w-4 text-emerald-700" />
                 <h3 className="text-xs font-extrabold uppercase tracking-wide text-slate-800">
-                  Live Dispatch Geographic Tracking
+                  {t("Live Dispatch Geographic Tracking", "लाइव प्रेषण भौगोलिक ट्रैकिंग", "लाइव गाड़ी नक्शा ट्रैकिंग")}
                 </h3>
               </div>
               {selectedOrder && (
                 <span className="rounded-full bg-emerald-800 px-3 py-1 text-xs font-bold text-white shadow-xs">
-                  Active Lot #{selectedOrder.id}
+                  {t("Active Lot", "सक्रिय लॉट", "चालू लॉट")} #{selectedOrder.id}
                 </span>
               )}
             </div>
@@ -382,14 +384,14 @@ export default function OrdersPage() {
                   <Wallet className="h-5 w-5 text-emerald-700" />
                   <div>
                     <h3 className="font-display text-base font-bold text-slate-900">
-                      2-Stage UPI Escrow Trigger
+                      {t("2-Stage UPI Escrow Trigger", "2-चरण UPI एस्क्रो ट्रिगर", "2-चरण UPI एस्क्रो ट्रिगर")}
                     </h3>
                     <p className="text-xs text-slate-500">
-                      Order #{selectedOrder.id} • Total Escrow: ₹{selectedOrder.total_amount.toLocaleString("en-IN")}
+                      {t("Order", "ऑर्डर", "ऑर्डर")} #{selectedOrder.id} • {t("Total Escrow", "कुल एस्क्रो", "कुल एस्क्रो")}: ₹{selectedOrder.total_amount.toLocaleString("en-IN")}
                     </p>
                   </div>
                 </div>
-                <Badge variant="verified">Escrow Locked</Badge>
+                <Badge variant="verified">{t("Escrow Locked", "एस्क्रो सुरक्षित", "एस्क्रो सुरक्षित")}</Badge>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -400,16 +402,16 @@ export default function OrdersPage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-800">
-                      Stage 1 • Pickup Verified
+                      {t("Stage 1 • Pickup Verified", "चरण 1 • पिकअप सत्यापित", "पड़ाव 1 • गाड़ी म लोड")}
                     </span>
                     <span className="rounded-full bg-amber-600 text-white px-2 py-0.5 text-[10px] font-bold">
-                      40% Advance
+                      40% {t("Advance", "अग्रिम", "अग्रिम")}
                     </span>
                   </div>
                   <p className="mt-2 text-base font-black text-slate-900">
                     ₹{(selectedOrder.total_amount * 0.4).toLocaleString("en-IN")}
                   </p>
-                  <p className="text-xs text-slate-600 mt-0.5">Disburses to farmer UPI upon vehicle loading scan</p>
+                  <p className="text-xs text-slate-600 mt-0.5">{t("Disburses to farmer UPI upon vehicle loading scan", "वाहन लोडिंग स्कैन पर किसान के UPI में जारी", "गाड़ी म लोड होत ही किसान के UPI म ट्रांसफर")}</p>
                 </button>
 
                 <button
@@ -419,16 +421,16 @@ export default function OrdersPage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800">
-                      Stage 2 • Buyer Acceptance
+                      {t("Stage 2 • Buyer Acceptance", "चरण 2 • खरीदार स्वीकृति", "पड़ाव 2 • खरीदार ले मिल गे")}
                     </span>
                     <span className="rounded-full bg-emerald-700 text-white px-2 py-0.5 text-[10px] font-bold">
-                      60% Final
+                      60% {t("Final", "अंतिम", "बाकी")}
                     </span>
                   </div>
                   <p className="mt-2 text-base font-black text-slate-900">
                     ₹{(selectedOrder.total_amount * 0.6).toLocaleString("en-IN")}
                   </p>
-                  <p className="text-xs text-slate-600 mt-0.5">Disburses remaining amount after QC weigh-in</p>
+                  <p className="text-xs text-slate-600 mt-0.5">{t("Disburses remaining amount after QC weigh-in", "गुणवत्ता व वजन जांच के बाद शेष राशि जारी", "तौल आ गुणवत्ता जांच के बाद बाकी पईसा जारी")}</p>
                 </button>
               </div>
 
@@ -437,7 +439,7 @@ export default function OrdersPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-800">
-                        UPI Payment Disbursed Instantly
+                        {t("UPI Payment Disbursed Instantly", "UPI भुगतान तुरंत ट्रांसफर हुआ", "UPI पईसा तुरंत भेज दिए गे")}
                       </p>
                       <p className="text-lg font-black text-emerald-950">
                         ₹{payoutData.amount.toLocaleString("en-IN")}

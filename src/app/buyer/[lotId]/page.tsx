@@ -4,18 +4,16 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Lot } from "@/types";
 import { apiService } from "@/services/api";
-import { Badge, Button, Card } from "@/components/ui";
+import { Button } from "@/components/ui";
+import { useLanguage } from "@/lib/language";
 import CropPhoto from "@/components/buyer/CropPhoto";
 import {
   ArrowLeft,
   MapPin,
-  Scale,
   BadgeCheck,
   Truck,
-  Wallet,
   Users,
   Check,
-  Clock,
   IndianRupee,
   ShieldCheck,
   Award,
@@ -39,6 +37,7 @@ const cropEmojis: Record<string, string> = {
 export default function LotDetailPage() {
   const { lotId } = useParams<{ lotId: string }>();
   const router = useRouter();
+  const { t } = useLanguage();
   const [lot, setLot] = useState<Lot | null>(null);
   const [loading, setLoading] = useState(true);
   const [qtyRaw, setQtyRaw] = useState<string>("0");
@@ -73,7 +72,9 @@ export default function LotDetailPage() {
       <div className="flex-1 flex items-center justify-center py-24 bg-[#f8faf9]">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-200 border-t-emerald-700" />
-          <p className="text-xs font-bold text-slate-500">Loading lot information…</p>
+          <p className="text-xs font-bold text-slate-500">
+            {t("Loading lot information…", "लॉट जानकारी लोड हो रही है…", "लॉट के जानकारी लोड होत हे…")}
+          </p>
         </div>
       </div>
     );
@@ -82,12 +83,16 @@ export default function LotDetailPage() {
   if (!lot) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-4 px-4 sm:px-6 py-24 bg-[#f8faf9]">
-        <h1 className="font-display text-2xl font-extrabold text-slate-900">Lot not found</h1>
-        <p className="text-sm text-slate-500">No lot with ID “{lotId}” was found in the active pool.</p>
+        <h1 className="font-display text-2xl font-extrabold text-slate-900">
+          {t("Lot not found", "लॉट नहीं मिला", "लॉट नइ मिलिस")}
+        </h1>
+        <p className="text-sm text-slate-500">
+          {t(`No lot with ID “${lotId}” was found in the active pool.`, `सक्रिय पूल में आईडी “${lotId}” वाला कोई लॉट नहीं मिला।`, `सक्रिय पूल म आईडी “${lotId}” वाला कोनो लॉट नइ मिलिस।`)}
+        </p>
         <Link href="/buyer">
           <Button variant="primary" className="rounded-xl">
             <ArrowLeft className="w-4 h-4 mr-1" />
-            Back to Marketplace
+            {t("Back to Marketplace", "वापस मंडी बाजार", "बाजार वापस जाव")}
           </Button>
         </Link>
       </div>
@@ -127,16 +132,16 @@ export default function LotDetailPage() {
           className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-emerald-800 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Marketplace
+          {t("Back to Marketplace", "वापस मंडी बाजार", "बाजार वापस जाव")}
         </Link>
 
         {/* Grade + ID Tag */}
         <div className="mt-4 flex items-center gap-2">
           <span className="rounded-full bg-emerald-600 text-white px-3 py-1 text-xs font-black shadow-sm flex items-center gap-1">
-            <Award className="h-3.5 w-3.5" /> AI Certified • Grade {lot.grade}
+            <Award className="h-3.5 w-3.5" /> {t("AI Certified", "AI प्रमाणित", "AI प्रमाणित")} • {t("Grade", "ग्रेड", "ग्रेड")} {lot.grade}
           </span>
           <span className="rounded-lg bg-slate-100 border border-slate-200 px-2 py-0.5 font-mono text-xs font-bold text-slate-600">
-            Lot #{lot.id}
+            {t("Lot", "लॉट", "लॉट")} #{lot.id}
           </span>
         </div>
 
@@ -146,10 +151,14 @@ export default function LotDetailPage() {
             {/* Title & Hub info */}
             <div>
               <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900">
-                {lot.crop_type} Aggregated Cluster Lot
+                {lot.crop_type} {t("Aggregated Cluster Lot", "एकत्रित क्लस्टर लॉट", "जुरियाय क्लस्टर लॉट")}
               </h1>
               <p className="mt-1.5 text-sm text-slate-600">
-                Sourced directly from {lot.listings_count} verified smallholders in {lot.centroid.district}. Inspected and graded by KisanSetu AI vision model.
+                {t(
+                  `Sourced directly from ${lot.listings_count} verified smallholders in ${lot.centroid.district}. Inspected and graded by KisanSetu AI vision model.`,
+                  `${lot.centroid.district} के ${lot.listings_count} सत्यापित किसानों से सीधे प्राप्त। KisanSetu AI विज़न मॉडल द्वारा जांचा और ग्रेड किया गया।`,
+                  `${lot.centroid.district} के ${lot.listings_count} किसान मन ले सीधा प्राप्त। KisanSetu AI विज़न ले जांच करे गेहे।`
+                )}
               </p>
             </div>
 
@@ -162,7 +171,7 @@ export default function LotDetailPage() {
               />
               <div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-white/95 backdrop-blur px-3 py-1 text-xs font-bold text-slate-900 shadow">
                 <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                Verified Clustered Batch
+                {t("Verified Clustered Batch", "सत्यापित क्लस्टर्ड बैच", "सत्यापित क्लस्टर्ड बैच")}
               </div>
             </div>
 
@@ -172,16 +181,16 @@ export default function LotDetailPage() {
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
                   <MapPin className="w-4 h-4 text-emerald-600" />
-                  Cluster Origin & Centroid
+                  {t("Cluster Origin & Centroid", "क्लस्टर उत्पत्ति और केंद्र", "क्लस्टर उत्पत्ति आ केंद्र")}
                 </p>
-                <p className="mt-2 text-base font-bold text-slate-900">{lot.centroid.district} Hub</p>
-                <p className="text-xs text-slate-500 mt-0.5">{lot.centroid.address || "Raipur Agricultural Basin"}</p>
+                <p className="mt-2 text-base font-bold text-slate-900">{lot.centroid.district} {t("Hub", "हब", "हब")}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{lot.centroid.address || t("Raipur Agricultural Basin", "रायपुर कृषि क्षेत्र", "रायपुर कृषि क्षेत्र")}</p>
                 <p className="mt-2 font-mono text-[11px] text-slate-400">
                   {lot.centroid.lat.toFixed(4)}, {lot.centroid.lng.toFixed(4)}
                 </p>
                 <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-emerald-800">
                   <Truck className="w-4 h-4" />
-                  Consolidated 1-truck pickup route
+                  {t("Consolidated 1-truck pickup route", "समेकित 1-ट्रक पिकअप रूट", "1-ट्रक पिकअप रूट")}
                 </div>
               </div>
 
@@ -189,22 +198,22 @@ export default function LotDetailPage() {
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
                   <BadgeCheck className="w-4 h-4 text-emerald-600" />
-                  Quality Verification
+                  {t("Quality Verification", "गुणवत्ता सत्यापन", "गुणवत्ता जांच")}
                 </p>
                 <div className="mt-3 space-y-2 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">AI Quality Grade</span>
-                    <span className="font-bold text-emerald-700">Grade {lot.grade} Premium</span>
+                    <span className="text-slate-500">{t("AI Quality Grade", "AI गुणवत्ता ग्रेड", "AI गुणवत्ता ग्रेड")}</span>
+                    <span className="font-bold text-emerald-700">{t("Grade", "ग्रेड", "ग्रेड")} {lot.grade} {t("Premium", "प्रीमियम", "प्रीमियम")}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Defects Detected</span>
+                    <span className="text-slate-500">{t("Defects Detected", "खामियां मिलीं", "खराबी मिलीस")}</span>
                     <span className="font-bold text-slate-900">
-                      {lot.defects && lot.defects.length > 0 ? lot.defects.join(", ") : "0% (Zero Rot / Uniform)"}
+                      {lot.defects && lot.defects.length > 0 ? lot.defects.join(", ") : t("0% (Zero Rot / Uniform)", "0% (कोई सड़न नहीं / एकसमान)", "0% (कोनो सड़न नइ / एक्के जइसन)")}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Listings Pooled</span>
-                    <span className="font-bold text-slate-900">{lot.listings_count} Smallholders</span>
+                    <span className="text-slate-500">{t("Listings Pooled", "पूल्ड किसान", "जुड़े किसान")}</span>
+                    <span className="font-bold text-slate-900">{lot.listings_count} {t("Smallholders", "किसान", "किसान मन")}</span>
                   </div>
                 </div>
               </div>
@@ -215,7 +224,7 @@ export default function LotDetailPage() {
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 mb-3">
                   <Users className="w-4 h-4 text-emerald-600" />
-                  Contributing Smallholders ({lot.listings_count})
+                  {t("Contributing Smallholders", "योगदानकर्ता किसान", "जुड़े किसान मन")} ({lot.listings_count})
                 </p>
                 <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
                   {lot.listings.map((f) => {
@@ -232,11 +241,11 @@ export default function LotDetailPage() {
                           <div>
                             <p className="font-bold text-slate-900">{f.farmer_name}</p>
                             <p className="text-[11px] text-slate-500">
-                              {f.quantity_kg} kg · {pct}% of lot pool
+                              {f.quantity_kg} {t("kg", "किग्रा", "किलो")} · {pct}% {t("of lot pool", "लॉट पूल का", "लॉट पूल के")}
                             </p>
                           </div>
                         </div>
-                        <span className="font-black text-emerald-700">{f.quantity_kg} kg</span>
+                        <span className="font-black text-emerald-700">{f.quantity_kg} {t("kg", "किग्रा", "किलो")}</span>
                       </div>
                     );
                   })}
@@ -253,47 +262,53 @@ export default function LotDetailPage() {
                   <span className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-glow">
                     <Check className="h-7 w-7" />
                   </span>
-                  <h2 className="font-display text-xl font-black text-slate-900">Order Confirmed!</h2>
+                  <h2 className="font-display text-xl font-black text-slate-900">
+                    {t("Order Confirmed!", "ऑर्डर की पुष्टि हो गई!", "ऑर्डर पक्का हो गे!")}
+                  </h2>
                   <p className="text-xs text-slate-500">
-                    Order ID: <span className="font-mono font-bold text-slate-900">{orderSuccess}</span>
+                    {t("Order ID:", "ऑर्डर आईडी:", "ऑर्डर आईडी:")} <span className="font-mono font-bold text-slate-900">{orderSuccess}</span>
                   </p>
                   <Link href="/orders" className="w-full mt-2">
                     <Button variant="primary" className="w-full rounded-xl shadow-glow">
-                      Track Logistics Dispatch →
+                      {t("Track Logistics Dispatch →", "लॉजिस्टिक्स प्रेषण ट्रैक करें →", "लॉजिस्टिक्स गाड़ी ट्रैक करव →")}
                     </Button>
                   </Link>
                   <Button variant="ghost" size="sm" onClick={() => setOrderSuccess(null)}>
-                    Order another
+                    {t("Order another", "दूसरा ऑर्डर दें", "अउ ऑर्डर करव")}
                   </Button>
                 </div>
               ) : (
                 <>
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Direct Farm Settlement Rate</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                      {t("Direct Farm Settlement Rate", "सीधी खेत निपटान दर", "सीधा खेत भाव")}
+                    </p>
                     <p className="mt-1 font-display text-3xl font-black text-slate-900">
                       ₹{lot.price_per_kg.toLocaleString("en-IN")}
-                      <span className="text-xs font-semibold text-slate-500"> / kg</span>
+                      <span className="text-xs font-semibold text-slate-500"> /{t("kg", "किग्रा", "किलो")}</span>
                     </p>
                     <p className="mt-2 text-xs font-semibold text-emerald-700 flex items-center gap-1">
-                      <Sparkles className="h-3.5 w-3.5" /> Direct pricing • No middleman commission
+                      <Sparkles className="h-3.5 w-3.5" /> {t("Direct pricing • No middleman commission", "सीधा मूल्य • कोई बिचौलिया कमीशन नहीं", "सीधा भाव • कोनो दलाली नइ")}
                     </p>
                   </div>
 
                   <div className="border-t border-slate-100 pt-3 space-y-2 text-xs">
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500">Available Lot Weight</span>
-                      <span className="font-bold text-slate-900">{lot.total_quantity_kg} kg</span>
+                      <span className="text-slate-500">{t("Available Lot Weight", "उपलब्ध लॉट वजन", "उपलब्ध लॉट वजन")}</span>
+                      <span className="font-bold text-slate-900">{lot.total_quantity_kg} {t("kg", "किग्रा", "किलो")}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500">Minimum Order</span>
-                      <span className="font-bold text-slate-900">{minOrder} kg</span>
+                      <span className="text-slate-500">{t("Minimum Order", "न्यूनतम ऑर्डर", "कम से कम ऑर्डर")}</span>
+                      <span className="font-bold text-slate-900">{minOrder} {t("kg", "किग्रा", "किलो")}</span>
                     </div>
                   </div>
 
                   {/* Quantity selector */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-slate-800">Order Quantity (kg)</label>
+                      <label className="text-xs font-bold text-slate-800">
+                        {t("Order Quantity", "ऑर्डर मात्रा", "ऑर्डर मात्रा")} ({t("kg", "किग्रा", "किलो")})
+                      </label>
                       <div className="flex gap-1.5">
                         {[minOrder, 500, maxOrder].map((v) => (
                           <button
@@ -302,7 +317,7 @@ export default function LotDetailPage() {
                             onClick={() => setQtyRaw(String(v))}
                             className="rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] sm:text-[10px] font-bold text-slate-700 hover:bg-emerald-100 hover:text-emerald-800 active:scale-95 transition-all"
                           >
-                            {v === maxOrder ? "Max" : `${v}kg`}
+                            {v === maxOrder ? t("Max", "अधिकतम", "ज्यादा") : `${v}${t("kg", "किग्रा", "किलो")}`}
                           </button>
                         ))}
                       </div>
@@ -321,14 +336,14 @@ export default function LotDetailPage() {
                     />
                     {isInvalid && (
                       <p className="text-[11px] font-bold text-red-600 flex items-center gap-1">
-                        <AlertTriangle className="h-3.5 w-3.5" /> Order must be between {minOrder}kg and {maxOrder}kg
+                        <AlertTriangle className="h-3.5 w-3.5" /> {t(`Order must be between ${minOrder}kg and ${maxOrder}kg`, `ऑर्डर ${minOrder} किग्रा और ${maxOrder} किग्रा के बीच होना चाहिए`, `ऑर्डर ${minOrder} किलो ले ${maxOrder} किलो के बीच होना चाही`)}
                       </p>
                     )}
                   </div>
 
                   <div className="border-t border-dashed border-slate-200 pt-3">
                     <div className="flex justify-between items-center text-xs text-slate-500">
-                      <span>Order Value</span>
+                      <span>{t("Order Value", "ऑर्डर मूल्य", "ऑर्डर भाव")}</span>
                       <span className="font-display text-lg font-black text-emerald-800">
                         ₹{(qty * lot.price_per_kg).toLocaleString("en-IN")}
                       </span>
@@ -336,29 +351,54 @@ export default function LotDetailPage() {
                   </div>
 
                   <div className="space-y-2 pt-2">
+                    <Link
+                      href={`/payment/checkout?lotId=${lot.id}&crop=${encodeURIComponent(
+                        `${lot.crop_type} (Grade ${lot.grade})`
+                      )}&qty=${lot.total_quantity_kg}&price=${lot.price_per_kg}&amount=${
+                        lot.total_quantity_kg * lot.price_per_kg
+                      }`}
+                      className="block w-full"
+                    >
+                      <Button
+                        variant="primary"
+                        className="w-full rounded-xl shadow-glow"
+                        disabled={ordering}
+                      >
+                        <IndianRupee className="w-4 h-4 mr-1" />
+                        {t("Buy Full Lot", "पूरा लॉट खरीदें", "पूरा लॉट बिसाव")} ({lot.total_quantity_kg}{t("kg", "किग्रा", "किलो")}) • ₹{(lot.total_quantity_kg * lot.price_per_kg).toLocaleString("en-IN")}
+                      </Button>
+                    </Link>
+                    <Link
+                      href={`/payment/checkout?lotId=${lot.id}&crop=${encodeURIComponent(
+                        `${lot.crop_type} (Grade ${lot.grade})`
+                      )}&qty=${qty}&price=${lot.price_per_kg}&amount=${
+                        qty * lot.price_per_kg
+                      }`}
+                      className={`block w-full ${isInvalid || qty === 0 ? "pointer-events-none opacity-50" : ""}`}
+                    >
+                      <Button
+                        variant="outline"
+                        className="w-full rounded-xl"
+                        disabled={ordering || isInvalid || qty === 0}
+                      >
+                        {t("Buy Custom Qty", "कस्टम मात्रा खरीदें", "मनपसंद मात्रा बिसाव")} ({qty}{t("kg", "किग्रा", "किलो")}) • ₹{(qty * lot.price_per_kg).toLocaleString("en-IN")}
+                      </Button>
+                    </Link>
                     <Button
-                      variant="primary"
-                      className="w-full rounded-xl shadow-glow"
+                      variant="ghost"
+                      size="sm"
+                      className="w-full text-xs font-semibold text-slate-600 hover:text-emerald-800"
                       disabled={ordering || isInvalid || qty === 0}
                       isLoading={ordering}
-                      onClick={() => handleOrder(true)}
-                    >
-                      <IndianRupee className="w-4 h-4 mr-1" />
-                      Place Order for Full Lot ({lot.total_quantity_kg}kg)
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full rounded-xl"
-                      disabled={ordering || isInvalid || qty === 0}
                       onClick={() => handleOrder(false)}
                     >
-                      Order Custom Qty ({qty}kg)
+                      {t("Reserve Lot (Pay Later on Dispatch)", "लॉट आरक्षित करें (प्रेषण पर भुगतान)", "लॉट बुक करव (गाड़ी चले म भुगतान)")}
                     </Button>
                   </div>
 
                   <p className="flex items-center gap-1.5 justify-center text-[11px] font-medium text-slate-400 text-center">
                     <Truck className="w-3.5 h-3.5 text-emerald-600" />
-                    Consolidated dispatch • Delivery within 24–48h
+                    {t("Consolidated dispatch • Delivery within 24–48h", "समेकित प्रेषण • 24–48 घंटों में डिलीवरी", "समेकित प्रेषण • 24–48 घंटा म डिलीवरी")}
                   </p>
                 </>
               )}

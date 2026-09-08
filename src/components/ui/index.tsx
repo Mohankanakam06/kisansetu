@@ -19,8 +19,10 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
     | "verified"
     | "gradeA"
     | "gradeB"
-    | "gradeC";
-  size?: "sm" | "md";
+    | "gradeC"
+    | "live"
+    | "savings";
+  size?: "sm" | "md" | "lg";
 }
 
 export function Badge({
@@ -39,26 +41,35 @@ export function Badge({
     danger: "bg-red-50 text-red-800 border-red-200",
     info: "bg-blue-50 text-blue-800 border-blue-200",
     verified: "bg-emerald-100 text-emerald-900 border-emerald-300 font-bold",
-    gradeA: "bg-emerald-100 text-emerald-900 border-emerald-200",
-    gradeB: "bg-amber-100 text-amber-900 border-amber-200",
+    gradeA: "bg-emerald-100 text-emerald-950 border-emerald-300 font-bold shadow-xs",
+    gradeB: "bg-amber-100 text-amber-950 border-amber-300 font-bold shadow-xs",
     gradeC: "bg-slate-100 text-slate-800 border-slate-200",
+    live: "bg-emerald-500/15 text-emerald-800 border-emerald-300 font-bold",
+    savings: "bg-amber-500/15 text-amber-900 border-amber-300 font-extrabold",
   };
 
   const sizes = {
     sm: "px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider",
     md: "px-2.5 py-1 text-xs font-semibold",
+    lg: "px-3 py-1.5 text-sm font-bold",
   };
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full border text-center transition-all",
+        "inline-flex items-center gap-1.5 rounded-full border text-center transition-all",
         variants[variant],
         sizes[size],
         className
       )}
       {...props}
     >
+      {variant === "live" && (
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+        </span>
+      )}
       {children}
     </span>
   );
@@ -66,7 +77,7 @@ export function Badge({
 
 // Button
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "harvest";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "harvest" | "glow" | "forest";
   size?: "sm" | "md" | "lg" | "icon";
   isLoading?: boolean;
 }
@@ -81,28 +92,32 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 cursor-pointer select-none";
+    "inline-flex items-center justify-center rounded-xl font-bold transition-all duration-200 active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 cursor-pointer select-none";
 
   const variants = {
     primary:
-      "bg-emerald-700 text-white hover:bg-emerald-800 shadow-sm",
+      "bg-emerald-700 text-white hover:bg-emerald-800 shadow-sm hover:shadow-md",
+    forest:
+      "bg-[#005f39] text-white hover:bg-[#004a2c] shadow-sm hover:shadow-md",
+    glow:
+      "bg-gradient-to-r from-emerald-700 to-[#005f39] text-white shadow-glow hover:shadow-glow-emerald hover:brightness-105 border border-emerald-500/30",
     secondary:
-      "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300",
+      "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 shadow-xs",
     outline:
-      "border border-emerald-700 bg-transparent text-emerald-800 hover:bg-emerald-50",
+      "border-2 border-emerald-700 bg-transparent text-emerald-800 hover:bg-emerald-50/80",
     ghost:
       "bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900",
     danger:
-      "bg-red-600 text-white hover:bg-red-700",
+      "bg-red-600 text-white hover:bg-red-700 shadow-xs",
     harvest:
-      "bg-amber-600 text-white hover:bg-amber-700",
+      "bg-amber-600 text-white hover:bg-amber-700 shadow-xs hover:shadow-glow-amber",
   };
 
   const sizes = {
     sm: "text-xs px-3 py-1.5 gap-1.5 h-8",
-    md: "text-sm px-4 py-2 gap-2 h-9",
-    lg: "text-base px-6 py-3 gap-2.5 h-11",
-    icon: "h-9 w-9 p-0",
+    md: "text-sm px-4 py-2 gap-2 h-10",
+    lg: "text-base px-6 py-3 gap-2.5 h-12",
+    icon: "h-10 w-10 p-0",
   };
 
   return (
@@ -139,13 +154,23 @@ export function Button({
 }
 
 // Card
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: "default" | "glass" | "elevated" | "interactive";
+}
 
-export function Card({ className, children, ...props }: CardProps) {
+export function Card({ className, variant = "default", children, ...props }: CardProps) {
+  const variants = {
+    default: "bg-white border-slate-200/90 shadow-card",
+    glass: "glass-panel border-white/40 shadow-card-elevated",
+    elevated: "bg-white border-slate-200 shadow-card-elevated hover:shadow-card-hover transition-all duration-300",
+    interactive: "bg-white border-slate-200 shadow-card hover:border-emerald-300 hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer",
+  };
+
   return (
     <div
       className={cn(
-        "rounded-2xl border border-slate-200 bg-white p-5 shadow-card",
+        "rounded-2xl border p-5",
+        variants[variant],
         className
       )}
       {...props}

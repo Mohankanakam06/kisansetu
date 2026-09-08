@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Download, X } from "lucide-react";
+import { useLanguage } from "@/lib/language";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -9,6 +10,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function PWAInstallPrompt() {
+  const { t } = useLanguage();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [installed, setInstalled] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -57,9 +59,9 @@ export default function PWAInstallPrompt() {
           <Download className="h-5 w-5" />
         </div>
         <div className="flex-1">
-          <p className="text-body-sm font-bold text-on-surface">Install KisanSetu App</p>
+          <p className="text-body-sm font-bold text-on-surface">{t("Install KisanSetu App", "KisanSetu ऐप इंस्टॉल करें", "KisanSetu ऐप डालव")}</p>
           <p className="text-caption text-on-surface-variant mt-0.5">
-            Use offline, add to home screen &amp; get payout alerts on the go.
+            {t("Use offline, add to home screen & get payout alerts on the go.", "ऑफ़लाइन उपयोग करें, होम स्क्रीन पर जोड़ें और भुगतान अलर्ट प्राप्त करें।", "ऑफलाइन चलाव, होम स्क्रीन म जोड़व आ पइसा के अलर्ट पाव।")}
           </p>
         </div>
         <button
@@ -74,7 +76,7 @@ export default function PWAInstallPrompt() {
         onClick={handleInstall}
         className="mt-3 w-full rounded-lg bg-primary px-4 py-2.5 text-body-sm font-bold text-on-primary transition hover:bg-primary/90"
       >
-        Install Now
+        {t("Install Now", "अभी इंस्टॉल करें", "अभी डालव")}
       </button>
     </div>
   );
