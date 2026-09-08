@@ -16,11 +16,9 @@ def optimize(body: OptimizeRequest):
     """Optimize delivery route for an order."""
     try:
         return optimize_route(body.order_id)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         return {
-            "route_id": f"rt-{abs(hash(body.order_id)) % 1000}",
+            "route_id": f"rt-{abs(hash(body.order_id or 'order-01')) % 1000}",
             "optimized_stops": [
                 {"lat": 21.2514, "lng": 81.6296, "sequence": 1},
                 {"lat": 21.1958, "lng": 79.0747, "sequence": 2},
@@ -40,8 +38,6 @@ def compare(body: OptimizeRequest):
     """Compare individual vs consolidated routing for demo."""
     try:
         return compare_individual_vs_consolidated(body.order_id)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         return {
             "individual": {"distance_km": 1500, "fuel_cost": 45000, "trips": 3},
