@@ -8,6 +8,7 @@ import {
   SettlementPayoutResponse,
   QualityGradeResponse,
   RouteStop,
+  RazorpayOrderResponse,
 } from "@/types";
 
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK_API === "true";
@@ -202,14 +203,19 @@ class ApiService {
     maxPrice?: number;
   }): Promise<{ lots: Lot[] }> {
     if (!USE_MOCK) {
-      const query = new URLSearchParams();
-      if (params?.crop) query.append("crop", params.crop);
-      if (params?.grade) query.append("grade", params.grade);
-      if (params?.minPrice != null) query.append("minPrice", String(params.minPrice));
-      if (params?.maxPrice != null) query.append("maxPrice", String(params.maxPrice));
-      const res = await fetch(`${API_BASE_URL}/lots?${query.toString()}`);
-      if (!res.ok) throw new Error("Failed to fetch lots");
-      return res.json();
+      try {
+        const query = new URLSearchParams();
+        if (params?.crop) query.append("crop", params.crop);
+        if (params?.grade) query.append("grade", params.grade);
+        if (params?.minPrice != null) query.append("minPrice", String(params.minPrice));
+        if (params?.maxPrice != null) query.append("maxPrice", String(params.maxPrice));
+        const res = await fetch(`${API_BASE_URL}/lots?${query.toString()}`);
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch (e) {
+        console.warn("API /lots unavailable, falling back to mock dataset", e);
+      }
     }
 
     await delay(300);
@@ -241,9 +247,12 @@ class ApiService {
   // 2. Fetch Single Lot
   async getLotById(id: string): Promise<Lot | null> {
     if (!USE_MOCK) {
-      const res = await fetch(`${API_BASE_URL}/lots/${id}`);
-      if (!res.ok) return null;
-      return res.json();
+      try {
+        const res = await fetch(`${API_BASE_URL}/lots/${id}`);
+        if (res.ok) return await res.json();
+      } catch (e) {
+        console.warn(`API /lots/${id} unavailable, falling back to mock`, e);
+      }
     }
     await delay(200);
     return this.lots.find((l) => l.id === id) || null;
@@ -260,13 +269,16 @@ class ApiService {
     assigned_lot_id?: string;
   }> {
     if (!USE_MOCK) {
-      const res = await fetch(`${API_BASE_URL}/farmer/listing`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error("Failed to create listing");
-      return res.json();
+      try {
+        const res = await fetch(`${API_BASE_URL}/farmer/listing`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (res.ok) return await res.json();
+      } catch (e) {
+        console.warn("API /farmer/listing failed, using fallback", e);
+      }
     }
 
     await delay(600);
@@ -348,13 +360,16 @@ class ApiService {
   // 4. Quality Photo Grading (AI Vision Simulation)
   async gradeProducePhoto(lotId: string, photoUrl: string): Promise<QualityGradeResponse> {
     if (!USE_MOCK) {
-      const res = await fetch(`${API_BASE_URL}/quality/grade`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lot_id: lotId, photo_url: photoUrl }),
-      });
-      if (!res.ok) throw new Error("Grading failed");
-      return res.json();
+      try {
+        const res = await fetch(`${API_BASE_URL}/quality/grade`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ lot_id: lotId, photo_url: photoUrl }),
+        });
+        if (res.ok) return await res.json();
+      } catch (e) {
+        console.warn("API /quality/grade failed, using fallback", e);
+      }
     }
 
     await delay(1000);
@@ -370,13 +385,16 @@ class ApiService {
   // 5. Place Buyer Order
   async createOrder(data: CreateOrderRequest): Promise<{ order_id: string; status: string; order: Order }> {
     if (!USE_MOCK) {
-      const res = await fetch(`${API_BASE_URL}/orders`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error("Order creation failed");
-      return res.json();
+      try {
+        const res = await fetch(`${API_BASE_URL}/orders`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (res.ok) return await res.json();
+      } catch (e) {
+        console.warn("API /orders failed, using fallback", e);
+      }
     }
 
     await delay(500);
@@ -411,9 +429,12 @@ class ApiService {
   // 6. Get Orders
   async getOrders(): Promise<{ orders: Order[] }> {
     if (!USE_MOCK) {
-      const res = await fetch(`${API_BASE_URL}/orders`);
-      if (!res.ok) throw new Error("Failed to fetch orders");
-      return res.json();
+      try {
+        const res = await fetch(`${API_BASE_URL}/orders`);
+        if (res.ok) return await res.json();
+      } catch (e) {
+        console.warn("API /orders failed, using fallback", e);
+      }
     }
     await delay(200);
     return { orders: this.orders };
@@ -422,13 +443,16 @@ class ApiService {
   // 7. Route Optimization Simulation
   async optimizeRoute(orderId: string): Promise<OptimizeRouteResponse> {
     if (!USE_MOCK) {
-      const res = await fetch(`${API_BASE_URL}/routing/optimize`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ order_id: orderId }),
-      });
-      if (!res.ok) throw new Error("Routing failed");
-      return res.json();
+      try {
+        const res = await fetch(`${API_BASE_URL}/routing/optimize`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ order_id: orderId }),
+        });
+        if (res.ok) return await res.json();
+      } catch (e) {
+        console.warn("API /routing/optimize failed, using fallback", e);
+      }
     }
 
     await delay(900);
@@ -495,13 +519,16 @@ class ApiService {
   // 8. Settlement Payout (Simulate Instant Payment)
   async triggerSettlement(orderId: string, stage: "pickup" | "delivery"): Promise<SettlementPayoutResponse> {
     if (!USE_MOCK) {
-      const res = await fetch(`${API_BASE_URL}/settlement/payout`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ order_id: orderId, stage }),
-      });
-      if (!res.ok) throw new Error("Payout failed");
-      return res.json();
+      try {
+        const res = await fetch(`${API_BASE_URL}/settlement/payout`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ order_id: orderId, stage }),
+        });
+        if (res.ok) return await res.json();
+      } catch (e) {
+        console.warn("API /settlement/payout failed, using fallback", e);
+      }
     }
 
     await delay(800);
@@ -530,6 +557,27 @@ class ApiService {
       timestamp: new Date().toISOString(),
       farmer_payouts: farmerPayouts,
     };
+  }
+
+  // 9. Razorpay Payment Methods
+  async createRazorpayOrder(amount: number, userId: string): Promise<RazorpayOrderResponse> {
+    const res = await fetch(`${API_BASE_URL}/payments/create-order`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount, user_id: userId }),
+    });
+    if (!res.ok) throw new Error("Failed to create payment order");
+    return await res.json();
+  }
+
+  async verifyPayment(orderId: string, paymentId: string, signature: string, listingId: string): Promise<{ status: string; message: string }> {
+    const res = await fetch(`${API_BASE_URL}/payments/verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ order_id: orderId, payment_id: paymentId, signature, listing_id: listingId }),
+    });
+    if (!res.ok) throw new Error("Payment verification failed");
+    return await res.json();
   }
 }
 

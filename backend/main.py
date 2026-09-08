@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from backend.routes import lots, routing, settlement, farmer, orchestrator, quality, auth
+from backend import payments
 from backend.db import get_conn
 
 app = FastAPI(
@@ -36,6 +37,7 @@ app.include_router(settlement.router, tags=["Settlement"])
 app.include_router(farmer.router, tags=["Farmer Interface"])
 app.include_router(orchestrator.router, tags=["Orchestrator"])
 app.include_router(quality.router, tags=["Quality Grading"])
+app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
 
 
 # Health check

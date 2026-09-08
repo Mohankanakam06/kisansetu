@@ -7,3 +7,4 @@ requests>=2.31.0
 google-genai>=0.1.0
 pyjwt>=2.8.0
 redis>=5.0.0
+razorpay>=1.4.1
