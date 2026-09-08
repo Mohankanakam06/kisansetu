@@ -15,6 +15,8 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
     | "success"
     | "warning"
     | "danger"
+    | "info"
+    | "verified"
     | "gradeA"
     | "gradeB"
     | "gradeC";
@@ -29,12 +31,14 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variants = {
-    default: "bg-slate-100 text-slate-700",
-    neutral: "bg-slate-100 text-slate-700",
+    default: "bg-slate-100 text-slate-700 border-slate-200",
+    neutral: "bg-slate-100 text-slate-700 border-slate-200",
     outline: "border border-slate-200 text-slate-600 bg-transparent",
-    success: "bg-emerald-50 text-emerald-800 border-emerald-100",
-    warning: "bg-amber-50 text-amber-800 border-amber-100",
-    danger: "bg-red-50 text-red-800 border-red-100",
+    success: "bg-emerald-50 text-emerald-800 border-emerald-200",
+    warning: "bg-amber-50 text-amber-800 border-amber-200",
+    danger: "bg-red-50 text-red-800 border-red-200",
+    info: "bg-blue-50 text-blue-800 border-blue-200",
+    verified: "bg-emerald-100 text-emerald-900 border-emerald-300 font-bold",
     gradeA: "bg-emerald-100 text-emerald-900 border-emerald-200",
     gradeB: "bg-amber-100 text-amber-900 border-amber-200",
     gradeC: "bg-slate-100 text-slate-800 border-slate-200",
