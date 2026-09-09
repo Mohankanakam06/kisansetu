@@ -69,13 +69,17 @@ export default function RegisterPage() {
       if (typeof window !== "undefined") {
         localStorage.setItem("kisansetu_token", data.token);
         localStorage.setItem("kisansetu_user", JSON.stringify(data.user));
+        const isHttps = window.location.protocol === "https:";
+        document.cookie = `kisansetu_token=${data.token}; path=/; max-age=604800; SameSite=Lax${isHttps ? "; Secure" : ""}`;
       }
-      window.location.href = data.redirect || "/login";
+      window.location.href = data.redirect || `/${data.user?.role || form.role}`;
     } catch (err: any) {
       // Offline / demo fallback: keep the app usable
       if (typeof window !== "undefined") {
         const demoUser = { name: form.name, phone: form.phone, role: form.role };
         localStorage.setItem("kisansetu_user", JSON.stringify(demoUser));
+        const isHttps = window.location.protocol === "https:";
+        document.cookie = `kisansetu_token=demo-fallback-token; path=/; max-age=604800; SameSite=Lax${isHttps ? "; Secure" : ""}`;
       }
       window.location.href = `/${form.role}`;
     }

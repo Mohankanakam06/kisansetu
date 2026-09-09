@@ -26,6 +26,16 @@ export default function EarningsPage() {
   const [loading, setLoading] = useState(true);
   const [downloaded, setDownloaded] = useState(false);
   const [showReceipt, setShowReceipt] = useState<string | null>(null);
+  const [payoutLoading, setPayoutLoading] = useState(false);
+
+  const handleManualWithdraw = async (amount: number) => {
+    setPayoutLoading(true);
+    // Simulate API payout trigger
+    setTimeout(() => {
+      setPayoutLoading(false);
+      alert(t("Payout of ₹" + amount.toLocaleString("en-IN") + " initiated to linked UPI.", "लिंक किए गए UPI पर ₹" + amount.toLocaleString("en-IN") + " का भुगतान शुरू किया गया।", "UPI म ₹" + amount.toLocaleString("en-IN") + " भेजे के प्रक्रिया सुरु हो गे।"));
+    }, 1500);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -244,6 +254,43 @@ export default function EarningsPage() {
               </div>
             </div>
 
+            {/* Instant UPI Withdrawal Panel */}
+            <div className="rounded-2xl border border-emerald-300 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white">
+                    <IndianRupee className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-sm font-bold text-emerald-950">
+                      {t("Instant Bank / UPI Transfer", "तत्काल बैंक / UPI ट्रांसफर", "तुरंत बैंक / UPI ट्रांसफर")}
+                    </h3>
+                    <p className="text-[11px] text-emerald-800 font-mono">VPA: farmer.kisansetu@sbi</p>
+                  </div>
+                </div>
+                <span className="rounded-full bg-emerald-200 text-emerald-900 px-2 py-0.5 text-[10px] font-black uppercase">
+                  {t("Active", "सक्रिय", "चालू")}
+                </span>
+              </div>
+
+              <div className="rounded-xl bg-white border border-emerald-200 p-3 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">{t("Available for Payout", "निकासी योग्य राशि", "निकाले बर राशि")}</p>
+                  <p className="font-display text-lg font-black text-slate-900">₹{stats.settled.toLocaleString("en-IN")}</p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="primary"
+                  className="rounded-xl text-xs font-bold px-4 shadow-sm"
+                  disabled={payoutLoading || stats.settled <= 0}
+                  isLoading={payoutLoading}
+                  onClick={() => handleManualWithdraw(stats.settled)}
+                >
+                  {t("Withdraw to UPI", "UPI में निकालें", "UPI म निकालव")}
+                </Button>
+              </div>
+            </div>
+
             {/* Simulated UPI Receipt CTA */}
             {orders.some((o) => o.status === "settled") && (
               <button
@@ -265,6 +312,57 @@ export default function EarningsPage() {
 
           {/* Right: Tables */}
           <div className="lg:col-span-3 flex flex-col gap-6">
+            {/* 2-Stage Escrow Explainer: Interactive 40/60 Breakdown */}
+            {orders.length > 0 && (
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card space-y-4">
+                <div>
+                  <h2 className="font-display text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <ShieldCheck className="h-5 w-5 text-emerald-700" /> {t("Smart Escrow Settlement Breakdown", "स्मार्ट एस्क्रो निपटान ब्यौरा", "स्मार्ट एस्क्रो निपटान ब्यौरा")}
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {t("Visualizing the 40% (Dispatch) + 60% (Delivery) escrow flow for the latest orders", "नवीनतम ऑर्डरों के लिए 40% (प्रेषण) + 60% (डिलीवरी) एस्क्रो प्रवाह का चित्रण", "नवा ऑर्डर मन बर 40% (प्रेषण) + 60% (डिलीवरी) एस्क्रो प्रवाह")}
+                  </p>
+                </div>
+
+                {orders.slice(0, 3).map((o) => (
+                  <div key={o.id} className="rounded-xl border border-slate-200 p-3 space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="font-mono text-[11px] font-bold text-slate-500">#{o.id} • {o.crop_type}</span>
+                      <span className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${
+                        o.status === "settled" ? "bg-emerald-100 text-emerald-800 border-emerald-300" :
+                        o.status === "delivered" ? "bg-blue-100 text-blue-800 border-blue-300" :
+                        "bg-amber-100 text-amber-800 border-amber-300"
+                      }`}>
+                        {o.status}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 flex h-7 rounded-full overflow-hidden border border-slate-200">
+                        <div
+                          className="bg-amber-500 flex items-center justify-center text-[10px] font-black text-white"
+                          style={{ width: "40%" }}
+                        >
+                          {(o.status === "picked_up" || o.status === "delivered" || o.status === "settled") ? "✓ 40%" : "40%"}
+                        </div>
+                        <div
+                          className={`flex items-center justify-center text-[10px] font-black ${
+                            o.status === "settled" ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-500"
+                          }`}
+                          style={{ width: "60%" }}
+                        >
+                          {o.status === "settled" ? "✓ 60%" : "60%"}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between text-[11px] font-bold">
+                      <span className="text-amber-800">₹{(o.total_amount * 0.4).toLocaleString("en-IN")} ({t("Dispatch Advance", "प्रेषण अग्रिम", "प्रेषण अग्रिम")})</span>
+                      <span className={o.status === "settled" ? "text-emerald-700" : "text-slate-400"}>₹{(o.total_amount * 0.6).toLocaleString("en-IN")} ({t("Final", "अंतिम", "बाकी")})</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Active Listings Status Table */}
             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
               <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">

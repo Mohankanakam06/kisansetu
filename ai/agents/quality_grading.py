@@ -1,7 +1,10 @@
 import os
 import json
+import logging
 import requests
 from dotenv import load_dotenv
+
+logger = logging.getLogger("kisansetu.quality_grading")
 
 try:
     from google import genai
@@ -40,7 +43,7 @@ def grade_photo(lot_id: str, photo_url: str):
 
         if _genai_client:
             response = _genai_client.models.generate_content(
-                model="gemini-3.6-flash",
+                model="gemini-1.5-flash",
                 contents=[
                     GRADING_RUBRIC,
                     types.Part.from_bytes(data=img_bytes, mime_type="image/jpeg"),
@@ -56,14 +59,16 @@ def grade_photo(lot_id: str, photo_url: str):
         else:
             raise
     except Exception as e:
-        print("Gemini grading failed, using fallback:", e)
+        logger.warning(f"Gemini grading failed, using fallback: {e}")
         result = None
 
     if not result:
+        logger.warning("DEMO MODE: Using synthetic baseline inspection result for quality grading.")
         result = {
             "grade": "A",
             "defects": ["Zero fungal presence", "Firmness index: 94%", "Uniform 55-65mm diameter", "Export grade surface"],
-            "photo_url": photo_url
+            "photo_url": photo_url,
+            "demo_mode": True
         }
 
     conn = get_conn()
@@ -76,7 +81,7 @@ def grade_photo(lot_id: str, photo_url: str):
         cur.execute("UPDATE lots SET grade = %s WHERE id = %s", (result["grade"], lot_id))
         conn.commit()
     except Exception as err:
-        print("Quality grade DB update failed:", err)
+        logger.warning(f"Quality grade DB update failed: {err}")
     finally:
         release_conn(conn)
 

@@ -38,8 +38,20 @@ class MockCursor:
     def fetchall(self):
         return []
     def fetchone(self):
-        # If querying a specific ID or returning row, return a minimal dummy object
-        if "RETURNING" in self._last_query.upper():
+        # DEMO MODE: Return a coherent dummy row matching the queried table so
+        # downstream code never hits a KeyError on a missing column.
+        upper = self._last_query.upper()
+        if "RETURNING" in upper or " FROM USERS" in upper or "FROM USERS " in upper:
+            return {
+                "id": "mock-id-001",
+                "name": "Mock Farmer User",
+                "phone": "9876543210",
+                "role": "farmer",
+                "language_pref": "hi",
+                "location": "India",
+                "created_at": "2026-03-08T00:00:00"
+            }
+        if "RETURNING" in upper:
             return {
                 "id": "mock-id-001",
                 "buyer_id": "buyer-1",
@@ -68,7 +80,7 @@ def get_conn():
         pool_inst = get_pool()
         return pool_inst.getconn()
     except Exception as e:
-        logger.warning(f"Database connection failed, using Mock connection: {e}")
+        logger.warning(f"CRITICAL WARNING: Database connection failed, using MOCK connection (Demo Mode Active). Real persistence is OFF. Error: {e}")
         return MockConnection()
 
 def release_conn(conn):

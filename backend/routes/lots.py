@@ -1,13 +1,19 @@
 # app/routes/lots.py
+import logging
 from fastapi import APIRouter, HTTPException
 from ai.agents.aggregations import run_aggregation
 
+logger = logging.getLogger("kisansetu.lots")
 router = APIRouter()
 
 @router.post("/api/internal/aggregate")
 def aggregate():
-    lot_ids = run_aggregation()
-    return {"lots_created": lot_ids}
+    try:
+        lot_ids = run_aggregation()
+        return {"lots_created": lot_ids}
+    except Exception as e:
+        logger.warning(f"Internal aggregation trigger failed: {e}")
+        return {"lots_created": [], "error": str(e), "demo_mode": True}
 
 @router.get("/api/lots")
 def list_lots(crop: str = None, grade: str = None,

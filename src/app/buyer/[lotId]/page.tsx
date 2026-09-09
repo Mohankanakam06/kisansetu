@@ -7,6 +7,7 @@ import { apiService } from "@/services/api";
 import { Button } from "@/components/ui";
 import { useLanguage } from "@/lib/language";
 import CropPhoto from "@/components/buyer/CropPhoto";
+import QualityInspectionModal from "@/components/buyer/QualityInspectionModal";
 import {
   ArrowLeft,
   MapPin,
@@ -14,11 +15,14 @@ import {
   Truck,
   Users,
   Check,
+  CheckCircle2,
   IndianRupee,
   ShieldCheck,
   Award,
   Sparkles,
   AlertTriangle,
+  Gavel,
+  ScanSearch,
 } from "lucide-react";
 
 const cropEmojis: Record<string, string> = {
@@ -36,20 +40,22 @@ const cropEmojis: Record<string, string> = {
 
 export default function LotDetailPage() {
   const { lotId } = useParams<{ lotId: string }>();
-  const router = useRouter();
-  const { t } = useLanguage();
+    const { t } = useLanguage();
   const [lot, setLot] = useState<Lot | null>(null);
   const [loading, setLoading] = useState(true);
   const [qtyRaw, setQtyRaw] = useState<string>("0");
   const [ordering, setOrdering] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState<string | null>(null);
+  const [showInspection, setShowInspection] = useState(false);
+  const [bidPrice, setBidPrice] = useState<string>("");
+  const [bidPlaced, setBidPlaced] = useState(false);
+  const [bidding, setBidding] = useState(false);
 
   const qty = Math.max(0, parseInt(qtyRaw) || 0);
 
   useEffect(() => {
     let cancelled = false;
     if (!lotId) return;
-    setLoading(true);
     apiService
       .getLotById(String(lotId))
       .then((res) => {
@@ -102,9 +108,17 @@ export default function LotDetailPage() {
   const cropEmoji = cropEmojis[lot.crop_type] || "🌿";
   const minOrder = Math.min(100, lot.total_quantity_kg);
   const maxOrder = lot.total_quantity_kg;
-  const totalValue = lot.total_quantity_kg * lot.price_per_kg;
-  const orderTotal = Math.min(qty, lot.total_quantity_kg) * lot.price_per_kg;
-  const isInvalid = qty < minOrder || qty > maxOrder;
+      const isInvalid = qty < minOrder || qty > maxOrder;
+
+  const handleBid = async () => {
+    if (!bidPrice || Number(bidPrice) <= 0) return;
+    setBidding(true);
+    // Simulate API call
+    setTimeout(() => {
+      setBidding(false);
+      setBidPlaced(true);
+    }, 1500);
+  };
 
   const handleOrder = async (fullLot: boolean) => {
     const q = fullLot ? lot.total_quantity_kg : Math.min(Math.max(qty, minOrder), lot.total_quantity_kg);
@@ -195,7 +209,7 @@ export default function LotDetailPage() {
               </div>
 
               {/* Quality Verification */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card">
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card relative">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
                   <BadgeCheck className="w-4 h-4 text-emerald-600" />
                   {t("Quality Verification", "गुणवत्ता सत्यापन", "गुणवत्ता जांच")}
@@ -215,6 +229,17 @@ export default function LotDetailPage() {
                     <span className="text-slate-500">{t("Listings Pooled", "पूल्ड किसान", "जुड़े किसान")}</span>
                     <span className="font-bold text-slate-900">{lot.listings_count} {t("Smallholders", "किसान", "किसान मन")}</span>
                   </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100 flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-xs font-bold text-emerald-800 bg-emerald-50 border-emerald-200 hover:bg-emerald-100 transition-colors"
+                    onClick={() => setShowInspection(true)}
+                  >
+                    <ScanSearch className="h-4 w-4 mr-1.5" />
+                    {t("Inspect Quality (AI Vision)", "गुणवत्ता जांचें (AI विज़न)", "गुणवत्ता जांचव (AI विज़न)")}
+                  </Button>
                 </div>
               </div>
             </div>
@@ -350,6 +375,53 @@ export default function LotDetailPage() {
                     </div>
                   </div>
 
+                  {/* Direct Bidding / Dynamic Pricing Negotiation */}
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50/50 p-3.5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
+                        <Gavel className="w-3.5 h-3.5 text-amber-600" />
+                        <span>{t("Counter-Offer / Bid", "काउंटर ऑफर / बोली", "बोली लगाव")}</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-amber-700 uppercase bg-amber-100/80 px-2 py-0.5 rounded-full">
+                        {t("Direct to Pool", "सीधे पूल को", "सीधा किसान पूल")}
+                      </span>
+                    </div>
+                    {bidPlaced ? (
+                      <div className="rounded-xl bg-emerald-100/80 border border-emerald-300 p-2.5 text-center">
+                        <p className="text-xs font-bold text-emerald-900 flex items-center justify-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                          {t("Bid Submitted at ₹", "बोली दर्ज की गई ₹", "बोली दर्ज होगे ₹")}{bidPrice}/{t("kg", "किग्रा", "किलो")}
+                        </p>
+                        <p className="text-[10px] text-emerald-700 mt-0.5">
+                          {t("Farmers notified via SMS / IVR alert", "किसानों को एसएमएस / आईवीआर से सूचित किया गया", "किसान मन ला SMS / फोन ले सूचना दे दिए गेहे")}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <div className="relative flex-1">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">₹</span>
+                          <input
+                            type="number"
+                            placeholder={`${lot.price_per_kg - 2}`}
+                            value={bidPrice}
+                            onChange={(e) => setBidPrice(e.target.value)}
+                            className="w-full rounded-xl border border-amber-200 bg-white pl-7 pr-3 py-2 text-xs font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                          />
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="rounded-xl bg-amber-600 text-white hover:bg-amber-700 text-xs px-3 font-bold shrink-0"
+                          disabled={bidding || !bidPrice || Number(bidPrice) <= 0}
+                          isLoading={bidding}
+                          onClick={handleBid}
+                        >
+                          {t("Place Bid", "बोली लगाएं", "बोली लगाव")}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="space-y-2 pt-2">
                     <Link
                       href={`/payment/checkout?lotId=${lot.id}&crop=${encodeURIComponent(
@@ -406,6 +478,11 @@ export default function LotDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* AI Vision Quality Inspection Modal */}
+      {showInspection && (
+        <QualityInspectionModal lot={lot} onClose={() => setShowInspection(false)} />
+      )}
     </div>
   );
 }

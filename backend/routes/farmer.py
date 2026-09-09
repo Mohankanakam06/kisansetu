@@ -1,7 +1,7 @@
 from typing import Optional, Union, Dict, Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from ai.agents.farmer_interface import transcribe_audio, create_listing
+from ai.agents.farmer_interface import transcribe_audio, create_listing, create_direct_listing
 
 router = APIRouter()
 
@@ -49,14 +49,14 @@ def farmer_listing(body: FarmerListingRequest):
     # If structured fields are provided directly
     if body.crop_type and body.quantity_kg:
         price = body.price_expectation or 25.0
-        return {
-            "listing_id": f"list-{abs(hash(body.crop_type + str(body.quantity_kg))) % 10000}",
-            "crop_type": body.crop_type.lower(),
-            "quantity_kg": float(body.quantity_kg),
-            "price_expectation": float(price),
-            "location": {"lat": lat, "lng": lng},
-            "status": "clustered"
-        }
+        return create_direct_listing(
+            farmer_id=farmer_id,
+            crop_type=body.crop_type,
+            quantity_kg=float(body.quantity_kg),
+            price_expectation=float(price),
+            lat=lat,
+            lng=lng
+        )
 
     transcript = body.transcript.strip() if body.transcript else None
     media_url = body.media_url.strip() if body.media_url else None

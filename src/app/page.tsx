@@ -192,7 +192,7 @@ export default function Home() {
       </section>
 
       {/* Competitive Benchmark: Why KisanSetu Beats DeHaat, Ninjacart & Mandis */}
-      <section className="py-16 md:py-20 bg-[#f8faf9]">
+      <section id="how-it-works" className="py-16 md:py-20 bg-[#f8faf9] scroll-mt-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-100/60 px-3 py-1 rounded-full border border-emerald-200">
@@ -283,7 +283,7 @@ export default function Home() {
       </section>
 
       {/* Bento Grid: The 4 Middleman Replacements */}
-      <section className="py-16 bg-white border-y border-slate-100">
+      <section id="features" className="py-16 bg-white border-y border-slate-100 scroll-mt-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-100/60 px-3 py-1 rounded-full border border-emerald-200">
@@ -363,7 +363,7 @@ export default function Home() {
       </section>
 
       {/* Interactive Profit Calculator */}
-      <section className="py-16 md:py-20 bg-emerald-950 text-white rounded-3xl mx-3 sm:mx-6 lg:mx-8 mb-16 shadow-2xl overflow-hidden relative">
+      <section id="savings" className="py-16 md:py-20 bg-emerald-950 text-white rounded-3xl mx-3 sm:mx-6 lg:mx-8 mb-16 shadow-2xl overflow-hidden relative scroll-mt-16">
         <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-800/20 rounded-full blur-3xl pointer-events-none" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">

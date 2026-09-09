@@ -1,7 +1,10 @@
 import os
 import json
+import logging
 import requests
 from dotenv import load_dotenv
+
+logger = logging.getLogger("kisansetu.orchestrator")
 
 try:
     from google import genai
@@ -16,36 +19,96 @@ except Exception:
 load_dotenv()
 
 from ai.agents.farmer_interface import create_listing
+from ai.agents.aggregations import run_aggregation
+from ai.agents.quality_grading import grade_photo
+from ai.agents.routing import optimize_route
+from ai.agents.settlement import process_payout
 from backend.redis_client import get_chat_history, save_chat_history
 
 BASE_URL = os.environ.get("BASE_URL", "http://localhost:8000")
 
-def create_farmer_listing(farmer_id: str, transcript: str, language: str = "hi"):
+def create_farmer_listing(farmer_id: str, transcript: str, language: str = "hi", lat: float = 22.6939, lng: float = 72.8618):
     """Create a new produce listing from a farmer's voice or text message.
 
     Args:
         farmer_id: Unique identifier of the farmer
         transcript: The farmer's spoken or written message about their produce
         language: Language code (e.g. 'hi', 'en')
+        lat: Latitude of the farm (default 22.6939)
+        lng: Longitude of the farm (default 72.8618)
     """
-    pass
+    return create_listing(farmer_id, transcript, language, lat, lng)
 
-TOOLS = [create_farmer_listing]
+def cluster_active_lots(eps_km: float = 3.0, min_points: int = 2):
+    """Cluster active unstructured listings into aggregated wholesale lots.
+
+    Args:
+        eps_km: Max distance in kilometers between listings to cluster (default 3.0)
+        min_points: Minimum number of listings required to form a lot (default 2)
+    """
+    return run_aggregation(eps_km, min_points)
+
+def grade_lot_quality(lot_id: str, photo_url: str):
+    """Grade crop quality (Grade A, B, C) via Computer Vision for a specific lot.
+
+    Args:
+        lot_id: Unique identifier of the lot
+        photo_url: URL to the crop image for grading
+    """
+    return grade_photo(lot_id, photo_url)
+
+def optimize_delivery_route(order_id: str):
+    """Optimize a multi-pickup delivery route for a given order.
+
+    Args:
+        order_id: Unique identifier of the order
+    """
+    return optimize_route(order_id)
+
+def process_stage_payout(order_id: str, stage: str):
+    """Process escrow payout for farmers in a specific stage (pickup or delivery).
+
+    Args:
+        order_id: Unique identifier of the order
+        stage: Payment stage ('pickup' or 'delivery')
+    """
+    return process_payout(order_id, stage)
+
+TOOLS = [
+    create_farmer_listing,
+    cluster_active_lots,
+    grade_lot_quality,
+    optimize_delivery_route,
+    process_stage_payout
+]
 
 def call_tool(name: str, args: dict) -> dict:
     if name == "create_farmer_listing":
-        try:
-            res = requests.post(f"{BASE_URL}/api/farmer/listing", json=args, timeout=5)
-            if res.status_code == 200:
-                return res.json()
-        except Exception:
-            pass
-        return create_listing(
+        return create_farmer_listing(
             args.get("farmer_id"),
             args.get("transcript", ""),
             args.get("language", "hi"),
             args.get("lat", 22.6939),
             args.get("lng", 72.8618)
+        )
+    elif name == "cluster_active_lots":
+        return cluster_active_lots(
+            args.get("eps_km", 3.0),
+            args.get("min_points", 2)
+        )
+    elif name == "grade_lot_quality":
+        return grade_lot_quality(
+            args.get("lot_id"),
+            args.get("photo_url")
+        )
+    elif name == "optimize_delivery_route":
+        return optimize_delivery_route(
+            args.get("order_id")
+        )
+    elif name == "process_stage_payout":
+        return process_stage_payout(
+            args.get("order_id"),
+            args.get("stage")
         )
     return {"error": f"unknown tool {name}"}
 
@@ -60,7 +123,7 @@ def handle_query(user_id: str, message: str, message_type: str = "text", media_u
 
         if _genai_client:
             chat = _genai_client.chats.create(
-                model="gemini-3.6-flash",
+                model="gemini-1.5-flash",
                 config=types.GenerateContentConfig(
                     tools=TOOLS,
                 )
@@ -85,6 +148,8 @@ def handle_query(user_id: str, message: str, message_type: str = "text", media_u
             save_chat_history(user_id, new_history)
             return {"intent": "chat", "agent_called": None, "result": {"text": response_text}}
         else:
-            return {"intent": "chat", "agent_called": None, "result": {"text": f"Simulated AI Response: Received your request regarding '{message}'."}}
+            logger.warning("DEMO MODE: GEMINI_API_KEY not configured or client initialization failed; using simulated assistant response.")
+            return {"intent": "chat", "agent_called": None, "result": {"text": f"Simulated AI Response: Received your request regarding '{message}'.", "demo_mode": True}}
     except Exception as e:
-        return {"intent": "error", "agent_called": None, "result": {"error": str(e)}}
+        logger.warning(f"Orchestrator handle_query encountered error: {e}")
+        return {"intent": "error", "agent_called": None, "result": {"error": str(e), "demo_mode": True}}

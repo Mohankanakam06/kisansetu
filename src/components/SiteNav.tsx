@@ -15,6 +15,10 @@ import {
   ChevronDown,
   LogIn,
   Check,
+  Sparkles,
+  Zap,
+  TrendingUp,
+  Globe2,
 } from "lucide-react";
 import { Button } from "@/components/ui";
 
@@ -26,7 +30,16 @@ interface NavItem {
   icon?: any;
 }
 
-const NAV_ITEMS: NavItem[] = [
+// Public links shown when user is NOT logged in
+const PUBLIC_NAV: NavItem[] = [
+  { href: "/#features", label: "Features", labelHi: "सुविधाएं", labelCg: "सुविधा", icon: Sparkles },
+  { href: "/#how-it-works", label: "How It Works", labelHi: "कैसे काम करता है", labelCg: "कसे काम करत हे", icon: Zap },
+  { href: "/#savings", label: "Savings", labelHi: "बचत", labelCg: "बचत", icon: TrendingUp },
+  { href: "/about", label: "About", labelHi: "हमारे बारे में", labelCg: "हमर बारे मं", icon: Globe2 },
+];
+
+// Internal dashboard links shown when user IS logged in
+const DASHBOARD_NAV: NavItem[] = [
   { href: "/buyer", label: "Marketplace", labelHi: "मंडी बाजार", labelCg: "बाजार", icon: Store },
   { href: "/farmer", label: "Sell Produce", labelHi: "फसल बेचें", labelCg: "फसल बेचंव", icon: Sprout },
   { href: "/orders", label: "Logistics", labelHi: "लॉजिस्टिक्स", labelCg: "लॉजिस्टिक्स", icon: LayoutDashboard },
@@ -85,11 +98,13 @@ export default function SiteNav() {
     };
   }, [mobileMenuOpen]);
 
+  const activeNavItems = user ? DASHBOARD_NAV : PUBLIC_NAV;
+
   return (
     <nav aria-label="Primary" className="flex flex-1 items-center justify-end gap-2 sm:gap-6">
       {/* Desktop navigation links */}
       <div className="hidden md:flex items-center gap-1.5 lg:gap-2">
-        {NAV_ITEMS.map((item) => {
+        {activeNavItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
           return (
             <Link
@@ -149,13 +164,27 @@ export default function SiteNav() {
 
         {/* Login / Profile button */}
         {user ? (
-          <Link
-            href="/login"
-            className="flex items-center gap-1.5 h-9 px-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100 text-xs font-bold shadow-2xs transition-all"
-          >
-            <CircleUser className="h-4 w-4 text-emerald-700" />
-            <span className="hidden sm:inline max-w-[100px] truncate">{user.name || t("My Account", "मेरा खाता", "मोर खाता")}</span>
-          </Link>
+          <div className="flex items-center gap-1.5">
+            <Link
+              href="/profile"
+              className="flex items-center gap-1.5 h-9 px-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100 text-xs font-bold shadow-2xs transition-all"
+            >
+              <CircleUser className="h-4 w-4 text-emerald-700" />
+              <span className="hidden sm:inline max-w-[100px] truncate">{user.name || t("My Account", "मेरा खाता", "मोर खाता")}</span>
+            </Link>
+            <button
+              onClick={() => {
+                localStorage.removeItem("kisansetu_token");
+                localStorage.removeItem("kisansetu_user");
+                document.cookie = "kisansetu_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                window.location.href = "/login";
+              }}
+              className="h-9 px-2 rounded-xl border border-slate-200 bg-white text-slate-500 hover:bg-red-50 hover:text-red-600 text-xs font-bold shadow-2xs transition-all"
+              title={t("Logout", "लॉग आउट", "लॉग आउट")}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         ) : (
           <Link href="/login">
             <Button size="sm" variant="primary" className="h-9 px-3.5 text-xs font-bold rounded-xl shadow-xs">
@@ -197,7 +226,7 @@ export default function SiteNav() {
               </div>
 
               <div className="space-y-1.5 mb-6">
-                {NAV_ITEMS.map((item) => {
+                {activeNavItems.map((item) => {
                   const isActive = pathname === item.href;
                   const Icon = item.icon || Store;
                   return (
@@ -223,12 +252,28 @@ export default function SiteNav() {
                 <span>{t("Language:", "भाषा:", "भाषा:")}</span>
                 <span className="font-bold text-slate-800 uppercase">{language}</span>
               </div>
-              <Link href="/login" className="w-full block">
-                <Button variant="primary" className="w-full justify-center rounded-xl shadow-sm">
-                  <LogIn className="h-4 w-4 mr-2" />
-                  {user ? t("Manage Account", "खाता प्रबंधित करें", "खाता संभालव") : t("Sign In / Register", "साइन इन / रजिस्टर", "साइन इन / रजिस्टर")}
-                </Button>
-              </Link>
+              {user ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.removeItem("kisansetu_token");
+                    localStorage.removeItem("kisansetu_user");
+                    document.cookie = "kisansetu_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    window.location.href = "/login";
+                  }}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 py-2.5 text-xs font-bold text-red-700 shadow-2xs hover:bg-red-100 transition-all"
+                >
+                  <X className="h-4 w-4" />
+                  {t("Sign Out", "लॉग आउट करें", "लॉग आउट करव")} ({user.name || "User"})
+                </button>
+              ) : (
+                <Link href="/login" className="w-full block">
+                  <Button variant="primary" className="w-full justify-center rounded-xl shadow-sm">
+                    <LogIn className="h-4 w-4 mr-2" />
+                    {t("Sign In / Register", "साइन इन / रजिस्टर", "साइन इन / रजिस्टर")}
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>

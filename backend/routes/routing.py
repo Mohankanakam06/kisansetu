@@ -1,9 +1,10 @@
-# pyrefly: ignore [missing-import]
+import logging
 from typing import Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from ai.agents.routing import optimize_route, compare_individual_vs_consolidated
 
+logger = logging.getLogger("kisansetu.routing")
 router = APIRouter()
 
 
@@ -15,8 +16,9 @@ class OptimizeRequest(BaseModel):
 def optimize(body: OptimizeRequest):
     """Optimize delivery route for an order."""
     try:
-        return optimize_route(body.order_id)
+        return optimize_route(body.order_id or "order-01")
     except Exception as e:
+        logger.warning(f"Live ORS routing optimization failed ({e}). Returning fallback demo route.")
         return {
             "route_id": f"rt-{abs(hash(body.order_id or 'order-01')) % 1000}",
             "optimized_stops": [
@@ -29,7 +31,8 @@ def optimize(body: OptimizeRequest):
             "estimated_delivery_time_hrs": 12.0,
             "individual_trips_saved": 2,
             "mileage_saved_percent": 72,
-            "carbon_saved_kg": 140.5
+            "carbon_saved_kg": 140.5,
+            "demo_mode": True
         }
 
 
@@ -37,10 +40,12 @@ def optimize(body: OptimizeRequest):
 def compare(body: OptimizeRequest):
     """Compare individual vs consolidated routing for demo."""
     try:
-        return compare_individual_vs_consolidated(body.order_id)
+        return compare_individual_vs_consolidated(body.order_id or "order-01")
     except Exception as e:
+        logger.warning(f"Routing comparison failed ({e}). Returning baseline comparison simulation.")
         return {
             "individual": {"distance_km": 1500, "fuel_cost": 45000, "trips": 3},
             "consolidated": {"distance_km": 825, "fuel_cost": 25000, "trips": 1},
-            "savings_percent": 72
+            "savings_percent": 72,
+            "demo_mode": True
         }

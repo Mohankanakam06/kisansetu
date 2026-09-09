@@ -1,9 +1,12 @@
 import os
 import json
+import logging
 import requests
 from dotenv import load_dotenv
 from psycopg2.extras import Json
 from backend.db import get_conn, release_conn
+
+logger = logging.getLogger("kisansetu.routing_agent")
 
 load_dotenv()
 
@@ -16,6 +19,9 @@ def _call_ors_directions(coordinates: list, radius_m: int = 5000):
     Helper to call OpenRouteService directions endpoint with snap radius for rural coordinates.
     """
     api_key = os.environ.get("ORS_API_KEY", ORS_KEY)
+    if not api_key or api_key == "dummy_key":
+        raise ValueError("ORS_API_KEY not configured or is placeholder 'dummy_key'")
+
     headers = {
         "Authorization": api_key,
         "Content-Type": "application/json",
@@ -179,7 +185,7 @@ def compare_individual_vs_consolidated(order_id: str):
                     "duration_minutes": round(dur_s / 60.0, 1),
                 })
             except Exception as e:
-                pass
+                logger.warning(f"Failed calculating individual leg for listing {s.get('id')}: {e}")
 
         # Consolidated route
         consolidated_coords = [[s["lng"], s["lat"]] for s in valid_stops] + [buyer_coord]

@@ -29,6 +29,10 @@ import {
   Activity,
   Zap,
   Check,
+  Thermometer,
+  Battery,
+  UserCircle2,
+  Lock,
 } from "lucide-react";
 
 // Client-only dynamic Leaflet Map to avoid SSR errors
@@ -59,6 +63,10 @@ export default function OrdersPage() {
   const [isSettling, setIsSettling] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [routingViewMode, setRoutingViewMode] = useState<"ai_clustered" | "traditional">("ai_clustered");
+  const [otpDispatch, setOtpDispatch] = useState("");
+  const [otpDelivery, setOtpDelivery] = useState("");
+  const [verificationLoading, setVerificationLoading] = useState(false);
+  const [driverETA, setDriverETA] = useState(25); // minutes
 
   const loadOrders = async () => {
     try {
@@ -75,6 +83,32 @@ export default function OrdersPage() {
   useEffect(() => {
     loadOrders();
   }, []);
+
+  // Simulate driver ETA countdown
+  useEffect(() => {
+    if (driverETA <= 0) return;
+    const timer = setInterval(() => {
+      setDriverETA((prev) => Math.max(0, prev - 1));
+    }, 60000); // 1 min
+    return () => clearInterval(timer);
+  }, [driverETA]);
+
+  const handleVerifyOTP = async (type: "pickup" | "delivery") => {
+    const otp = type === "pickup" ? otpDispatch : otpDelivery;
+    if (!otp || otp.length < 4) return;
+    setVerificationLoading(true);
+    // Simulate verification
+    setTimeout(() => {
+      if (type === "pickup") {
+        handleTriggerPayout(selectedOrder?.id!, "pickup");
+      } else {
+        handleTriggerPayout(selectedOrder?.id!, "delivery");
+      }
+      setVerificationLoading(false);
+      if (type === "pickup") setOtpDispatch("");
+      else setOtpDelivery("");
+    }, 1500);
+  };
 
   const filteredOrders = useMemo(() => {
     if (statusFilter === "All") return orders;
@@ -106,6 +140,12 @@ export default function OrdersPage() {
       setIsSettling(false);
     }
   };
+
+  const currentStops = routeData?.stops || [
+    { lat: 21.2514, lng: 81.6296, label: "Mandi Pickup Point 1 (Birgaon)", time: "10:30 AM", status: "completed", kg: "850 kg" },
+    { lat: 21.1938, lng: 81.65, label: "Village Farm Pickup 2 (Abhanpur)", time: "11:15 AM", status: "in_progress", kg: "1,200 kg" },
+    { lat: 21.23, lng: 81.67, label: "Central Buyer Hub (Raipur Mandi)", time: "12:45 PM", status: "pending", kg: "Drop 2,050 kg" },
+  ];
 
   return (
     <div className="flex-1 flex flex-col bg-[#f8faf9] min-h-[calc(100vh-4rem)]">
@@ -364,15 +404,92 @@ export default function OrdersPage() {
                     : null
                 }
                 routeGeojson={routeData?.route_geojson}
-                stops={
-                  routeData?.stops || [
-                    { lat: 21.2514, lng: 81.6296, label: "Mandi Pickup Point 1 (Birgaon)" },
-                    { lat: 21.1938, lng: 81.65, label: "Village Farm Pickup 2 (Abhanpur)" },
-                    { lat: 21.23, lng: 81.67, label: "Central Buyer Hub (Raipur)" },
-                  ]
-                }
+                stops={currentStops}
                 height="h-[300px] sm:h-[380px] md:h-[460px]"
               />
+            </div>
+
+            {/* Live Vehicle Telemetry Banner */}
+            <div className="p-4 bg-slate-900 text-white border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <div className="flex items-center gap-2">
+                <UserCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                <div>
+                  <p className="text-[10px] text-slate-400 font-medium">{t("Assigned Driver", "नियुक्त चालक", "चालक")}</p>
+                  <p className="font-bold text-slate-100">Rajesh Sahu (CG-04)</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-amber-400 shrink-0" />
+                <div>
+                  <p className="text-[10px] text-slate-400 font-medium">{t("Estimated ETA", "अनुमानित समय", "पहुंचे के समै")}</p>
+                  <p className="font-bold text-slate-100">{driverETA} {t("mins remaining", "मिनट शेष", "मिनट बचे हे")}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Thermometer className="h-4 w-4 text-blue-400 shrink-0" />
+                <div>
+                  <p className="text-[10px] text-slate-400 font-medium">{t("Reefer Pod Temp", "शीत कक्ष तापमान", "ठंडा बक्सा तापमान")}</p>
+                  <p className="font-bold text-slate-100">+4.2°C (Optimal)</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Battery className="h-4 w-4 text-emerald-400 shrink-0" />
+                <div>
+                  <p className="text-[10px] text-slate-400 font-medium">{t("EV Battery / Range", "ईवी बैटरी", "बैटरी")}</p>
+                  <p className="font-bold text-slate-100">84% • 140 km</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Waypoints & Route Timeline */}
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Route className="h-4 w-4 text-emerald-700" />
+                <h3 className="font-display text-sm font-bold text-slate-900">
+                  {t("Route Waypoints & Pickup Progress", "रूट वेपॉइंट्स एवं पिकअप प्रगति", "रस्ता वेपॉइंट्स आ पिकअप प्रगति")}
+                </h3>
+              </div>
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                {t("VRP-TW Single Loop", "VRP-TW सिंगल लूप", "VRP-TW सिंगल लूप")}
+              </span>
+            </div>
+
+            <div className="space-y-2.5 pt-1">
+              {currentStops.map((stop: any, idx: number) => (
+                <div
+                  key={idx}
+                  className={`flex items-center justify-between p-3 rounded-xl border text-xs transition-colors ${
+                    stop.status === "completed"
+                      ? "bg-emerald-50/60 border-emerald-200 text-emerald-950"
+                      : stop.status === "in_progress"
+                      ? "bg-amber-50/70 border-amber-300 text-amber-950"
+                      : "bg-slate-50 border-slate-200 text-slate-600"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white border border-slate-200 text-xs font-bold text-slate-800 shrink-0 shadow-xs">
+                      {idx + 1}
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900">{stop.label}</p>
+                      <p className="text-[10px] text-slate-500">{stop.kg} • {t("Estimated", "अनुमानित", "समै")}: {stop.time}</p>
+                    </div>
+                  </div>
+                  <span
+                    className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                      stop.status === "completed"
+                        ? "bg-emerald-600 text-white"
+                        : stop.status === "in_progress"
+                        ? "bg-amber-500 text-white animate-pulse"
+                        : "bg-slate-200 text-slate-600"
+                    }`}
+                  >
+                    {stop.status === "completed" ? t("Done", "सम्पन्न", "हो गे") : stop.status === "in_progress" ? t("En Route", "रास्ते में", "रस्ता म हे") : t("Pending", "प्रतीक्षारत", "बाकी")}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -395,11 +512,8 @@ export default function OrdersPage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button
-                  onClick={() => handleTriggerPayout(selectedOrder.id, "pickup")}
-                  disabled={isSettling}
-                  className="rounded-xl border border-amber-300 bg-amber-50/80 p-4 text-left transition hover:bg-amber-100/70 active:scale-[0.98]"
-                >
+                {/* Stage 1 */}
+                <div className="rounded-xl border border-amber-300 bg-amber-50/80 p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-800">
                       {t("Stage 1 • Pickup Verified", "चरण 1 • पिकअप सत्यापित", "पड़ाव 1 • गाड़ी म लोड")}
@@ -408,17 +522,44 @@ export default function OrdersPage() {
                       40% {t("Advance", "अग्रिम", "अग्रिम")}
                     </span>
                   </div>
-                  <p className="mt-2 text-base font-black text-slate-900">
+                  <p className="text-base font-black text-slate-900">
                     ₹{(selectedOrder.total_amount * 0.4).toLocaleString("en-IN")}
                   </p>
-                  <p className="text-xs text-slate-600 mt-0.5">{t("Disburses to farmer UPI upon vehicle loading scan", "वाहन लोडिंग स्कैन पर किसान के UPI में जारी", "गाड़ी म लोड होत ही किसान के UPI म ट्रांसफर")}</p>
-                </button>
+                  <p className="text-xs text-slate-600 leading-tight">
+                    {t("Disburses to farmer UPI upon vehicle loading scan", "वाहन लोडिंग स्कैन पर किसान के UPI में जारी", "गाड़ी म लोड होत ही किसान के UPI म ट्रांसफर")}
+                  </p>
+                  <div className="space-y-2 pt-1 border-t border-amber-200">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Farmer OTP (e.g. 4821)"
+                        value={otpDispatch}
+                        onChange={(e) => setOtpDispatch(e.target.value)}
+                        className="w-full rounded-lg border border-amber-300 bg-white px-2.5 py-1.5 text-xs font-mono font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                      />
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold px-3 shrink-0"
+                        disabled={verificationLoading || isSettling}
+                        isLoading={verificationLoading}
+                        onClick={() => handleVerifyOTP("pickup")}
+                      >
+                        {t("Disburse", "जारी करें", "भेजव")}
+                      </Button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setOtpDispatch("4821")}
+                      className="text-[10px] font-bold text-amber-800 hover:underline"
+                    >
+                      ⚡ {t("Demo Quick-fill: 4821", "डेमो भरें: 4821", "डेमो भरव: 4821")}
+                    </button>
+                  </div>
+                </div>
 
-                <button
-                  onClick={() => handleTriggerPayout(selectedOrder.id, "delivery")}
-                  disabled={isSettling}
-                  className="rounded-xl border border-emerald-300 bg-emerald-50/80 p-4 text-left transition hover:bg-emerald-100/70 active:scale-[0.98]"
-                >
+                {/* Stage 2 */}
+                <div className="rounded-xl border border-emerald-300 bg-emerald-50/80 p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800">
                       {t("Stage 2 • Buyer Acceptance", "चरण 2 • खरीदार स्वीकृति", "पड़ाव 2 • खरीदार ले मिल गे")}
@@ -427,11 +568,41 @@ export default function OrdersPage() {
                       60% {t("Final", "अंतिम", "बाकी")}
                     </span>
                   </div>
-                  <p className="mt-2 text-base font-black text-slate-900">
+                  <p className="text-base font-black text-slate-900">
                     ₹{(selectedOrder.total_amount * 0.6).toLocaleString("en-IN")}
                   </p>
-                  <p className="text-xs text-slate-600 mt-0.5">{t("Disburses remaining amount after QC weigh-in", "गुणवत्ता व वजन जांच के बाद शेष राशि जारी", "तौल आ गुणवत्ता जांच के बाद बाकी पईसा जारी")}</p>
-                </button>
+                  <p className="text-xs text-slate-600 leading-tight">
+                    {t("Disburses remaining amount after QC weigh-in", "गुणवत्ता व वजन जांच के बाद शेष राशि जारी", "तौल आ गुणवत्ता जांच के बाद बाकी पईसा जारी")}
+                  </p>
+                  <div className="space-y-2 pt-1 border-t border-emerald-200">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Buyer OTP (e.g. 9104)"
+                        value={otpDelivery}
+                        onChange={(e) => setOtpDelivery(e.target.value)}
+                        className="w-full rounded-lg border border-emerald-300 bg-white px-2.5 py-1.5 text-xs font-mono font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                      />
+                      <Button
+                        size="sm"
+                        variant="primary"
+                        className="rounded-lg text-xs font-bold px-3 shrink-0 shadow-sm"
+                        disabled={verificationLoading || isSettling}
+                        isLoading={verificationLoading}
+                        onClick={() => handleVerifyOTP("delivery")}
+                      >
+                        {t("Release", "स्वीकारें", "स्वीकार करव")}
+                      </Button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setOtpDelivery("9104")}
+                      className="text-[10px] font-bold text-emerald-800 hover:underline"
+                    >
+                      ⚡ {t("Demo Quick-fill: 9104", "डेमो भरें: 9104", "डेमो भरव: 9104")}
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {payoutData && (

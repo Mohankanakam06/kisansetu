@@ -6,6 +6,7 @@ import MobileBottomBar from "@/components/MobileBottomBar";
 import RegisterSW from "@/components/RegisterSW";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import HydrationGuard from "@/components/HydrationGuard";
+import DemoModeBanner from "@/components/DemoModeBanner";
 import { LanguageProvider } from "@/lib/language";
 import "./globals.css";
 
@@ -166,6 +167,7 @@ export default function RootLayout({
           </header>
 
           {/* Main Content Area */}
+          <DemoModeBanner />
           <main id="main-content" className="flex-1 flex flex-col pt-[5.75rem] pb-24 md:pb-0">
             {children}
             <RegisterSW />

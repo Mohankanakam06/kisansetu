@@ -1,4 +1,7 @@
+import logging
 from backend.db import get_conn, release_conn
+
+logger = logging.getLogger("kisansetu.settlement")
 
 
 def process_payout(order_id: str, stage: str):
@@ -17,6 +20,7 @@ def process_payout(order_id: str, stage: str):
 
         # If running in mock mode or order not found in DB
         if not order:
+            logger.warning(f"DEMO MODE: Order '{order_id}' not found in database; generating synthetic payout calculation.")
             unit_price = 22.0
             order_qty = 2400.0
             full_order_amount = order_qty * unit_price
@@ -33,6 +37,7 @@ def process_payout(order_id: str, stage: str):
                 "disbursed_total_inr": round(full_order_amount * disbursement_ratio, 2),
                 "payment_status": payment_status,
                 "utr_number": f"UTR-SBIN{abs(hash(order_id + stage)) % 1000000000:09d}",
+                "demo_mode": True,
                 "payments": [
                     {
                         "payment_id": f"pay-{abs(hash(order_id)) % 1000}",

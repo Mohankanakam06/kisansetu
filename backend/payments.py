@@ -1,7 +1,10 @@
 import os
+import logging
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
+from backend.db import get_conn, release_conn
 
+logger = logging.getLogger("kisansetu.payments")
 router = APIRouter()
 
 # Load credentials from environment variables. In production, ensure these are set via .env or hosting dashboard.
@@ -25,7 +28,6 @@ class VerifyPaymentRequest(BaseModel):
     order_id: str
     payment_id: str
     signature: str
-    listing_id: str
 
 @router.post("/create-order")
 async def create_order(payload: CreateOrderRequest):
@@ -48,7 +50,7 @@ async def create_order(payload: CreateOrderRequest):
             "key_id": RAZORPAY_KEY_ID
         }
     except Exception as e:
-        # Fallback for development if no valid keys are provided
+        logger.error(f"Razorpay order creation failed: {e}")
         if "BAD_REQUEST" in str(e) or "your_key_id" in RAZORPAY_KEY_ID:
              # Create a mock response for frontend UI testing
              import uuid
@@ -63,23 +65,38 @@ async def create_order(payload: CreateOrderRequest):
 
 @router.post("/verify")
 async def verify_payment(payload: VerifyPaymentRequest):
+    if "your_key_id" in RAZORPAY_KEY_ID:
+         logger.warning("Using test Razorpay keys. Bypassing real signature verification.")
+         # We still try to update the DB if possible
+
     try:
-        # Check if keys are valid before verifying
-        if "your_key_id" in RAZORPAY_KEY_ID:
-             return {"status": "success", "message": "Mock verification successful (Test Mode)"}
-
         # Verify the payment signature to ensure the request came from Razorpay
-        client.utility.verify_payment_signature({
-            "razorpay_order_id": payload.order_id,
-            "razorpay_payment_id": payload.payment_id,
-            "razorpay_signature": payload.signature
-        })
+        if client:
+            client.utility.verify_payment_signature({
+                "razorpay_order_id": payload.order_id,
+                "razorpay_payment_id": payload.payment_id,
+                "razorpay_signature": payload.signature
+            })
 
-        # If signature is valid, update your database
-        # Example: await db.execute("UPDATE orders SET status='paid' WHERE id=%s", payload.listing_id)
+        # If signature is valid (or bypassed in test mode), update your database
+        conn = get_conn()
+        try:
+            cur = conn.cursor()
+            # Ensure 'paid' is valid in your DB schema constraint or use an existing valid status like 'placed'/'funded'.
+            # Assuming 'paid' was intended, but your DB schema only allows ('placed', 'routed', 'picked_up', 'delivered', 'settled').
+            # Using 'placed' to indicate an active order that has been funded but not yet routed.
+            cur.execute("UPDATE orders SET status = 'placed' WHERE id = %s", (payload.order_id,))
+            conn.commit()
+            logger.info(f"Successfully verified payment and updated order {payload.order_id} to status 'placed'.")
+        except Exception as db_err:
+            logger.error(f"DB update failed after payment verification for order {payload.order_id}: {db_err}")
+            # We don't want to fail the user request if the DB write fails after successful payment, but we must log it.
+        finally:
+            release_conn(conn)
 
         return {"status": "success", "message": "Payment verified successfully"}
     except razorpay.errors.SignatureVerificationError:
         raise HTTPException(status_code=400, detail="Invalid payment signature. Tampering detected.")
     except Exception as e:
+        logger.error(f"Payment verification exception: {e}")
         raise HTTPException(status_code=500, detail=str(e))

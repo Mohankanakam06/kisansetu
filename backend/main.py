@@ -41,11 +41,13 @@ app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
 
 
 # Health check
+@app.get("/api/health")
+@app.get("/health")
 @app.get("/")
-def root():
+def health_check():
     return {
         "service": "Kisan Setu API",
-        "status": "running",
+        "status": "healthy",
         "endpoints": [
             "/api/lots",
             "/api/internal/aggregate",
@@ -57,7 +59,11 @@ def root():
             "/api/auth/verify-otp",
             "/api/auth/register",
             "/api/auth/me",
-            "/api/farmer/listing"
+            "/api/farmer/listing",
+            "/api/orchestrator/query",
+            "/api/quality/grade",
+            "/api/payments/create-order",
+            "/api/payments/verify"
         ]
     }
 

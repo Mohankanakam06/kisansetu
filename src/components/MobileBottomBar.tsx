@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -8,19 +8,37 @@ import {
   Sprout,
   Wallet,
   Menu,
-  Sparkles,
 } from "lucide-react";
 import { useLanguage } from "@/lib/language";
 
 export default function MobileBottomBar() {
   const pathname = usePathname();
   const { t } = useLanguage();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("kisansetu_user");
+      if (stored) {
+        setUser(JSON.parse(stored));
+      } else {
+        setUser(null);
+      }
+    } catch (e) {
+      setUser(null);
+    }
+  }, [pathname]);
 
   const handleOpenDrawer = () => {
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("toggle-mobile-drawer"));
     }
   };
+
+  // Hide on public auth pages and when not logged in
+  if (!user || pathname === "/login" || pathname === "/register") {
+    return null;
+  }
 
   const navItems = [
     {
@@ -53,7 +71,7 @@ export default function MobileBottomBar() {
   return (
     <nav
       aria-label="Mobile Bottom Bar"
-      className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white/95 backdrop-blur-lg border-t border-slate-200/90 shadow-[0_-4px_24px_rgba(0,0,0,0.07)] pb-[env(safe-area-inset-bottom)]"
+      className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white/95 backdrop-blur-lg border-t border-slate-200/90 shadow-[0_-4px_24px_rgba(0,0,0,0.07)] pb-[env(safe-area-inset-bottom)] animate-in slide-in-from-bottom duration-200"
     >
       <div className="flex h-16 items-center justify-around px-2 relative max-w-lg mx-auto">
         {navItems.slice(0, 2).map((item) => {
