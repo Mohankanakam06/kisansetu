@@ -7,6 +7,10 @@ import {
   ShieldCheck,
   User,
   Phone,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
   MapPin,
   Grid3X3,
   CheckCircle2,
@@ -23,6 +27,9 @@ export default function RegisterPage() {
   const [form, setForm] = useState({
     name: "",
     phone: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
     role: "farmer" as "farmer" | "buyer",
     language: language || "hi",
     location: "",
@@ -30,6 +37,7 @@ export default function RegisterPage() {
   });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const set = (key: keyof typeof form, value: string) => setForm((f) => ({ ...f, [key]: value }));
 
@@ -38,6 +46,22 @@ export default function RegisterPage() {
     if (!/^[6-9]\d{9}$/.test(form.phone)) return t("Enter a valid 10-digit mobile number.", "कृपया वैध 10-अंकीय भारतीय मोबाइल नंबर दर्ज करें।", "मान्य 10 अंक के मोबाइल नंबर डारव।");
     if (form.aadhaar && form.aadhaar.replace(/\s/g, "").length !== 12)
       return t("Aadhaar must be 12 digits (optional).", "आधार 12 अंकों का होना चाहिए (वैकल्पिक)।", "आधार 12 अंक के होय बर चाही (ऐच्छिक)।");
+
+    // Email validation
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      return t("Enter a valid email address.", "कृपया एक वैध ईमेल पता दर्ज करें।", "सही ईमेल पता डारव।");
+    }
+
+    // Password validation if email is set
+    if (form.email && !form.password) {
+      return t("Password is required for email login.", "ईमेल लॉगिन के लिए पासवर्ड आवश्यक है।", "ईमेल लॉगिन बर पासवर्ड जरूरी हे।");
+    }
+
+    if (form.password) {
+      if (form.password.length < 6) return t("Password must be at least 6 characters.", "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए।", "पासवर्ड कम से कम 6 अक्षर के होय बर चाही।");
+      if (form.password !== form.confirmPassword) return t("Passwords do not match.", "पासवर्ड मेल नहीं खाते।", "पासवर्ड नइ मिलत हे।");
+    }
+
     return "";
   };
 
@@ -188,6 +212,66 @@ export default function RegisterPage() {
                   placeholder="98765 43210"
                   className="w-full bg-transparent px-2.5 py-2.5 text-sm text-slate-900 focus:outline-none"
                 />
+              </div>
+            </div>
+
+            <div className="relative">
+              <label htmlFor="email" className="block text-xs font-semibold text-slate-700 mb-1.5">
+                {t("Email address (optional for OTP, required for password login)", "ईमेल पता (OTP के लिए वैकल्पिक, पासवर्ड लॉगिन हेतु आवश्यक)", "ईमेल पता (OTP बर ऐच्छिक, पासवर्ड लॉगिन बर जरूरी)")}
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  id="email"
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => set("email", e.target.value)}
+                  placeholder={t("user@example.com", "user@example.com", "user@example.com")}
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm text-slate-900 focus:outline-none focus:border-emerald-600"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="relative">
+                <label htmlFor="password" className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  {t("Password", "पासवर्ड", "पासवर्ड")}
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={form.password}
+                    onChange={(e) => set("password", e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-8 text-sm text-slate-900 focus:outline-none focus:border-emerald-600"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="relative">
+                <label htmlFor="confirmPassword" className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  {t("Confirm password", "पासवर्ड पुष्टि करें", "पासवर्ड दोबारा डारव")}
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    id="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    value={form.confirmPassword}
+                    onChange={(e) => set("confirmPassword", e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm text-slate-900 focus:outline-none focus:border-emerald-600"
+                  />
+                </div>
               </div>
             </div>
 

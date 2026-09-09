@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   phone TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE,
+  password_hash TEXT,
   role TEXT NOT NULL CHECK (role IN ('farmer', 'buyer')),
   language_pref TEXT DEFAULT 'hi',
   location GEOGRAPHY(POINT),

@@ -102,13 +102,17 @@ class MockCursor:
         if "INSERT INTO users" in q:
             uid = params[0]
             name = params[1]
-            phone = params[2] if len(params) > 2 else "9876543210"
-            role = params[3] if len(params) > 3 else "farmer"
-            lang = params[4] if len(params) > 4 else "hi"
+            phone = params[2]
+            email = params[3]
+            pwd_hash = params[4]
+            role = params[5]
+            lang = params[6]
             self.db.users[uid] = {
                 "id": uid,
                 "name": name,
                 "phone": phone,
+                "email": email,
+                "password_hash": pwd_hash,
                 "role": role,
                 "language_pref": lang,
                 "lat": 22.6939,
@@ -118,6 +122,7 @@ class MockCursor:
                 "id": uid,
                 "name": name,
                 "phone": phone,
+                "email": email,
                 "role": role,
                 "language_pref": lang
             }]
@@ -617,7 +622,10 @@ def test_auth_flow():
     1. Send OTP for mobile number
     2. Verify OTP and receive JWT token
     3. Access /api/auth/me with Bearer token
-    4. Register a new buyer account and auto-login
+    4. Register a new buyer account with email & password and auto-login
+    5. Test Email & Password login with the newly created account
+    6. Verify email uniqueness check (409 Conflict)
+    7. Verify wrong password rejection (401)
     """
     with patch("backend.db.get_conn", side_effect=get_mock_conn), \
          patch("backend.routes.auth.get_conn", side_effect=get_mock_conn):
@@ -648,10 +656,12 @@ def test_auth_flow():
         me_data = me_res.json()
         assert me_data["user"]["phone"] == "9876543210"
 
-        # Step 4: Register new user
+        # Step 4: Register new user with Email & Password
         reg_res = client.post("/api/auth/register", json={
             "name": "Anil Sharma",
             "phone": "9123456780",
+            "email": "anil.sharma@example.com",
+            "password": "SecurePassword123",
             "role": "buyer",
             "language": "hi",
             "location": "Raipur Central Mandi"
@@ -660,5 +670,34 @@ def test_auth_flow():
         reg_data = reg_res.json()
         assert reg_data["success"] is True
         assert reg_data["user"]["name"] == "Anil Sharma"
+        assert reg_data["user"]["email"] == "anil.sharma@example.com"
         assert reg_data["redirect"] == "/buyer"
+
+        # Step 5: Test Email & Password login for newly registered user
+        login_res = client.post("/api/auth/login", json={
+            "email": "anil.sharma@example.com",
+            "password": "SecurePassword123"
+        })
+        assert login_res.status_code == 200
+        login_data = login_res.json()
+        assert login_data["success"] is True
+        assert login_data["user"]["name"] == "Anil Sharma"
+        assert "token" in login_data
+
+        # Step 6: Verify Email uniqueness check (409 Conflict)
+        duplicate_res = client.post("/api/auth/register", json={
+            "name": "Different Name",
+            "phone": "9999988888",
+            "email": "anil.sharma@example.com",
+            "password": "AnotherPassword456",
+            "role": "buyer"
+        })
+        assert duplicate_res.status_code == 409
+
+        # Step 7: Verify Wrong Password rejection (401)
+        bad_login_res = client.post("/api/auth/login", json={
+            "email": "anil.sharma@example.com",
+            "password": "WrongPassword123"
+        })
+        assert bad_login_res.status_code == 401
 
