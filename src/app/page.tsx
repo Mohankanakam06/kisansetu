@@ -42,7 +42,7 @@ export default function Home() {
       farmers: 4,
       grade: "Grade A (94%)",
       hub: "Raipur Hub, CG",
-      badge: "🔥 High Demand",
+      badge: "High demand",
     },
     {
       id: "lot-102",
@@ -54,7 +54,7 @@ export default function Home() {
       farmers: 6,
       grade: "Grade A (92%)",
       hub: "Lasalgaon Hub, MH",
-      badge: "⚡ 1-Truck Ready",
+      badge: "1-truck ready",
     },
     {
       id: "lot-103",
@@ -66,7 +66,7 @@ export default function Home() {
       farmers: 3,
       grade: "Grade B (88%)",
       hub: "Bhilai Center, CG",
-      badge: "🌱 Fresh Harvest",
+      badge: "Fresh harvest",
     },
     {
       id: "lot-104",
@@ -78,7 +78,7 @@ export default function Home() {
       farmers: 2,
       grade: "Grade A (96%)",
       hub: "Tilda APMC, CG",
-      badge: "✨ Premium Export",
+      badge: "Premium export",
     },
   ];
 
@@ -109,12 +109,12 @@ export default function Home() {
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-bold text-emerald-900 shadow-2xs">
               <Sparkles className="h-3.5 w-3.5 text-emerald-600 animate-pulse" />
-              <span>{t("SIH 2026 Problem Statement 26033 · AI Direct-to-Market Engine", "SIH 2026 समस्या कथन 26033 · AI प्रत्यक्ष कृषि बाज़ार", "SIH 2026 समस्या बिबरन 26033 · AI सीधा बाज़ार")}</span>
+              <span>{t("SIH 2026 Problem Statement 26033 · Direct wholesale operations", "SIH 2026 समस्या कथन 26033 · AI प्रत्यक्ष कृषि बाज़ार", "SIH 2026 समस्या बिबरन 26033 · AI सीधा बाज़ार")}</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-950 font-display leading-[1.12] max-w-3xl mx-auto">
               {t(
-                "Outperforming Mandis & Middlemen with 4 Autonomous AI Agents.",
+                "A clearer route from farm gate to wholesale buyer.",
                 "4 स्वायत्त AI एजेंटों के साथ मंडियों और बिचौलियों को पीछे छोड़ें।",
                 "4 AI एजेंट के संग मंडी आ बिचौलिया ला पाछू छोड़व।"
               )}
@@ -122,7 +122,7 @@ export default function Home() {
 
             <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
               {t(
-                "KisanSetu replaces 3 layers of mandi middlemen with DBSCAN geo-clustering, Gemini photo grading, 1-truck smart routing, and guaranteed 2-stage milestone escrow.",
+                "KisanSetu brings verified produce, coordinated pickup, and milestone-based settlement into one dependable trade workflow.",
                 "KisanSetu 3 स्तरीय मंडी बिचौलियों को DBSCAN क्लस्टरिंग, Gemini फोटो ग्रेडिंग, 1-ट्रक स्मार्ट रूटिंग और गारंटीशुदा 2-चरणीय माइलस्टोन एस्क्रो से बदलता है।",
                 "KisanSetu 3 परत के बिचौलिया ला DBSCAN क्लस्टरिंग, Gemini फोटो जांच, 1-गाड़ी रूटिंग आ 2-चरणीय एस्क्रो भुगतान ले बदल देथे।"
               )}
@@ -132,7 +132,7 @@ export default function Home() {
               <Link href="/farmer" className="w-full sm:w-auto">
                 <Button size="lg" variant="primary" className="w-full sm:w-auto px-7 py-3.5 text-sm font-bold shadow-glow flex items-center justify-center gap-2">
                   <Mic className="h-5 w-5" />
-                  {t("List Produce with AI Voice", "AI आवाज़ से फसल दर्ज करें", "AI आवाज ले फसल दर्ज करव")}
+                  {t("Create a produce listing", "AI आवाज़ से फसल दर्ज करें", "AI आवाज ले फसल दर्ज करव")}
                 </Button>
               </Link>
               <Link href="/buyer" className="w-full sm:w-auto">
@@ -196,10 +196,10 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-100/60 px-3 py-1 rounded-full border border-emerald-200">
-              {t("Competitive Architectural Benchmark", "प्रतिस्पर्धी वास्तुकला बेंचमार्क", "प्रतिस्पर्धी बेंचमार्क")}
+              {t("Why teams use KisanSetu", "प्रतिस्पर्धी वास्तुकला बेंचमार्क", "प्रतिस्पर्धी बेंचमार्क")}
             </span>
             <h2 className="text-3xl font-extrabold text-slate-950 font-display mt-3">
-              {t("How KisanSetu Outperforms DeHaat & Ninjacart", "KisanSetu DeHaat और Ninjacart से बेहतर कैसे काम करता है", "KisanSetu DeHaat आ Ninjacart ले बढ़िया कइसे हे")}
+              {t("One operating view for every handoff", "KisanSetu DeHaat और Ninjacart से बेहतर कैसे काम करता है", "KisanSetu DeHaat आ Ninjacart ले बढ़िया कइसे हे")}
             </h2>
             <p className="text-sm text-slate-600 mt-2">
               {t(
@@ -245,7 +245,7 @@ export default function Home() {
                 </tr>
                 <tr>
                   <td className="p-4 font-bold text-slate-900">{t("Logistics Dispatch", "लॉजिस्टिक्स प्रेषण", "गाड़ी रवानगी")}</td>
-                  <td className="p-4 text-slate-600">{t("Individual farmer tractor trips", "अलग-अलग किसान ट्रैक्टर यात्रा", "हर किसान के अलग ट्रैक्टर")}</td>
+                  <td className="p-4 text-slate-600">{t("Individual farmer tractor trips", "अलग-अलग किसान ट���रैक्टर यात्रा", "हर किसान के अलग ट्रैक्टर")}</td>
                   <td className="p-4 text-slate-600">{t("Hub-and-spoke warehousing", "हब-एंड-स्पोक वेयरहाउसिंग", "हब ले गोदाम")}</td>
                   <td className="p-4 bg-emerald-50/50 font-bold text-emerald-800">
                     <span className="inline-flex items-center gap-1">

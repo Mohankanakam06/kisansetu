@@ -111,10 +111,10 @@ export default function SiteNav() {
               key={item.href}
               href={item.href}
               aria-current={isActive ? "page" : undefined}
-              className={`text-xs lg:text-sm font-bold px-3.5 py-1.5 rounded-full transition-all duration-200 ${
+              className={`text-xs lg:text-sm font-semibold px-3 py-2 rounded-md transition-colors duration-200 ${
                 isActive
-                  ? "bg-emerald-100/90 text-emerald-950 font-extrabold shadow-xs"
-                  : "text-slate-600 hover:text-emerald-800 hover:bg-slate-100/80"
+                  ? "bg-primary-container text-on-primary-container font-bold"
+                  : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
               }`}
             >
               {getLabel(item)}
@@ -215,8 +215,8 @@ export default function SiteNav() {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-emerald-700 flex items-center justify-center text-white font-bold">
-                    🌾
+                  <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-on-primary font-bold text-xs tracking-tight">
+                    KS
                   </div>
                   <span className="font-display font-black text-emerald-950 text-lg">KisanSetu</span>
                 </div>

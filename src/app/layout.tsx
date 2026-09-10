@@ -79,56 +79,56 @@ export default function RootLayout({
             <div className="overflow-hidden flex-1 relative flex items-center">
               <div className="animate-marquee whitespace-nowrap flex items-center gap-8 py-1">
                 <span className="flex items-center gap-1.5">
-                  <span>🍅 Tomato (Raipur Mandi):</span>
+                  <span>Tomato · Raipur Mandi:</span>
                   <span className="font-bold text-white">₹24/kg</span>
                   <span className="text-emerald-400 font-bold text-[10px]">▲ +₹2.50 (+11.6%)</span>
                 </span>
                 <span className="text-emerald-700 font-bold">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🧅 Onion (Lasalgaon APMC):</span>
+                  <span>Onion · Lasalgaon APMC:</span>
                   <span className="font-bold text-white">₹28/kg</span>
                   <span className="text-emerald-400 font-bold text-[10px]">▲ +₹1.00 (+3.7%)</span>
                 </span>
                 <span className="text-emerald-700 font-bold">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🥔 Potato (Bhilai Rural):</span>
+                  <span>Potato · Bhilai Rural:</span>
                   <span className="font-bold text-white">₹18/kg</span>
                   <span className="text-amber-300 font-bold text-[10px]">▼ -₹0.50 (-2.7%)</span>
                 </span>
                 <span className="text-emerald-700 font-bold">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🌶️ Chilli (Tilda APMC):</span>
+                  <span>Chilli · Tilda APMC:</span>
                   <span className="font-bold text-white">₹65/kg</span>
                   <span className="text-emerald-400 font-bold text-[10px]">▲ +₹4.00 (+6.5%)</span>
                 </span>
                 <span className="text-emerald-700 font-bold">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🌾 Wheat (Durg Center):</span>
+                  <span>Wheat · Durg Center:</span>
                   <span className="font-bold text-white">₹24.50/kg</span>
                   <span className="text-emerald-400 font-bold text-[10px]">▲ +₹0.80 (+3.3%)</span>
                 </span>
                 <span className="text-emerald-700 font-bold">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🫘 Soybean (Nagpur Hub):</span>
+                  <span>Soybean · Nagpur Hub:</span>
                   <span className="font-bold text-white">₹44/kg</span>
                   <span className="text-emerald-400 font-bold text-[10px]">▲ +₹1.50 (+3.5%)</span>
                 </span>
                 {/* Duplicate for seamless infinite loop */}
                 <span className="text-emerald-700 font-bold">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🍅 Tomato (Raipur Mandi):</span>
+                  <span>Tomato · Raipur Mandi:</span>
                   <span className="font-bold text-white">₹24/kg</span>
                   <span className="text-emerald-400 font-bold text-[10px]">▲ +₹2.50 (+11.6%)</span>
                 </span>
                 <span className="text-emerald-700 font-bold">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🧅 Onion (Lasalgaon APMC):</span>
+                  <span>Onion · Lasalgaon APMC:</span>
                   <span className="font-bold text-white">₹28/kg</span>
                   <span className="text-emerald-400 font-bold text-[10px]">▲ +₹1.00 (+3.7%)</span>
                 </span>
                 <span className="text-emerald-700 font-bold">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🥔 Potato (Bhilai Rural):</span>
+                  <span>Potato · Bhilai Rural:</span>
                   <span className="font-bold text-white">₹18/kg</span>
                   <span className="text-amber-300 font-bold text-[10px]">▼ -₹0.50 (-2.7%)</span>
                 </span>
@@ -137,15 +137,15 @@ export default function RootLayout({
           </div>
 
           {/* Fixed top navigation */}
-          <header className="fixed top-7 left-0 z-50 w-full border-b border-emerald-900/10 bg-white/85 backdrop-blur-md shadow-xs transition-all">
+          <header className="fixed top-7 left-0 z-50 w-full border-b border-outline-variant bg-surface-container-lowest shadow-xs transition-all">
             <div className="mx-auto h-full w-full max-w-7xl px-3 sm:px-6 lg:px-8">
               <div className="flex h-16 items-center justify-between gap-2 sm:gap-6">
                 <Link
                   href="/"
                   className="flex items-center gap-2 sm:gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 rounded-lg"
                 >
-                  <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-800 to-emerald-600 shadow-md shadow-emerald-900/20 text-white font-black text-lg sm:text-xl">
-                    🌾
+                  <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-primary text-on-primary font-black text-sm sm:text-base tracking-tight">
+                    KS
                   </div>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1 sm:gap-1.5">
