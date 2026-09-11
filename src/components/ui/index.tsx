@@ -21,7 +21,9 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
     | "gradeB"
     | "gradeC"
     | "live"
-    | "savings";
+    | "savings"
+    | "farmer"
+    | "buyer";
   size?: "sm" | "md" | "lg";
 }
 
@@ -33,31 +35,33 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variants = {
-    default: "bg-slate-100 text-slate-700 border-slate-200",
-    neutral: "bg-slate-100 text-slate-700 border-slate-200",
-    outline: "border border-slate-200 text-slate-600 bg-transparent",
-    success: "bg-emerald-50 text-emerald-800 border-emerald-200",
-    warning: "bg-amber-50 text-amber-800 border-amber-200",
-    danger: "bg-red-50 text-red-800 border-red-200",
-    info: "bg-blue-50 text-blue-800 border-blue-200",
-    verified: "bg-emerald-100 text-emerald-900 border-emerald-300 font-bold",
-    gradeA: "bg-emerald-100 text-emerald-950 border-emerald-300 font-bold shadow-xs",
-    gradeB: "bg-amber-100 text-amber-950 border-amber-300 font-bold shadow-xs",
-    gradeC: "bg-slate-100 text-slate-800 border-slate-200",
-    live: "bg-emerald-500/15 text-emerald-800 border-emerald-300 font-bold",
-    savings: "bg-amber-500/15 text-amber-900 border-amber-300 font-extrabold",
+    default: "bg-[#E2E4DE] text-[#1E1F1C] border-[#1E1F1C]",
+    neutral: "bg-[#E2E4DE] text-[#1E1F1C] border-[#1E1F1C]",
+    outline: "border-2 border-[#1E1F1C] text-[#1E1F1C] bg-transparent",
+    success: "bg-[#d7e8db] text-[#112816] border-[#386641]",
+    warning: "bg-[#faedd9] text-[#78350f] border-[#F4A261]",
+    danger: "bg-[#fae8e0] text-[#491705] border-[#C04A22]",
+    info: "bg-[#d9e9f2] text-[#082130] border-[#1B4965]",
+    verified: "bg-[#d7e8db] text-[#112816] border-[#1E1F1C] font-black shadow-[1.5px_1.5px_0_0_#1E1F1C]",
+    gradeA: "bg-[#d7e8db] text-[#112816] border-[#1E1F1C] font-black shadow-[1.5px_1.5px_0_0_#1E1F1C]",
+    gradeB: "bg-[#faedd9] text-[#78350f] border-[#1E1F1C] font-black shadow-[1.5px_1.5px_0_0_#1E1F1C]",
+    gradeC: "bg-[#E2E4DE] text-[#1E1F1C] border-[#1E1F1C] font-bold",
+    live: "bg-[#d7e8db] text-[#112816] border-[#1E1F1C] font-black shadow-[1.5px_1.5px_0_0_#1E1F1C]",
+    savings: "bg-[#fae8e0] text-[#C04A22] border-[#C04A22] font-black",
+    farmer: "bg-[#fae8e0] text-[#C04A22] border-[#1E1F1C] font-black shadow-[1.5px_1.5px_0_0_#1E1F1C]",
+    buyer: "bg-[#d9e9f2] text-[#1B4965] border-[#1E1F1C] font-black shadow-[1.5px_1.5px_0_0_#1E1F1C]",
   };
 
   const sizes = {
-    sm: "px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider",
-    md: "px-2.5 py-1 text-xs font-semibold",
-    lg: "px-3 py-1.5 text-sm font-bold",
+    sm: "px-2 py-0.5 text-[10px] font-black uppercase tracking-wider",
+    md: "px-2.5 py-1 text-xs font-bold",
+    lg: "px-3.5 py-1.5 text-sm font-black",
   };
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border text-center transition-all",
+        "inline-flex items-center gap-1.5 rounded-sm border-2 text-center transition-all",
         variants[variant],
         sizes[size],
         className
@@ -66,8 +70,8 @@ export function Badge({
     >
       {variant === "live" && (
         <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#386641] opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-[#386641]"></span>
         </span>
       )}
       {children}
@@ -77,7 +81,17 @@ export function Badge({
 
 // Button
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "harvest" | "glow" | "forest";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "outline"
+    | "ghost"
+    | "danger"
+    | "harvest"
+    | "glow"
+    | "forest"
+    | "farmer"
+    | "buyer";
   size?: "sm" | "md" | "lg" | "icon";
   isLoading?: boolean;
 }
@@ -92,25 +106,29 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center rounded-xl font-bold transition-all duration-200 active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 cursor-pointer select-none";
+    "inline-flex items-center justify-center rounded-sm font-bold transition-all duration-150 active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E1F1C] cursor-pointer select-none border-2 border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]";
 
   const variants = {
     primary:
-      "bg-emerald-700 text-white hover:bg-emerald-800 shadow-sm hover:shadow-md",
+      "bg-[#C04A22] text-white hover:bg-[#a63d19] hover:shadow-[3px_3px_0_0_#1E1F1C]",
+    farmer:
+      "bg-[#C04A22] text-white hover:bg-[#a63d19] hover:shadow-[3px_3px_0_0_#1E1F1C]",
+    buyer:
+      "bg-[#1B4965] text-white hover:bg-[#153a50] hover:shadow-[3px_3px_0_0_#1E1F1C]",
     forest:
-      "bg-[#005f39] text-white hover:bg-[#004a2c] shadow-sm hover:shadow-md",
+      "bg-[#386641] text-white hover:bg-[#2c5234] hover:shadow-[3px_3px_0_0_#1E1F1C]",
     glow:
-      "bg-gradient-to-r from-emerald-700 to-[#005f39] text-white shadow-glow hover:shadow-glow-emerald hover:brightness-105 border border-emerald-500/30",
+      "bg-[#C04A22] text-white hover:bg-[#a63d19] hover:shadow-[3px_3px_0_0_#1E1F1C]",
     secondary:
-      "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 shadow-xs",
+      "bg-[#FFFFFF] text-[#1E1F1C] hover:bg-[#EBECE8] hover:shadow-[3px_3px_0_0_#1E1F1C]",
     outline:
-      "border-2 border-emerald-700 bg-transparent text-emerald-800 hover:bg-emerald-50/80",
+      "border-2 border-[#1E1F1C] bg-transparent text-[#1E1F1C] hover:bg-[#EBECE8] shadow-none",
     ghost:
-      "bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+      "border-transparent shadow-none bg-transparent text-[#1E1F1C] hover:bg-[#E2E4DE] hover:border-[#1E1F1C]",
     danger:
-      "bg-red-600 text-white hover:bg-red-700 shadow-xs",
+      "bg-[#C04A22] text-white hover:bg-[#993414] hover:shadow-[3px_3px_0_0_#1E1F1C]",
     harvest:
-      "bg-amber-600 text-white hover:bg-amber-700 shadow-xs hover:shadow-glow-amber",
+      "bg-[#F4A261] text-[#1E1F1C] hover:bg-[#e8914b] hover:shadow-[3px_3px_0_0_#1E1F1C]",
   };
 
   const sizes = {
@@ -160,16 +178,17 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function Card({ className, variant = "default", children, ...props }: CardProps) {
   const variants = {
-    default: "bg-white border-slate-200/90 shadow-card",
-    glass: "glass-panel border-white/40 shadow-card-elevated",
-    elevated: "bg-white border-slate-200 shadow-card-elevated hover:shadow-card-hover transition-all duration-300",
-    interactive: "bg-white border-slate-200 shadow-card hover:border-emerald-300 hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer",
+    default: "bg-white border-2 border-[#1E1F1C] shadow-[3px_3px_0_0_#1E1F1C]",
+    glass: "bg-white border-2 border-[#1E1F1C] shadow-[4px_4px_0_0_#1E1F1C]",
+    elevated: "bg-white border-2 border-[#1E1F1C] shadow-[5px_5px_0_0_#1E1F1C]",
+    interactive:
+      "bg-white border-2 border-[#1E1F1C] shadow-[3px_3px_0_0_#1E1F1C] hover:shadow-[5px_5px_0_0_#1E1F1C] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all duration-150 cursor-pointer",
   };
 
   return (
     <div
       className={cn(
-        "rounded-2xl border p-5",
+        "rounded-sm p-5",
         variants[variant],
         className
       )}

@@ -18,6 +18,8 @@ import {
   X,
   Sparkles,
   Banknote,
+  Landmark,
+  ArrowUpRight,
 } from "lucide-react";
 
 export default function EarningsPage() {
@@ -118,135 +120,149 @@ export default function EarningsPage() {
     },
     {
       label: t("Fully Settled", "पूर्ण निपटान", "पूरा भुगतान"),
-      sub: t("Bank cleared • No deductions", "बैंक में जमा • कोई कटौती नहीं", "बैंक म जमा • कोनो कटौती नइ"),
+      sub: t("Bank cleared • Direct to account", "बैंक में जमा • सीधा खाते में", "बैंक म जमा • सीधा खाता म"),
       stageKey: ["settled"],
       pct: "100%",
     },
   ];
 
   return (
-    <div className="flex-1 flex flex-col bg-[#f8faf9]">
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
-        {/* Top Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 border border-emerald-300 mb-2">
-              <ShieldCheck className="h-3.5 w-3.5" /> {t("UPI Escrow Protected Settlements", "UPI एस्क्रो सुरक्षित भुगतान", "UPI एस्क्रो सुरक्षित भुगतान")}
+    <div className="flex-1 flex flex-col bg-[#EBECE8]">
+      {/* Top Header */}
+      <div className="border-b-2 border-[#1E1F1C] bg-[#EBECE8] py-8 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-sm bg-[#d7e8db] text-[#112816] text-[10px] font-black uppercase px-2 py-0.5 border-2 border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]">
+                <ShieldCheck className="h-3.5 w-3.5 text-[#386641]" /> {t("UPI Escrow Protected Settlements", "UPI एस्क्रो सुरक्षित भुगतान", "UPI एस्क्रो सुरक्षित भुगतान")}
+              </span>
             </div>
-            <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-950">
-              {t("Farmer Earnings & Settlement", "किसान कमाई एवं निपटान", "किसान कमाई आ निपटान")}
+            <h1 className="font-display text-3xl font-black tracking-tight text-[#1E1F1C]">
+              {t("Farmer Earnings & Ledger", "किसान कमाई एवं लेजर", "किसान कमाई आ बहीखाता")}
             </h1>
-            <p className="mt-1 text-sm text-slate-600">
+            <p className="text-xs font-bold text-[#52544D]">
               {t(
-                "Track payouts, view UPI receipts, and download settlement reports in one dashboard.",
-                "भुगतान ट्रैक करें, UPI रसीदें देखें, और निपटान रिपोर्ट डाउनलोड करें।",
-                "भुगतान ट्रैक करव, UPI रसीद देखव, आ निपटान रिपोर्ट डाउनलोड करव।"
+                "Direct farm-gate payouts, UPI settlement vouchers, and downloadable tax ledgers.",
+                "सीधा खेत से भुगतान, UPI निपटान वाउचर और डाउनलोड करने योग्य लेजर।",
+                "सीधा खेत ले भुगतान, UPI वाउचर आ डाउनलोड करे के लेजर।"
               )}
             </p>
           </div>
           <button
             onClick={handleDownload}
-            className="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-5 py-2.5 text-xs font-black text-white transition hover:bg-emerald-800 shadow-md active:scale-95 cursor-pointer self-start md:self-auto"
+            className="inline-flex items-center gap-2 rounded-sm bg-[#1E1F1C] px-5 py-3 text-xs font-black text-white hover:bg-[#333530] transition border-2 border-[#1E1F1C] shadow-[3px_3px_0_0_#1E1F1C] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer self-start md:self-auto uppercase tracking-wide"
           >
-            {downloaded ? <Check className="h-4 w-4" /> : <Download className="h-4 w-4" />}
+            {downloaded ? <Check className="h-4 w-4 text-[#386641]" /> : <Download className="h-4 w-4" />}
             {downloaded
-              ? t("Report Downloaded!", "रिपोर्ट डाउनलोड हो गई!", "रिपोर्ट डाउनलोड हो गे!")
-              : t("Download Settlement Report", "निपटान रिपोर्ट डाउनलोड करें", "निपटान रिपोर्ट डाउनलोड करव")}
+              ? t("Ledger Downloaded!", "लेजर डाउनलोड हो गया!", "लेजर डाउनलोड हो गे!")
+              : t("Download Mandi Ledger", "मंडी लेजर डाउनलोड करें", "मंडी लेजर डाउनलोड करव")}
           </button>
         </div>
+      </div>
 
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
         {/* Overview KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-600 to-emerald-800 p-6 text-white shadow-glow overflow-hidden relative">
-            <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-white/5" />
-            <div className="flex items-center justify-between">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-100">
-                {t("Total Earnings YTD", "कुल कमाई (इस वर्ष)", "कुल कमाई (ए बछर)")}
+          {/* Settled YTD */}
+          <div className="rounded-sm border-2 border-[#1E1F1C] bg-[#d7e8db] p-5 shadow-[4px_4px_0_0_#1E1F1C] text-[#112816] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#112816]">
+                  {t("Total Net Settled YTD", "कुल शुद्ध निपटान (इस वर्ष)", "कुल शुद्ध कमाई (ए बछर)")}
+                </p>
+                <div className="h-8 w-8 rounded-sm bg-white border-2 border-[#1E1F1C] flex items-center justify-center shadow-[2px_2px_0_0_#1E1F1C]">
+                  <Landmark className="h-4 w-4 text-[#1E1F1C]" />
+                </div>
+              </div>
+              <p className="mt-3 font-display text-3xl font-black tracking-tight tabular-nums text-[#112816]">
+                ₹{stats.settled.toLocaleString("en-IN")}
               </p>
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 backdrop-blur">
-                <Wallet className="h-5 w-5" />
-              </span>
             </div>
-            <p className="mt-3 font-display text-3xl font-black tracking-tight">
-              ₹{stats.settled.toLocaleString("en-IN")}
-            </p>
-            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-emerald-100">
-              <TrendingUp className="h-3.5 w-3.5" /> {t("+38% vs mandi middlemen", "मंडी बिचौलियों की तुलना में +38%", "मंडी दलाल मन ले +38% जादा")}
+            <div className="mt-4 inline-flex items-center gap-1.5 rounded-sm bg-white border-2 border-[#1E1F1C] px-2.5 py-1 text-[11px] font-black text-[#112816] w-fit shadow-[1px_1px_0_0_#1E1F1C]">
+              <TrendingUp className="h-3.5 w-3.5 text-[#386641]" /> {t("+38% vs APMC Middlemen", "मंडी बिचौलियों की तुलना में +38%", "मंडी दलाल मन ले +38% जादा")}
             </div>
           </div>
 
-          <div className="rounded-2xl border border-amber-200 bg-white p-6 shadow-card">
-            <div className="flex items-center justify-between">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-amber-800">
-                {t("Pending Payouts", "लंबित भुगतान", "बाकी भुगतान")}
+          {/* Pending Escrow */}
+          <div className="rounded-sm border-2 border-[#1E1F1C] bg-[#faedd9] p-5 shadow-[4px_4px_0_0_#1E1F1C] text-[#78350f] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#78350f]">
+                  {t("Locked in Escrow (In-Transit)", "एस्क्रो में सुरक्षित (पारगमन)", "एस्क्रो म जमा (रस्ता म)")}
+                </p>
+                <div className="h-8 w-8 rounded-sm bg-white border-2 border-[#1E1F1C] flex items-center justify-center shadow-[2px_2px_0_0_#1E1F1C]">
+                  <Clock className="h-4 w-4 text-[#78350f]" />
+                </div>
+              </div>
+              <p className="mt-3 font-display text-3xl font-black tracking-tight tabular-nums text-[#78350f]">
+                ₹{Math.round(stats.pending).toLocaleString("en-IN")}
               </p>
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-                <Clock className="h-5 w-5" />
-              </span>
             </div>
-            <p className="mt-3 font-display text-3xl font-black tracking-tight text-amber-700">
-              ₹{Math.round(stats.pending).toLocaleString("en-IN")}
-            </p>
-            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-xs font-bold text-amber-900">
-              <Clock className="h-3.5 w-3.5" /> {t("Stage-wise UPI release", "चरणबद्ध UPI भुगतान", "पड़ाव दर पड़ाव UPI भुगतान")}
+            <div className="mt-4 inline-flex items-center gap-1.5 rounded-sm bg-white border-2 border-[#1E1F1C] px-2.5 py-1 text-[11px] font-black text-[#78350f] w-fit shadow-[1px_1px_0_0_#1E1F1C]">
+              <Clock className="h-3.5 w-3.5 text-[#C04A22]" /> {t("40% Pickup + 60% Delivery", "40% पिकअप + 60% डिलीवरी", "40% लोड + 60% डिलीवरी")}
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-card">
-            <div className="flex items-center justify-between">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
-                {t("Active Lots", "सक्रिय लॉट्स", "चालू लॉट मन")}
-              </p>
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-                <Package className="h-5 w-5" />
-              </span>
+          {/* Active Orders */}
+          <div className="rounded-sm border-2 border-[#1E1F1C] bg-white p-5 shadow-[4px_4px_0_0_#1E1F1C] text-[#1E1F1C] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#52544D]">
+                  {t("Active Produce Lots", "सक्रिय उपज लॉट्स", "चालू लॉट मन")}
+                </p>
+                <div className="h-8 w-8 rounded-sm bg-[#EBECE8] border-2 border-[#1E1F1C] flex items-center justify-center shadow-[2px_2px_0_0_#1E1F1C]">
+                  <Package className="h-4 w-4 text-[#1E1F1C]" />
+                </div>
+              </div>
+              <p className="mt-3 font-display text-3xl font-black tracking-tight tabular-nums text-[#1E1F1C]">{stats.active}</p>
             </div>
-            <p className="mt-3 font-display text-3xl font-black tracking-tight text-slate-900">{stats.active}</p>
-            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-3 py-1 text-xs font-bold text-slate-700">
-              <ListChecks className="h-3.5 w-3.5" /> {orders.length} {t("total placed", "कुल दर्ज", "कुल दर्ज")}
+            <div className="mt-4 inline-flex items-center gap-1.5 rounded-sm bg-[#EBECE8] border-2 border-[#1E1F1C] px-2.5 py-1 text-[11px] font-black text-[#1E1F1C] w-fit shadow-[1px_1px_0_0_#1E1F1C]">
+              <ListChecks className="h-3.5 w-3.5 text-[#1E1F1C]" /> {orders.length} {t("Total Dispatches", "कुल प्रेषण", "कुल प्रेषण")}
             </div>
           </div>
         </div>
 
         {/* Main Grid 2-column */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
-          {/* Left: Premium Payout Timeline */}
-          <div className="lg:col-span-2 rounded-2xl border border-slate-200 bg-white p-6 shadow-card space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h2 className="font-display text-base font-bold text-slate-900 flex items-center gap-2">
-                <Banknote className="h-5 w-5 text-emerald-700" /> {t("Payout Milestone Timeline", "भुगतान मील का पत्थर समयरेखा", "भुगतान पड़ाव समयरेखा")}
+          {/* Left: Milestone Timeline & Instant Transfer */}
+          <div className="lg:col-span-2 rounded-sm border-2 border-[#1E1F1C] bg-white p-5 sm:p-6 shadow-[4px_4px_0_0_#1E1F1C] space-y-6">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#1E1F1C]">
+              <h2 className="font-display text-base font-black text-[#1E1F1C] flex items-center gap-2">
+                <Banknote className="h-5 w-5 text-[#C04A22]" /> {t("Escrow Payout Timeline", "एस्क्रो भुगतान समयरेखा", "भुगतान पड़ाव समयरेखा")}
               </h2>
-              <Badge variant="verified" className="rounded-full">{t("UPI Live", "UPI लाइव", "UPI लाइव")}</Badge>
+              <span className="text-[10px] font-black uppercase px-2 py-0.5 bg-[#d7e8db] border-2 border-[#1E1F1C] text-[#112816] rounded-sm">
+                {t("NPCI / UPI", "NPCI / UPI", "NPCI / UPI")}
+              </span>
             </div>
 
             <div className="relative pl-5">
               {/* Track line */}
-              <div className="absolute left-[17px] top-4 bottom-4 w-[3px] rounded-full bg-gradient-to-b from-emerald-600 via-yellow-300 to-slate-200" />
+              <div className="absolute left-[15px] top-4 bottom-4 w-[2px] bg-[#1E1F1C]" />
 
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {TIMELINE.map((step, i) => {
                   const done = orders.some((o) => step.stageKey.includes(o.status));
                   return (
-                    <div key={i} className="relative flex items-start gap-4">
+                    <div key={i} className="relative flex items-start gap-3.5">
                       <span
-                        className={`relative z-10 flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-xs font-black transition-all ${
+                        className={`relative z-10 flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-sm border-2 border-[#1E1F1C] text-xs font-black transition-all ${
                           done
-                            ? "bg-emerald-600 text-white shadow-glow ring-4 ring-emerald-50"
-                            : "border-[3px] border-slate-200 bg-white text-slate-400"
+                            ? "bg-[#386641] text-white shadow-[2px_2px_0_0_#1E1F1C]"
+                            : "bg-[#EBECE8] text-[#52544D]"
                         }`}
                       >
                         {done ? <Check className="h-4 w-4" /> : <span className="text-[10px] font-black">{step.pct}</span>}
                       </span>
                       <div className="flex-1 pt-0.5">
                         <div className="flex items-center justify-between">
-                          <p className={`text-sm font-extrabold ${done ? "text-slate-900" : "text-slate-400"}`}>{step.label}</p>
+                          <p className={`text-xs font-black uppercase ${done ? "text-[#1E1F1C]" : "text-[#52544D]"}`}>{step.label}</p>
                           {done && (
-                            <span className="rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[10px] font-bold border border-emerald-200">
-                              {t("✓ Done", "✓ पूरा", "✓ पूरा")}
+                            <span className="rounded-sm bg-[#d7e8db] text-[#112816] px-1.5 py-0.2 text-[9px] font-black border border-[#1E1F1C]">
+                              {t("Done", "पूरा", "पूरा")}
                             </span>
                           )}
                         </div>
-                        <p className="text-xs font-medium text-slate-500 mt-0.5">{step.sub}</p>
+                        <p className="text-xs font-bold text-[#52544D] mt-0.5">{step.sub}</p>
                       </div>
                     </div>
                   );
@@ -255,98 +271,97 @@ export default function EarningsPage() {
             </div>
 
             {/* Instant UPI Withdrawal Panel */}
-            <div className="rounded-2xl border border-emerald-300 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 space-y-3">
-              <div className="flex items-center justify-between">
+            <div className="rounded-sm border-2 border-[#1E1F1C] bg-[#d7e8db] p-4 space-y-3 shadow-[2px_2px_0_0_#1E1F1C]">
+              <div className="flex items-center justify-between border-b-2 border-[#1E1F1C] pb-2">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white">
-                    <IndianRupee className="h-4 w-4" />
+                  <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-[#1E1F1C] text-white">
+                    <IndianRupee className="h-3.5 w-3.5" />
                   </div>
                   <div>
-                    <h3 className="font-display text-sm font-bold text-emerald-950">
-                      {t("Instant Bank / UPI Transfer", "तत्काल बैंक / UPI ट्रांसफर", "तुरंत बैंक / UPI ट्रांसफर")}
+                    <h3 className="font-display text-xs font-black text-[#112816] uppercase">
+                      {t("Linked Farmer Bank VPA", "लिंक किया गया बैंक खाता", "जुड़े बैंक खाता")}
                     </h3>
-                    <p className="text-[11px] text-emerald-800 font-mono">VPA: farmer.kisansetu@sbi</p>
+                    <p className="text-[10px] text-[#112816] font-mono font-bold">farmer.kisansetu@sbi</p>
                   </div>
                 </div>
-                <span className="rounded-full bg-emerald-200 text-emerald-900 px-2 py-0.5 text-[10px] font-black uppercase">
-                  {t("Active", "सक्रिय", "चालू")}
+                <span className="rounded-sm bg-white border border-[#1E1F1C] text-[#112816] px-1.5 py-0.5 text-[9px] font-black uppercase">
+                  {t("Verified", "सत्यापित", "सत्यापित")}
                 </span>
               </div>
 
-              <div className="rounded-xl bg-white border border-emerald-200 p-3 flex items-center justify-between">
+              <div className="rounded-sm bg-white border-2 border-[#1E1F1C] p-3 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">{t("Available for Payout", "निकासी योग्य राशि", "निकाले बर राशि")}</p>
-                  <p className="font-display text-lg font-black text-slate-900">₹{stats.settled.toLocaleString("en-IN")}</p>
+                  <p className="text-[9px] font-black text-[#52544D] uppercase">{t("Available for Payout", "निकासी योग्य राशि", "निकाले बर राशि")}</p>
+                  <p className="font-display text-lg font-black text-[#1E1F1C] tabular-nums">₹{stats.settled.toLocaleString("en-IN")}</p>
                 </div>
                 <Button
                   size="sm"
-                  variant="primary"
-                  className="rounded-xl text-xs font-bold px-4 shadow-sm"
+                  variant="farmer"
                   disabled={payoutLoading || stats.settled <= 0}
                   isLoading={payoutLoading}
                   onClick={() => handleManualWithdraw(stats.settled)}
                 >
-                  {t("Withdraw to UPI", "UPI में निकालें", "UPI म निकालव")}
+                  {t("Instant Withdraw", "तत्काल निकासी", "तुरंत निकालव")}
                 </Button>
               </div>
             </div>
 
-            {/* Simulated UPI Receipt CTA */}
+            {/* Voucher Receipt CTA */}
             {orders.some((o) => o.status === "settled") && (
               <button
                 onClick={() => setShowReceipt("latest")}
-                className="w-full rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-left transition hover:bg-emerald-100 active:scale-[0.98]"
+                className="w-full rounded-sm border-2 border-[#1E1F1C] bg-[#EBECE8] p-3.5 text-left transition hover:bg-white shadow-[2px_2px_0_0_#1E1F1C] cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white shadow">
-                    <Receipt className="h-5 w-5" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-[#1E1F1C] text-white border-2 border-[#1E1F1C]">
+                    <Receipt className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="text-sm font-extrabold text-emerald-900">{t("View UPI Digital Receipt", "UPI डिजिटल रसीद देखें", "UPI डिजिटल रसीद देखव")}</p>
-                    <p className="text-xs text-emerald-800/70">{t("UTR verification • Instant download", "UTR सत्यापन • तुरंत डाउनलोड", "UTR सत्यापन • तुरंत डाउनलोड")}</p>
+                    <p className="text-xs font-black text-[#1E1F1C] uppercase">{t("View Official Mandi Receipt", "आधिकारिक मंडी रसीद देखें", "मंडी रसीद देखव")}</p>
+                    <p className="text-[10px] font-bold text-[#52544D]">{t("UTR verification • Direct credit voucher", "UTR सत्यापन • सीधा क्रेडिट वाउचर", "UTR सत्यापन • सीधा क्रेडिट वाउचर")}</p>
                   </div>
                 </div>
               </button>
             )}
           </div>
 
-          {/* Right: Tables */}
+          {/* Right: Tables & Ledgers */}
           <div className="lg:col-span-3 flex flex-col gap-6">
-            {/* 2-Stage Escrow Explainer: Interactive 40/60 Breakdown */}
+            {/* 2-Stage Escrow Ledger Breakdown */}
             {orders.length > 0 && (
-              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card space-y-4">
-                <div>
-                  <h2 className="font-display text-sm font-bold text-slate-900 flex items-center gap-2">
-                    <ShieldCheck className="h-5 w-5 text-emerald-700" /> {t("Smart Escrow Settlement Breakdown", "स्मार्ट एस्क्रो निपटान ब्यौरा", "स्मार्ट एस्क्रो निपटान ब्यौरा")}
+              <div className="rounded-sm border-2 border-[#1E1F1C] bg-white p-5 shadow-[4px_4px_0_0_#1E1F1C] space-y-4">
+                <div className="border-b-2 border-[#1E1F1C] pb-3">
+                  <h2 className="font-display text-sm font-black text-[#1E1F1C] flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 text-[#386641]" /> {t("Active Escrow Settlement Split (40/60)", "सक्रिय एस्क्रो विभाजन (40/60)", "चालू एस्क्रो बंटवारा (40/60)")}
                   </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    {t("Visualizing the 40% (Dispatch) + 60% (Delivery) escrow flow for the latest orders", "नवीनतम ऑर्डरों के लिए 40% (प्रेषण) + 60% (डिलीवरी) एस्क्रो प्रवाह का चित्रण", "नवा ऑर्डर मन बर 40% (प्रेषण) + 60% (डिलीवरी) एस्क्रो प्रवाह")}
+                  <p className="text-[11px] font-bold text-[#52544D] mt-0.5">
+                    {t("Stage 1 (40% upon dispatch scan) + Stage 2 (60% upon buyer weigh-in)", "चरण 1 (40% प्रेषण स्कैन पर) + चरण 2 (60% खरीदार तौल पर)", "चरण 1 (40% गाड़ी लोड म) + चरण 2 (60% तौल के बाद)")}
                   </p>
                 </div>
 
                 {orders.slice(0, 3).map((o) => (
-                  <div key={o.id} className="rounded-xl border border-slate-200 p-3 space-y-2">
+                  <div key={o.id} className="rounded-sm border-2 border-[#1E1F1C] p-3 space-y-2.5 bg-[#EBECE8]">
                     <div className="flex justify-between items-center">
-                      <span className="font-mono text-[11px] font-bold text-slate-500">#{o.id} • {o.crop_type}</span>
-                      <span className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${
-                        o.status === "settled" ? "bg-emerald-100 text-emerald-800 border-emerald-300" :
-                        o.status === "delivered" ? "bg-blue-100 text-blue-800 border-blue-300" :
-                        "bg-amber-100 text-amber-800 border-amber-300"
+                      <span className="font-mono text-xs font-black text-[#1E1F1C]">#{o.id} • {o.crop_type} ({o.quantity_kg} kg)</span>
+                      <span className={`inline-flex rounded-sm border-2 border-[#1E1F1C] px-2 py-0.2 text-[9px] font-black uppercase ${
+                        o.status === "settled" ? "bg-[#d7e8db] text-[#112816]" :
+                        o.status === "delivered" ? "bg-[#d9e9f2] text-[#082130]" :
+                        "bg-[#faedd9] text-[#78350f]"
                       }`}>
                         {o.status}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 flex h-7 rounded-full overflow-hidden border border-slate-200">
+                      <div className="flex-1 flex h-6 rounded-sm overflow-hidden border-2 border-[#1E1F1C] bg-white">
                         <div
-                          className="bg-amber-500 flex items-center justify-center text-[10px] font-black text-white"
+                          className="bg-[#C04A22] flex items-center justify-center text-[9px] font-black text-white border-r border-[#1E1F1C]"
                           style={{ width: "40%" }}
                         >
                           {(o.status === "picked_up" || o.status === "delivered" || o.status === "settled") ? "✓ 40%" : "40%"}
                         </div>
                         <div
-                          className={`flex items-center justify-center text-[10px] font-black ${
-                            o.status === "settled" ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-500"
+                          className={`flex items-center justify-center text-[9px] font-black ${
+                            o.status === "settled" ? "bg-[#386641] text-white" : "bg-[#EBECE8] text-[#52544D]"
                           }`}
                           style={{ width: "60%" }}
                         >
@@ -355,8 +370,8 @@ export default function EarningsPage() {
                       </div>
                     </div>
                     <div className="flex justify-between text-[11px] font-bold">
-                      <span className="text-amber-800">₹{(o.total_amount * 0.4).toLocaleString("en-IN")} ({t("Dispatch Advance", "प्रेषण अग्रिम", "प्रेषण अग्रिम")})</span>
-                      <span className={o.status === "settled" ? "text-emerald-700" : "text-slate-400"}>₹{(o.total_amount * 0.6).toLocaleString("en-IN")} ({t("Final", "अंतिम", "बाकी")})</span>
+                      <span className="text-[#C04A22]">₹{(o.total_amount * 0.4).toLocaleString("en-IN")} ({t("Dispatch 40%", "प्रेषण 40%", "लोड 40%")})</span>
+                      <span className={o.status === "settled" ? "text-[#386641]" : "text-[#52544D]"}>₹{(o.total_amount * 0.6).toLocaleString("en-IN")} ({t("Final 60%", "अंतिम 60%", "बाकी 60%")})</span>
                     </div>
                   </div>
                 ))}
@@ -364,40 +379,46 @@ export default function EarningsPage() {
             )}
 
             {/* Active Listings Status Table */}
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
-              <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-                <h2 className="font-display text-sm font-bold text-slate-900">{t("Active Listings Status", "सक्रिय लिस्टिंग स्थिति", "चालू लिस्टिंग स्थिति")}</h2>
-                <Badge variant="neutral" size="sm">{orders.length} {t("Orders", "ऑर्डर", "ऑर्डर")}</Badge>
+            <div className="overflow-hidden rounded-sm border-2 border-[#1E1F1C] bg-white shadow-[4px_4px_0_0_#1E1F1C]">
+              <div className="p-4 border-b-2 border-[#1E1F1C] bg-[#EBECE8] flex items-center justify-between">
+                <h2 className="font-display text-sm font-black text-[#1E1F1C] uppercase tracking-wide">{t("Produce Dispatch Ledger", "उपज प्रेषण लेजर", "उपज प्रेषण लेजर")}</h2>
+                <span className="text-xs font-black px-2 py-0.5 bg-white border border-[#1E1F1C] rounded-sm text-[#1E1F1C]">
+                  {orders.length} {t("Entries", "प्रविष्टियां", "प्रविष्टियां")}
+                </span>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[560px] text-left text-sm">
+                <table className="w-full min-w-[560px] text-left text-xs">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-50 text-[11px] uppercase font-bold tracking-wider text-slate-500">
-                      <th className="px-4 py-3">{t("Order", "ऑर्डर", "ऑर्डर")}</th>
-                      <th className="px-4 py-3">{t("Crop", "फसल", "फसल")}</th>
-                      <th className="px-4 py-3">{t("Quantity", "मात्रा", "मात्रा")}</th>
-                      <th className="px-4 py-3">{t("Amount", "राशि", "पईसा")}</th>
-                      <th className="px-4 py-3">{t("Status", "स्थिति", "स्थिति")}</th>
+                    <tr className="border-b-2 border-[#1E1F1C] bg-[#EBECE8] text-[10px] uppercase font-black tracking-wider text-[#52544D]">
+                      <th className="px-4 py-2.5">{t("Lot ID", "लॉट आईडी", "लॉट आईडी")}</th>
+                      <th className="px-4 py-2.5">{t("Produce", "फसल", "फसल")}</th>
+                      <th className="px-4 py-2.5">{t("Weight", "वजन", "वजन")}</th>
+                      <th className="px-4 py-2.5">{t("Net Amount", "शुद्ध राशि", "शुद्ध पईसा")}</th>
+                      <th className="px-4 py-2.5">{t("Settlement", "निपटान स्थिति", "निपटान स्थिति")}</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y-2 divide-[#1E1F1C]">
                     {orders.length === 0 && !loading ? (
                       <tr>
-                        <td colSpan={5} className="px-4 py-8 text-center text-slate-400 text-sm">
-                          {t("No orders yet — list produce to start earning.", "अभी कोई ऑर्डर नहीं है — कमाई शुरू करने के लिए उपज सूचीबद्ध करें।", "अभि कोनो ऑर्डर नइ हे — कमाई सुरु करे बर फसल लिस्ट करव।")}
+                        <td colSpan={5} className="px-4 py-8 text-center text-[#52544D] text-xs font-bold">
+                          {t("No orders registered yet.", "अभी कोई ऑर्डर पंजीकृत नहीं है।", "अभि कोनो ऑर्डर नइ हे।")}
                         </td>
                       </tr>
                     ) : (
                       orders.map((o) => (
-                        <tr key={o.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                          <td className="px-4 py-3 font-mono text-xs font-bold text-slate-500">{o.id}</td>
-                          <td className="px-4 py-3 font-bold text-slate-900">{o.crop_type}</td>
-                          <td className="px-4 py-3 text-slate-600">{o.quantity_kg} {t("kg", "किग्रा", "किलो")}</td>
-                          <td className="px-4 py-3 font-black text-emerald-700">₹{o.total_amount.toLocaleString("en-IN")}</td>
+                        <tr key={o.id} className="hover:bg-[#EBECE8]/50 transition-colors">
+                          <td className="px-4 py-3 font-mono font-black text-[#1E1F1C]">#{o.id}</td>
+                          <td className="px-4 py-3 font-black text-[#1E1F1C]">{o.crop_type}</td>
+                          <td className="px-4 py-3 font-bold text-[#52544D] tabular-nums">{o.quantity_kg} {t("kg", "किग्रा", "किलो")}</td>
+                          <td className="px-4 py-3 font-black text-[#112816] tabular-nums">₹{o.total_amount.toLocaleString("en-IN")}</td>
                           <td className="px-4 py-3">
-                            <Badge variant={statusTone[o.status] || "neutral"} size="sm">
-                              {o.status.toUpperCase()}
-                            </Badge>
+                            <span className={`inline-block px-2 py-0.5 rounded-sm border border-[#1E1F1C] text-[9px] font-black uppercase ${
+                              o.status === "settled" ? "bg-[#d7e8db] text-[#112816]" :
+                              o.status === "delivered" ? "bg-[#d9e9f2] text-[#082130]" :
+                              "bg-[#faedd9] text-[#78350f]"
+                            }`}>
+                              {o.status}
+                            </span>
                           </td>
                         </tr>
                       ))
@@ -407,44 +428,44 @@ export default function EarningsPage() {
               </div>
             </div>
 
-            {/* Recent Transactions */}
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
-              <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-                <h2 className="font-display text-sm font-bold text-slate-900">{t("Recent Transactions", "हाल के लेन-देन", "हाल के लेन-देन")}</h2>
-                <span className="text-xs font-medium text-slate-500">{t("Last 30 days", "पिछले 30 दिन", "पाछू 30 दिन")}</span>
+            {/* Recent Settlement Transactions */}
+            <div className="overflow-hidden rounded-sm border-2 border-[#1E1F1C] bg-white shadow-[4px_4px_0_0_#1E1F1C]">
+              <div className="p-4 border-b-2 border-[#1E1F1C] bg-[#EBECE8] flex items-center justify-between">
+                <h2 className="font-display text-sm font-black text-[#1E1F1C] uppercase tracking-wide">{t("Recent Bank / UPI Credits", "हाल के बैंक / UPI क्रेडिट", "हाल के बैंक / UPI क्रेडिट")}</h2>
+                <span className="text-[10px] font-black text-[#52544D] uppercase">{t("Direct Farm-Gate Vouchers", "सीधे फार्म-गेट वाउचर", "फार्म-गेट वाउचर")}</span>
               </div>
-              <div className="max-h-[400px] overflow-y-auto">
+              <div className="max-h-[400px] overflow-y-auto divide-y-2 divide-[#1E1F1C]">
                 {orders.length === 0 ? (
-                  <div className="p-8 text-center text-slate-400 text-sm">{t("No transactions yet.", "अभी कोई लेन-देन नहीं है।", "अभि कोनो लेन-देन नइ हे।")}</div>
+                  <div className="p-8 text-center text-[#52544D] text-xs font-bold">{t("No transactions recorded.", "कोई लेन-देन दर्ज नहीं है।", "कोनो लेन-देन नइ हे।")}</div>
                 ) : (
                   orders.map((o) => (
                     <div
                       key={o.id}
-                      className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3 hover:bg-slate-50 transition-colors"
+                      className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-[#EBECE8]/40 transition-colors"
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
-                          o.status === "settled" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border-2 border-[#1E1F1C] ${
+                          o.status === "settled" ? "bg-[#d7e8db] text-[#112816]" : "bg-[#faedd9] text-[#78350f]"
                         }`}>
                           <ArrowDownLeft className="h-4 w-4" />
                         </span>
                         <div className="min-w-0">
-                          <p className="text-sm font-bold text-slate-900 truncate">{o.crop_type} {t("settlement", "निपटान", "निपटान")}</p>
-                          <p className="text-xs font-medium text-slate-500">
-                            {new Date(o.created_at).toLocaleDateString("en-IN")} • {o.status === "settled" ? t("UPI Transfer", "UPI ट्रांसफर", "UPI ट्रांसफर") : t("Pending", "लंबित", "बाकी")}
+                          <p className="text-xs font-black text-[#1E1F1C] truncate uppercase">{o.crop_type} {t("Settlement", "निपटान", "निपटान")}</p>
+                          <p className="text-[10px] font-bold text-[#52544D]">
+                            {new Date(o.created_at).toLocaleDateString("en-IN")} • {o.status === "settled" ? t("NPCI Settled", "NPCI पूर्ण", "NPCI पूर्ण") : t("Escrow Pending", "एस्क्रो लंबित", "बाकी")}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className={`text-sm font-black ${o.status === "settled" || o.status === "delivered" ? "text-emerald-700" : "text-amber-700"}`}>
+                        <span className={`text-xs font-black tabular-nums ${o.status === "settled" || o.status === "delivered" ? "text-[#112816]" : "text-[#78350f]"}`}>
                           +₹{o.total_amount.toLocaleString("en-IN")}
                         </span>
                         <button
-                          className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-emerald-700"
+                          className="flex h-7 w-7 items-center justify-center rounded-sm border border-[#1E1F1C] bg-[#EBECE8] text-[#1E1F1C] hover:bg-white cursor-pointer shadow-[1px_1px_0_0_#1E1F1C]"
                           title={t("View Receipt", "रसीद देखें", "रसीद देखव")}
                           onClick={() => setShowReceipt(o.id)}
                         >
-                          <Receipt className="h-4 w-4" />
+                          <Receipt className="h-3.5 w-3.5" />
                         </button>
                       </div>
                     </div>
@@ -458,67 +479,61 @@ export default function EarningsPage() {
 
       {/* UPI Digital Receipt Modal */}
       {showReceipt && (
-        <div className="fixed inset-0 z-[1000] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowReceipt(null)}>
-          <div className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl animate-in slide-in-from-bottom sm:zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
-            <div className="bg-gradient-to-br from-emerald-700 to-emerald-900 p-6 text-white text-center relative">
+        <div className="fixed inset-0 z-[1000] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-[#1E1F1C]/60 backdrop-blur-xs" onClick={() => setShowReceipt(null)}>
+          <div className="bg-white rounded-sm w-full max-w-sm overflow-hidden border-2 border-[#1E1F1C] shadow-[6px_6px_0_0_#1E1F1C] animate-in zoom-in-95 duration-150" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-[#1E1F1C] p-6 text-white text-center relative border-b-2 border-[#1E1F1C]">
               <button
                 onClick={() => setShowReceipt(null)}
-                className="absolute right-4 top-4 text-white/60 hover:text-white"
+                className="absolute right-3 top-3 text-white hover:text-[#F4A261] cursor-pointer"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
-              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-white/15 backdrop-blur">
-                <Check className="h-7 w-7" />
+              <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-sm bg-[#386641] border border-white text-white">
+                <Check className="h-5 w-5" />
               </div>
-              <p className="text-xs font-bold uppercase tracking-widest text-emerald-200">{t("Payment Successful", "भुगतान सफल", "भुगतान सफल")}</p>
-              <p className="mt-1 font-display text-3xl font-black tracking-tight">
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#F4A261]">{t("Direct Bank Credit", "सीधा बैंक क्रेडिट", "सीधा बैंक क्रेडिट")}</p>
+              <p className="mt-1 font-display text-3xl font-black tracking-tight tabular-nums text-white">
                 ₹{stats.settled.toLocaleString("en-IN")}
               </p>
             </div>
 
-            <div className="p-6 space-y-4">
-              <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3 flex items-center gap-2 text-xs font-bold text-emerald-800">
-                <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                {t("Verified UPI Transaction • NPCI Protected", "सत्यापित UPI लेन-देन • NPCI संरक्षित", "सत्यापित UPI लेन-देन • NPCI सुरक्षित")}
+            <div className="p-5 space-y-3.5 bg-[#EBECE8]">
+              <div className="rounded-sm bg-white border-2 border-[#1E1F1C] p-2.5 flex items-center gap-2 text-[10px] font-black uppercase text-[#112816]">
+                <ShieldCheck className="h-4 w-4 text-[#386641]" />
+                {t("Verified NPCI Escrow Payout", "सत्यापित NPCI एस्क्रो भुगतान", "सत्यापित NPCI एस्क्रो भुगतान")}
               </div>
 
-              <div className="space-y-2.5 text-sm">
-                <div className="flex justify-between py-1 border-b border-dashed border-slate-200">
-                  <span className="font-medium text-slate-500">{t("UTR Number", "UTR संख्या", "UTR नंबर")}</span>
-                  <span className="font-mono font-bold text-slate-900">UTR{Date.now().toString().slice(-12)}</span>
+              <div className="space-y-2 text-xs bg-white border-2 border-[#1E1F1C] p-3 rounded-sm font-bold">
+                <div className="flex justify-between py-1 border-b border-[#1E1F1C]/20">
+                  <span className="text-[#52544D]">{t("UTR Number", "UTR संख्या", "UTR नंबर")}</span>
+                  <span className="font-mono font-black text-[#1E1F1C]">UTR{Date.now().toString().slice(-12)}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-dashed border-slate-200">
-                  <span className="font-medium text-slate-500">{t("Method", "विधि", "तरीका")}</span>
-                  <span className="font-bold text-slate-900">UPI / farmer@upi</span>
+                <div className="flex justify-between py-1 border-b border-[#1E1F1C]/20">
+                  <span className="text-[#52544D]">{t("Beneficiary", "लाभार्थी", "खाताधारक")}</span>
+                  <span className="font-black text-[#1E1F1C]">farmer.kisansetu@sbi</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-dashed border-slate-200">
-                  <span className="font-medium text-slate-500">{t("Timestamp", "समय", "समय")}</span>
-                  <span className="font-bold text-slate-900">{new Date().toLocaleString("en-IN")}</span>
+                <div className="flex justify-between py-1 border-b border-[#1E1F1C]/20">
+                  <span className="text-[#52544D]">{t("Timestamp", "समय", "समय")}</span>
+                  <span className="font-black text-[#1E1F1C]">{new Date().toLocaleString("en-IN")}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-dashed border-slate-200">
-                  <span className="font-medium text-slate-500">{t("Stage", "चरण", "पड़ाव")}</span>
-                  <span className="font-bold text-emerald-800">{t("Final (60%)", "अंतिम (60%)", "बाकी (60%)")}</span>
+                <div className="flex justify-between py-1 border-b border-[#1E1F1C]/20">
+                  <span className="text-[#52544D]">{t("Settlement Type", "निपटान प्रकार", "तरीका")}</span>
+                  <span className="font-black text-[#112816]">{t("Final Delivery (60%)", "अंतिम डिलीवरी (60%)", "डिलीवरी (60%)")}</span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="font-medium text-slate-500">{t("Payer", "भुगतानकर्ता", "भुगतान करे वाला")}</span>
-                  <span className="font-bold text-slate-900">{t("KisanSetu Escrow Pool", "KisanSetu एस्क्रो पूल", "KisanSetu एस्क्रो पूल")}</span>
+                  <span className="text-[#52544D]">{t("Middleman Cut", "बिचौलिया कमीशन", "दलाली")}</span>
+                  <span className="font-black text-[#386641]">₹0 (0.00%)</span>
                 </div>
-              </div>
-
-              <div className="flex items-center justify-center gap-4 pt-3 border-t border-slate-200">
-                <Sparkles className="h-4 w-4 text-emerald-600" />
-                <p className="text-xs font-bold text-emerald-800">{t("KisanSetu FinTech Settlement", "KisanSetu फिनटेक निपटान", "KisanSetu फिनटेक निपटान")}</p>
-                <Sparkles className="h-4 w-4 text-emerald-600" />
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-200">
+            <div className="p-4 bg-[#EBECE8] border-t-2 border-[#1E1F1C]">
               <Button
                 variant="primary"
-                className="w-full rounded-xl"
+                className="w-full"
                 onClick={() => setShowReceipt(null)}
               >
-                {t("Close Receipt", "रसीद बंद करें", "रसीद बंद करव")}
+                {t("Close Voucher", "वाउचर बंद करें", "वाउचर बंद करव")}
               </Button>
             </div>
           </div>

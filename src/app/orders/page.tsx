@@ -39,18 +39,18 @@ import {
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full min-h-[420px] bg-slate-100 animate-pulse rounded-2xl flex items-center justify-center text-slate-500 font-semibold">
+    <div className="w-full h-full min-h-[420px] bg-[#EBECE8] border-2 border-[#1E1F1C] rounded-sm flex items-center justify-center text-[#52544D] font-bold">
       Loading dispatch control map...
     </div>
   ),
 });
 
 const statusPillColor: Record<string, string> = {
-  placed: "bg-slate-100 text-slate-700 border-slate-200",
-  routed: "bg-blue-100 text-blue-800 border-blue-200",
-  picked_up: "bg-amber-100 text-amber-900 border-amber-200",
-  delivered: "bg-emerald-100 text-emerald-800 border-emerald-200",
-  settled: "bg-emerald-700 text-white border-emerald-700",
+  placed: "bg-[#EBECE8] text-[#1E1F1C] border-[#1E1F1C]",
+  routed: "bg-[#d9e9f2] text-[#082130] border-[#1E1F1C]",
+  picked_up: "bg-[#faedd9] text-[#78350f] border-[#1E1F1C]",
+  delivered: "bg-[#d7e8db] text-[#112816] border-[#1E1F1C]",
+  settled: "bg-[#386641] text-white border-[#1E1F1C]",
 };
 
 export default function OrdersPage() {
@@ -148,37 +148,37 @@ export default function OrdersPage() {
   ];
 
   return (
-    <div className="flex-1 flex flex-col bg-[#f8faf9] min-h-[calc(100vh-4rem)]">
+    <div className="flex-1 flex flex-col bg-[#EBECE8] min-h-[calc(100vh-4rem)]">
       {/* Control Room Top Header */}
-      <div className="border-b border-slate-200 bg-white py-5 px-4 sm:px-6 lg:px-8 shadow-xs">
+      <div className="border-b-2 border-[#1E1F1C] bg-[#EBECE8] py-6 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 border border-emerald-300">
-                <Activity className="h-3.5 w-3.5 text-emerald-600 animate-pulse" /> {t("Live Telemetry", "लाइव टेलीमेट्री", "लाइव टेलीमेट्री")}
+              <span className="inline-flex items-center gap-1.5 rounded-sm bg-[#d7e8db] text-[#112816] text-[10px] font-black uppercase px-2 py-0.5 border-2 border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]">
+                <Activity className="h-3.5 w-3.5 text-[#386641] animate-pulse" /> {t("Live Telemetry", "लाइव टेलीमेट्री", "लाइव टेलीमेट्री")}
               </span>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <span className="text-[10px] font-black uppercase tracking-wider text-[#52544D]">
                 {t("Raipur Cluster Dispatch Control", "रायपुर क्लस्टर प्रेषण नियंत्रण", "रायपुर क्लस्टर गाड़ी नियंत्रण")}
               </span>
             </div>
-            <h1 className="mt-1 font-display text-2xl font-extrabold tracking-tight text-emerald-950">
+            <h1 className="font-display text-2xl sm:text-3xl font-black tracking-tight text-[#1E1F1C]">
               {t("Logistics & Route Optimization Engine", "लॉजिस्टिक्स एवं मार्ग अनुकूलन इंजन", "लॉजिस्टिक्स आ रस्ता अनुकूलन इंजन")}
             </h1>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-2 sm:gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 sm:px-4 py-2 text-xs font-semibold text-slate-700">
+            <div className="flex items-center gap-2 sm:gap-3 rounded-sm border-2 border-[#1E1F1C] bg-white px-3 sm:px-4 py-2 text-xs font-black text-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]">
               <div className="flex items-center gap-1.5">
-                <Truck className="h-4 w-4 text-emerald-700" />
+                <Truck className="h-4 w-4 text-[#1B4965]" />
                 <span className="whitespace-nowrap">3 {t("Vehicles", "गाड़ियां", "गाड़ी मन")}</span>
               </div>
-              <span className="text-slate-300">|</span>
+              <span className="text-[#C2C5BC]">|</span>
               <div className="flex items-center gap-1.5">
-                <Leaf className="h-4 w-4 text-emerald-600" />
+                <Leaf className="h-4 w-4 text-[#386641]" />
                 <span className="whitespace-nowrap">-68% {t("Carbon", "कार्बन", "कार्बन")}</span>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={loadOrders} className="rounded-xl">
+            <Button variant="secondary" size="sm" onClick={loadOrders} className="cursor-pointer">
               <RefreshCw className="h-4 w-4" />
             </Button>
           </div>
@@ -190,46 +190,45 @@ export default function OrdersPage() {
         {/* Left Column: Consolidated Orders & Route Stats */}
         <div className="w-full xl:w-5/12 flex flex-col gap-6">
           {/* AI vs Traditional Route Comparison Bento */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card space-y-4">
+          <div className="rounded-sm border-2 border-[#1E1F1C] bg-white p-5 shadow-[4px_4px_0_0_#1E1F1C] space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-800">
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#52544D]">
                   {t("Routing Comparison Engine", "रूटिंग तुलना इंजन", "रूटिंग तुलना इंजन")}
                 </p>
-                <h3 className="font-display text-base font-bold text-slate-900">
+                <h3 className="font-display text-base font-black text-[#1E1F1C]">
                   {t("AI Clustered vs Traditional Trips", "AI क्लस्टर्ड बनाम पारंपरिक यात्राएं", "AI क्लस्टर्ड बनाम पुराना तरीका")}
                 </h3>
               </div>
               <Button
-                variant="primary"
+                variant="buyer"
                 size="sm"
                 disabled={!selectedOrder}
                 isLoading={isOptimizing}
                 onClick={() => selectedOrder && handleOptimizeRoute(selectedOrder.id)}
-                className="rounded-xl shadow-glow"
               >
                 <Navigation className="h-4 w-4 mr-1" /> {t("Optimize", "रूट बनाएं", "रस्ता बनाव")}
               </Button>
             </div>
 
             {/* Toggle switch between AI and Traditional */}
-            <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+            <div className="flex rounded-sm bg-[#EBECE8] p-1 border-2 border-[#1E1F1C]">
               <button
                 onClick={() => setRoutingViewMode("ai_clustered")}
-                className={`flex-1 rounded-lg py-2 px-1 text-[11px] sm:text-xs font-bold transition-all text-center leading-tight ${
+                className={`flex-1 rounded-sm py-1.5 px-2 text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all text-center cursor-pointer ${
                   routingViewMode === "ai_clustered"
-                    ? "bg-emerald-700 text-white shadow-sm"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-[#1B4965] text-white shadow-[1px_1px_0_0_#1E1F1C]"
+                    : "text-[#52544D] hover:text-[#1E1F1C]"
                 }`}
               >
-                ✨ {t("AI Clustered (1 Trip)", "AI क्लस्टर्ड (1 ट्रिप)", "AI क्लस्टर्ड (1 ट्रिप)")}
+                ⚡ {t("AI Clustered (1 Loop)", "AI क्लस्टर्ड (1 लूप)", "AI क्लस्टर्ड (1 लूप)")}
               </button>
               <button
                 onClick={() => setRoutingViewMode("traditional")}
-                className={`flex-1 rounded-lg py-2 px-1 text-[11px] sm:text-xs font-bold transition-all text-center leading-tight ${
+                className={`flex-1 rounded-sm py-1.5 px-2 text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all text-center cursor-pointer ${
                   routingViewMode === "traditional"
-                    ? "bg-amber-600 text-white shadow-sm"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-[#C04A22] text-white shadow-[1px_1px_0_0_#1E1F1C]"
+                    : "text-[#52544D] hover:text-[#1E1F1C]"
                 }`}
               >
                 ⚠️ {t("Traditional (4 Trips)", "पारंपरिक (4 ट्रिप)", "पुराना (4 ट्रिप)")}
@@ -238,58 +237,58 @@ export default function OrdersPage() {
 
             {/* Dynamic Comparison Cards */}
             {routingViewMode === "ai_clustered" ? (
-              <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-4 space-y-3">
+              <div className="rounded-sm border-2 border-[#1E1F1C] bg-[#d7e8db] p-4 space-y-3 shadow-[2px_2px_0_0_#1E1F1C]">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-extrabold uppercase tracking-wide text-emerald-800 flex items-center gap-1.5">
-                    <Zap className="h-4 w-4 text-emerald-600" /> {t("Clustered Single Loop", "क्लस्टर्ड सिंगल लूप", "क्लस्टर्ड सिंगल लूप")}
+                  <span className="text-[10px] font-black uppercase tracking-wide text-[#112816] flex items-center gap-1.5">
+                    <Zap className="h-4 w-4 text-[#386641]" /> {t("Clustered Single Loop", "क्लस्टर्ड सिंगल लूप", "क्लस्टर्ड सिंगल लूप")}
                   </span>
-                  <span className="rounded-full bg-emerald-600 text-white px-2 py-0.5 text-[10px] font-black">
+                  <span className="rounded-sm bg-[#1E1F1C] text-white px-2 py-0.5 text-[9px] font-black uppercase">
                     72% {t("SAVINGS", "बचत", "बचत")}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="rounded-lg bg-white p-2 border border-emerald-100">
-                    <p className="text-[10px] font-bold text-slate-400">{t("Total Dist.", "कुल दूरी", "कुल दूरी")}</p>
-                    <p className="text-base font-black text-emerald-900">{routeData?.distance_km || 38.4} {t("km", "किमी", "किमी")}</p>
+                  <div className="rounded-sm bg-white p-2 border-2 border-[#1E1F1C]">
+                    <p className="text-[9px] font-black uppercase text-[#52544D]">{t("Total Dist.", "कुल दूरी", "कुल दूरी")}</p>
+                    <p className="text-sm font-black text-[#1E1F1C] tabular-nums mt-0.5">{routeData?.distance_km || 38.4} {t("km", "किमी", "किमी")}</p>
                   </div>
-                  <div className="rounded-lg bg-white p-2 border border-emerald-100">
-                    <p className="text-[10px] font-bold text-slate-400">{t("Duration", "समय", "समै")}</p>
-                    <p className="text-base font-black text-emerald-900">{routeData?.duration_minutes || 64} {t("min", "मिनट", "मिनट")}</p>
+                  <div className="rounded-sm bg-white p-2 border-2 border-[#1E1F1C]">
+                    <p className="text-[9px] font-black uppercase text-[#52544D]">{t("Duration", "समय", "समै")}</p>
+                    <p className="text-sm font-black text-[#1E1F1C] tabular-nums mt-0.5">{routeData?.duration_minutes || 64} {t("min", "मिनट", "मिनट")}</p>
                   </div>
-                  <div className="rounded-lg bg-white p-2 border border-emerald-100">
-                    <p className="text-[10px] font-bold text-slate-400">{t("CO₂ Saved", "CO₂ बचत", "CO₂ बचत")}</p>
-                    <p className="text-base font-black text-emerald-600">+{routeData?.carbon_saved_kg || 28.4} {t("kg", "किग्रा", "किलो")}</p>
+                  <div className="rounded-sm bg-white p-2 border-2 border-[#1E1F1C]">
+                    <p className="text-[9px] font-black uppercase text-[#52544D]">{t("CO₂ Saved", "CO₂ बचत", "CO₂ बचत")}</p>
+                    <p className="text-sm font-black text-[#386641] tabular-nums mt-0.5">+{routeData?.carbon_saved_kg || 28.4} {t("kg", "किग्रा", "किलो")}</p>
                   </div>
                 </div>
-                <p className="text-xs font-medium text-emerald-800/80">
+                <p className="text-[11px] font-bold text-[#112816]/90">
                   {t("Consolidates 4 separate smallholder pickups into 1 optimized electric/diesel route.", "4 अलग-अलग किसानों के पिकअप को 1 अनुकूलित वाहन रूट में समेकित करता है।", "4 अलग-अलग किसान के पिकअप ला 1 बढ़िया गाड़ी रस्ता म जमा करथे।")}
                 </p>
               </div>
             ) : (
-              <div className="rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-4 space-y-3">
+              <div className="rounded-sm border-2 border-[#1E1F1C] bg-[#faedd9] p-4 space-y-3 shadow-[2px_2px_0_0_#1E1F1C]">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-extrabold uppercase tracking-wide text-amber-800 flex items-center gap-1.5">
-                    <Fuel className="h-4 w-4 text-amber-600" /> {t("Individual Farm Trips", "व्यक्तिगत खेत यात्राएं", "अलग-अलग खेत के फेरा")}
+                  <span className="text-[10px] font-black uppercase tracking-wide text-[#78350f] flex items-center gap-1.5">
+                    <Fuel className="h-4 w-4 text-[#C04A22]" /> {t("Individual Farm Trips", "व्यक्तिगत खेत यात्राएं", "अलग-अलग खेत के फेरा")}
                   </span>
-                  <span className="rounded-full bg-amber-600 text-white px-2 py-0.5 text-[10px] font-black">
+                  <span className="rounded-sm bg-[#C04A22] text-white px-2 py-0.5 text-[9px] font-black uppercase">
                     {t("HIGH COST", "उच्च लागत", "ज्यादा खर्चा")}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="rounded-lg bg-white p-2 border border-amber-100">
-                    <p className="text-[10px] font-bold text-slate-400">{t("Total Dist.", "कुल दूरी", "कुल दूरी")}</p>
-                    <p className="text-base font-black text-amber-900">{routeData?.individual_distance_km || 136.2} {t("km", "किमी", "किमी")}</p>
+                  <div className="rounded-sm bg-white p-2 border-2 border-[#1E1F1C]">
+                    <p className="text-[9px] font-black uppercase text-[#52544D]">{t("Total Dist.", "कुल दूरी", "कुल दूरी")}</p>
+                    <p className="text-sm font-black text-[#78350f] tabular-nums mt-0.5">{routeData?.individual_distance_km || 136.2} {t("km", "किमी", "किमी")}</p>
                   </div>
-                  <div className="rounded-lg bg-white p-2 border border-amber-100">
-                    <p className="text-[10px] font-bold text-slate-400">{t("Duration", "समय", "समै")}</p>
-                    <p className="text-base font-black text-amber-900">240 {t("min", "मिनट", "मिनट")}</p>
+                  <div className="rounded-sm bg-white p-2 border-2 border-[#1E1F1C]">
+                    <p className="text-[9px] font-black uppercase text-[#52544D]">{t("Duration", "समय", "समै")}</p>
+                    <p className="text-sm font-black text-[#78350f] tabular-nums mt-0.5">240 {t("min", "मिनट", "मिनट")}</p>
                   </div>
-                  <div className="rounded-lg bg-white p-2 border border-amber-100">
-                    <p className="text-[10px] font-bold text-slate-400">{t("Fuel Cost", "ईंधन खर्च", "तेल खर्चा")}</p>
-                    <p className="text-base font-black text-amber-900">₹2,840</p>
+                  <div className="rounded-sm bg-white p-2 border-2 border-[#1E1F1C]">
+                    <p className="text-[9px] font-black uppercase text-[#52544D]">{t("Fuel Cost", "ईंधन खर्च", "तेल खर्चा")}</p>
+                    <p className="text-sm font-black text-[#C04A22] tabular-nums mt-0.5">₹2,840</p>
                   </div>
                 </div>
-                <p className="text-xs font-medium text-amber-800/80">
+                <p className="text-[11px] font-bold text-[#78350f]">
                   {t("Every farmer independently drives to APMC mandi, causing traffic congestion & fuel waste.", "प्रत्येक किसान स्वतंत्र रूप से मंडी जाता है, जिससे भीड़भाड़ और ईंधन की बर्बादी होती है।", "हर किसान अलग-अलग मंडी जाथे, जेकर से भीड़ आ डीजल के नुकसानी होथे।")}
                 </p>
               </div>
@@ -297,18 +296,18 @@ export default function OrdersPage() {
           </div>
 
           {/* Consolidated Orders List */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="rounded-sm border-2 border-[#1E1F1C] bg-white p-5 shadow-[4px_4px_0_0_#1E1F1C] space-y-4">
+            <div className="flex items-center justify-between border-b-2 border-[#1E1F1C] pb-3">
               <div className="flex items-center gap-2">
-                <h3 className="font-display text-base font-bold text-slate-900">{t("Orders in Dispatch", "प्रेषण में ऑर्डर", "गाड़ी म ऑर्डर")}</h3>
-                <span className="rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 text-xs font-bold text-slate-700">
+                <h3 className="font-display text-sm font-black text-[#1E1F1C] uppercase">{t("Orders in Dispatch", "प्रेषण में ऑर्डर", "गाड़ी म ऑर्डर")}</h3>
+                <span className="rounded-sm bg-[#EBECE8] border border-[#1E1F1C] px-1.5 py-0.2 text-[10px] font-black text-[#1E1F1C]">
                   {filteredOrders.length}
                 </span>
               </div>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none focus:border-emerald-600"
+                className="rounded-sm border-2 border-[#1E1F1C] bg-[#EBECE8] px-2.5 py-1 text-xs font-black text-[#1E1F1C] focus:outline-none cursor-pointer"
               >
                 <option value="All">{t("All Status", "सभी स्थिति", "सब स्थिति")}</option>
                 <option value="placed">{t("Placed", "दर्ज", "दर्ज")}</option>
@@ -321,7 +320,7 @@ export default function OrdersPage() {
 
             <div className="space-y-2.5">
               {filteredOrders.length === 0 ? (
-                <p className="py-6 text-center text-xs text-slate-400">{t("No orders matching filter.", "कोई ऑर्डर नहीं मिला।", "कोनो ऑर्डर नइ मिलिस।")}</p>
+                <p className="py-6 text-center text-xs font-bold text-[#52544D]">{t("No orders matching filter.", "कोई ऑर्डर नहीं मिला।", "कोनो ऑर्डर नइ मिलिस।")}</p>
               ) : (
                 filteredOrders.map((ord) => {
                   const isSelected = selectedOrder?.id === ord.id;
@@ -329,23 +328,23 @@ export default function OrdersPage() {
                     <button
                       key={ord.id}
                       onClick={() => setSelectedOrder(ord)}
-                      className={`w-full text-left rounded-xl border p-4 transition-all ${
+                      className={`w-full text-left rounded-sm border-2 p-3.5 transition-all cursor-pointer ${
                         isSelected
-                          ? "border-emerald-600 bg-emerald-50/70 shadow-sm ring-1 ring-emerald-500/20"
-                          : "border-slate-200 bg-slate-50/50 hover:bg-slate-100 hover:border-slate-300"
+                          ? "border-[#1E1F1C] bg-[#d9e9f2] shadow-[3px_3px_0_0_#1E1F1C]"
+                          : "border-[#1E1F1C] bg-[#EBECE8] hover:bg-white"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <span className="font-mono text-[11px] font-bold text-slate-400">#{ord.id}</span>
-                          <p className="text-sm font-bold text-slate-900 truncate">
+                          <span className="font-mono text-[10px] font-black text-[#52544D]">#{ord.id}</span>
+                          <p className="text-xs font-black text-[#1E1F1C] truncate uppercase">
                             {ord.crop_type} {t("Lot", "लॉट", "लॉट")} · {ord.quantity_kg} {t("kg", "किग्रा", "किलो")}
                           </p>
-                          <p className="text-xs font-black text-emerald-700 mt-1">
+                          <p className="text-xs font-black text-[#1B4965] mt-0.5 tabular-nums">
                             ₹{ord.total_amount.toLocaleString("en-IN")}
                           </p>
                         </div>
-                        <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider ${statusPillColor[ord.status]}`}>
+                        <span className={`inline-flex items-center rounded-sm border border-[#1E1F1C] px-2 py-0.5 text-[9px] font-black uppercase tracking-wider ${statusPillColor[ord.status]}`}>
                           {ord.status}
                         </span>
                       </div>
@@ -360,22 +359,22 @@ export default function OrdersPage() {
         {/* Right Column: Live Map & Interactive Milestones */}
         <div className="w-full xl:w-7/12 flex flex-col gap-6">
           {/* Leaflet Route Map */}
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-card overflow-hidden">
-            <div className="p-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+          <div className="rounded-sm border-2 border-[#1E1F1C] bg-white shadow-[4px_4px_0_0_#1E1F1C] overflow-hidden">
+            <div className="p-4 border-b-2 border-[#1E1F1C] bg-[#EBECE8] flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Layers className="h-4 w-4 text-emerald-700" />
-                <h3 className="text-xs font-extrabold uppercase tracking-wide text-slate-800">
+                <Layers className="h-4 w-4 text-[#1B4965]" />
+                <h3 className="text-xs font-black uppercase tracking-wide text-[#1E1F1C]">
                   {t("Live Dispatch Geographic Tracking", "लाइव प्रेषण भौगोलिक ट्रैकिंग", "लाइव गाड़ी नक्शा ट्रैकिंग")}
                 </h3>
               </div>
               {selectedOrder && (
-                <span className="rounded-full bg-emerald-800 px-3 py-1 text-xs font-bold text-white shadow-xs">
-                  {t("Active Lot", "सक्रिय लॉट", "चालू लॉट")} #{selectedOrder.id}
+                <span className="rounded-sm bg-[#1E1F1C] px-2.5 py-0.5 text-[10px] font-black uppercase text-white border border-[#1E1F1C]">
+                  {t("Lot", "लॉट", "लॉट")} #{selectedOrder.id}
                 </span>
               )}
             </div>
 
-            <div className="p-2 relative bg-slate-50">
+            <div className="p-2 relative bg-[#EBECE8]">
               <LeafletMap
                 lots={orders.map((o) => ({
                   id: o.lot_id,
@@ -410,80 +409,80 @@ export default function OrdersPage() {
             </div>
 
             {/* Live Vehicle Telemetry Banner */}
-            <div className="p-4 bg-slate-900 text-white border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div className="p-3.5 bg-[#1E1F1C] text-white border-t-2 border-[#1E1F1C] grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div className="flex items-center gap-2">
-                <UserCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                <UserCircle2 className="h-4 w-4 text-[#F4A261] shrink-0" />
                 <div>
-                  <p className="text-[10px] text-slate-400 font-medium">{t("Assigned Driver", "नियुक्त चालक", "चालक")}</p>
-                  <p className="font-bold text-slate-100">Rajesh Sahu (CG-04)</p>
+                  <p className="text-[9px] text-[#C2C5BC] font-bold uppercase">{t("Assigned Driver", "नियुक्त चालक", "चालक")}</p>
+                  <p className="font-black text-white text-[11px]">Rajesh Sahu (CG-04)</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-amber-400 shrink-0" />
+                <Clock className="h-4 w-4 text-[#F4A261] shrink-0" />
                 <div>
-                  <p className="text-[10px] text-slate-400 font-medium">{t("Estimated ETA", "अनुमानित समय", "पहुंचे के समै")}</p>
-                  <p className="font-bold text-slate-100">{driverETA} {t("mins remaining", "मिनट शेष", "मिनट बचे हे")}</p>
+                  <p className="text-[9px] text-[#C2C5BC] font-bold uppercase">{t("Estimated ETA", "अनुमानित समय", "पहुंचे के समै")}</p>
+                  <p className="font-black text-white text-[11px] tabular-nums">{driverETA} {t("mins remaining", "मिनट शेष", "मिनट बचे हे")}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Thermometer className="h-4 w-4 text-blue-400 shrink-0" />
+                <Thermometer className="h-4 w-4 text-[#d9e9f2] shrink-0" />
                 <div>
-                  <p className="text-[10px] text-slate-400 font-medium">{t("Reefer Pod Temp", "शीत कक्ष तापमान", "ठंडा बक्सा तापमान")}</p>
-                  <p className="font-bold text-slate-100">+4.2°C (Optimal)</p>
+                  <p className="text-[9px] text-[#C2C5BC] font-bold uppercase">{t("Reefer Pod Temp", "शीत कक्ष तापमान", "ठंडा बक्सा तापमान")}</p>
+                  <p className="font-black text-white text-[11px]">+4.2°C</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Battery className="h-4 w-4 text-emerald-400 shrink-0" />
+                <Battery className="h-4 w-4 text-[#386641] shrink-0" />
                 <div>
-                  <p className="text-[10px] text-slate-400 font-medium">{t("EV Battery / Range", "ईवी बैटरी", "बैटरी")}</p>
-                  <p className="font-bold text-slate-100">84% • 140 km</p>
+                  <p className="text-[9px] text-[#C2C5BC] font-bold uppercase">{t("EV Battery", "ईवी बैटरी", "बैटरी")}</p>
+                  <p className="font-black text-white text-[11px] tabular-nums">84% • 140 km</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Waypoints & Route Timeline */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card space-y-3">
-            <div className="flex items-center justify-between">
+          <div className="rounded-sm border-2 border-[#1E1F1C] bg-white p-5 shadow-[4px_4px_0_0_#1E1F1C] space-y-3">
+            <div className="flex items-center justify-between border-b-2 border-[#1E1F1C] pb-2.5">
               <div className="flex items-center gap-2">
-                <Route className="h-4 w-4 text-emerald-700" />
-                <h3 className="font-display text-sm font-bold text-slate-900">
+                <Route className="h-4 w-4 text-[#1B4965]" />
+                <h3 className="font-display text-sm font-black text-[#1E1F1C] uppercase">
                   {t("Route Waypoints & Pickup Progress", "रूट वेपॉइंट्स एवं पिकअप प्रगति", "रस्ता वेपॉइंट्स आ पिकअप प्रगति")}
                 </h3>
               </div>
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                {t("VRP-TW Single Loop", "VRP-TW सिंगल लूप", "VRP-TW सिंगल लूप")}
+              <span className="text-[9px] font-black uppercase text-[#1B4965] bg-[#d9e9f2] px-2 py-0.5 rounded-sm border border-[#1E1F1C]">
+                {t("VRP-TW Multi-Stop", "VRP-TW मल्टी-स्टॉप", "VRP-TW मल्टी-स्टॉप")}
               </span>
             </div>
 
-            <div className="space-y-2.5 pt-1">
+            <div className="space-y-2 pt-1">
               {currentStops.map((stop: any, idx: number) => (
                 <div
                   key={idx}
-                  className={`flex items-center justify-between p-3 rounded-xl border text-xs transition-colors ${
+                  className={`flex items-center justify-between p-3 rounded-sm border-2 border-[#1E1F1C] text-xs transition-colors ${
                     stop.status === "completed"
-                      ? "bg-emerald-50/60 border-emerald-200 text-emerald-950"
+                      ? "bg-[#d7e8db] text-[#112816]"
                       : stop.status === "in_progress"
-                      ? "bg-amber-50/70 border-amber-300 text-amber-950"
-                      : "bg-slate-50 border-slate-200 text-slate-600"
+                      ? "bg-[#faedd9] text-[#78350f]"
+                      : "bg-[#EBECE8] text-[#52544D]"
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white border border-slate-200 text-xs font-bold text-slate-800 shrink-0 shadow-xs">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-sm bg-white border border-[#1E1F1C] text-[10px] font-black text-[#1E1F1C] shrink-0">
                       {idx + 1}
                     </div>
                     <div>
-                      <p className="font-bold text-slate-900">{stop.label}</p>
-                      <p className="text-[10px] text-slate-500">{stop.kg} • {t("Estimated", "अनुमानित", "समै")}: {stop.time}</p>
+                      <p className="font-black text-[#1E1F1C] text-xs">{stop.label}</p>
+                      <p className="text-[10px] font-bold text-[#52544D]">{stop.kg} • {t("Est.", "समय", "समै")}: {stop.time}</p>
                     </div>
                   </div>
                   <span
-                    className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                    className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-sm border border-[#1E1F1C] ${
                       stop.status === "completed"
-                        ? "bg-emerald-600 text-white"
+                        ? "bg-[#386641] text-white"
                         : stop.status === "in_progress"
-                        ? "bg-amber-500 text-white animate-pulse"
-                        : "bg-slate-200 text-slate-600"
+                        ? "bg-[#C04A22] text-white animate-pulse"
+                        : "bg-white text-[#52544D]"
                     }`}
                   >
                     {stop.status === "completed" ? t("Done", "सम्पन्न", "हो गे") : stop.status === "in_progress" ? t("En Route", "रास्ते में", "रस्ता म हे") : t("Pending", "प्रतीक्षारत", "बाकी")}
@@ -495,52 +494,54 @@ export default function OrdersPage() {
 
           {/* Interactive Settlement & Milestones Bar */}
           {selectedOrder && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-card space-y-5">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="rounded-sm border-2 border-[#1E1F1C] bg-white p-5 sm:p-6 shadow-[4px_4px_0_0_#1E1F1C] space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b-2 border-[#1E1F1C]">
                 <div className="flex items-center gap-2">
-                  <Wallet className="h-5 w-5 text-emerald-700" />
+                  <Wallet className="h-5 w-5 text-[#1B4965]" />
                   <div>
-                    <h3 className="font-display text-base font-bold text-slate-900">
+                    <h3 className="font-display text-base font-black text-[#1E1F1C]">
                       {t("2-Stage UPI Escrow Trigger", "2-चरण UPI एस्क्रो ट्रिगर", "2-चरण UPI एस्क्रो ट्रिगर")}
                     </h3>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs font-bold text-[#52544D]">
                       {t("Order", "ऑर्डर", "ऑर्डर")} #{selectedOrder.id} • {t("Total Escrow", "कुल एस्क्रो", "कुल एस्क्रो")}: ₹{selectedOrder.total_amount.toLocaleString("en-IN")}
                     </p>
                   </div>
                 </div>
-                <Badge variant="verified">{t("Escrow Locked", "एस्क्रो सुरक्षित", "एस्क्रो सुरक्षित")}</Badge>
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 bg-[#d7e8db] border-2 border-[#1E1F1C] text-[#112816] rounded-sm">
+                  {t("Escrow Locked", "एस्क्रो सुरक्षित", "एस्क्रो सुरक्षित")}
+                </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Stage 1 */}
-                <div className="rounded-xl border border-amber-300 bg-amber-50/80 p-4 space-y-3">
+                <div className="rounded-sm border-2 border-[#1E1F1C] bg-[#faedd9] p-4 space-y-2.5 shadow-[2px_2px_0_0_#1E1F1C]">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-800">
-                      {t("Stage 1 • Pickup Verified", "चरण 1 • पिकअप सत्यापित", "पड़ाव 1 • गाड़ी म लोड")}
+                    <span className="text-[9px] font-black uppercase tracking-wider text-[#78350f]">
+                      {t("Stage 1 • Pickup Verified", "चरण 1 • पिकअप सत्यापित", "पड़ाव 1 • लोड")}
                     </span>
-                    <span className="rounded-full bg-amber-600 text-white px-2 py-0.5 text-[10px] font-bold">
+                    <span className="rounded-sm bg-[#C04A22] text-white px-1.5 py-0.2 text-[9px] font-black uppercase">
                       40% {t("Advance", "अग्रिम", "अग्रिम")}
                     </span>
                   </div>
-                  <p className="text-base font-black text-slate-900">
+                  <p className="text-base font-black text-[#1E1F1C] tabular-nums">
                     ₹{(selectedOrder.total_amount * 0.4).toLocaleString("en-IN")}
                   </p>
-                  <p className="text-xs text-slate-600 leading-tight">
+                  <p className="text-[10px] font-bold text-[#78350f] leading-tight">
                     {t("Disburses to farmer UPI upon vehicle loading scan", "वाहन लोडिंग स्कैन पर किसान के UPI में जारी", "गाड़ी म लोड होत ही किसान के UPI म ट्रांसफर")}
                   </p>
-                  <div className="space-y-2 pt-1 border-t border-amber-200">
+                  <div className="space-y-2 pt-1 border-t-2 border-[#1E1F1C]">
                     <div className="flex gap-2">
                       <input
                         type="text"
                         placeholder="Farmer OTP (e.g. 4821)"
                         value={otpDispatch}
                         onChange={(e) => setOtpDispatch(e.target.value)}
-                        className="w-full rounded-lg border border-amber-300 bg-white px-2.5 py-1.5 text-xs font-mono font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                        className="w-full rounded-sm border-2 border-[#1E1F1C] bg-white px-2.5 py-1.5 text-xs font-mono font-black text-[#1E1F1C] placeholder:text-[#52544D] focus:outline-none"
                       />
                       <Button
                         size="sm"
-                        variant="secondary"
-                        className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold px-3 shrink-0"
+                        variant="farmer"
+                        className="shrink-0"
                         disabled={verificationLoading || isSettling}
                         isLoading={verificationLoading}
                         onClick={() => handleVerifyOTP("pickup")}
@@ -551,42 +552,42 @@ export default function OrdersPage() {
                     <button
                       type="button"
                       onClick={() => setOtpDispatch("4821")}
-                      className="text-[10px] font-bold text-amber-800 hover:underline"
+                      className="text-[10px] font-black text-[#C04A22] hover:underline cursor-pointer uppercase"
                     >
-                      ⚡ {t("Demo Quick-fill: 4821", "डेमो भरें: 4821", "डेमो भरव: 4821")}
+                      ⚡ {t("Demo Fill: 4821", "डेमो भरें: 4821", "डेमो भरव: 4821")}
                     </button>
                   </div>
                 </div>
 
                 {/* Stage 2 */}
-                <div className="rounded-xl border border-emerald-300 bg-emerald-50/80 p-4 space-y-3">
+                <div className="rounded-sm border-2 border-[#1E1F1C] bg-[#d7e8db] p-4 space-y-2.5 shadow-[2px_2px_0_0_#1E1F1C]">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800">
-                      {t("Stage 2 • Buyer Acceptance", "चरण 2 • खरीदार स्वीकृति", "पड़ाव 2 • खरीदार ले मिल गे")}
+                    <span className="text-[9px] font-black uppercase tracking-wider text-[#112816]">
+                      {t("Stage 2 • Buyer Acceptance", "चरण 2 • खरीदार स्वीकृति", "पड़ाव 2 • डिलीवरी")}
                     </span>
-                    <span className="rounded-full bg-emerald-700 text-white px-2 py-0.5 text-[10px] font-bold">
+                    <span className="rounded-sm bg-[#386641] text-white px-1.5 py-0.2 text-[9px] font-black uppercase">
                       60% {t("Final", "अंतिम", "बाकी")}
                     </span>
                   </div>
-                  <p className="text-base font-black text-slate-900">
+                  <p className="text-base font-black text-[#1E1F1C] tabular-nums">
                     ₹{(selectedOrder.total_amount * 0.6).toLocaleString("en-IN")}
                   </p>
-                  <p className="text-xs text-slate-600 leading-tight">
+                  <p className="text-[10px] font-bold text-[#112816] leading-tight">
                     {t("Disburses remaining amount after QC weigh-in", "गुणवत्ता व वजन जांच के बाद शेष राशि जारी", "तौल आ गुणवत्ता जांच के बाद बाकी पईसा जारी")}
                   </p>
-                  <div className="space-y-2 pt-1 border-t border-emerald-200">
+                  <div className="space-y-2 pt-1 border-t-2 border-[#1E1F1C]">
                     <div className="flex gap-2">
                       <input
                         type="text"
                         placeholder="Buyer OTP (e.g. 9104)"
                         value={otpDelivery}
                         onChange={(e) => setOtpDelivery(e.target.value)}
-                        className="w-full rounded-lg border border-emerald-300 bg-white px-2.5 py-1.5 text-xs font-mono font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                        className="w-full rounded-sm border-2 border-[#1E1F1C] bg-white px-2.5 py-1.5 text-xs font-mono font-black text-[#1E1F1C] placeholder:text-[#52544D] focus:outline-none"
                       />
                       <Button
                         size="sm"
-                        variant="primary"
-                        className="rounded-lg text-xs font-bold px-3 shrink-0 shadow-sm"
+                        variant="buyer"
+                        className="shrink-0"
                         disabled={verificationLoading || isSettling}
                         isLoading={verificationLoading}
                         onClick={() => handleVerifyOTP("delivery")}
@@ -597,28 +598,28 @@ export default function OrdersPage() {
                     <button
                       type="button"
                       onClick={() => setOtpDelivery("9104")}
-                      className="text-[10px] font-bold text-emerald-800 hover:underline"
+                      className="text-[10px] font-black text-[#1B4965] hover:underline cursor-pointer uppercase"
                     >
-                      ⚡ {t("Demo Quick-fill: 9104", "डेमो भरें: 9104", "डेमो भरव: 9104")}
+                      ⚡ {t("Demo Fill: 9104", "डेमो भरें: 9104", "डेमो भरव: 9104")}
                     </button>
                   </div>
                 </div>
               </div>
 
               {payoutData && (
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 animate-in fade-in">
+                <div className="rounded-sm border-2 border-[#1E1F1C] bg-[#d7e8db] p-4 shadow-[2px_2px_0_0_#1E1F1C] animate-in fade-in">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-800">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-[#112816]">
                         {t("UPI Payment Disbursed Instantly", "UPI भुगतान तुरंत ट्रांसफर हुआ", "UPI पईसा तुरंत भेज दिए गे")}
                       </p>
-                      <p className="text-lg font-black text-emerald-950">
+                      <p className="text-lg font-black text-[#112816] tabular-nums">
                         ₹{payoutData.amount.toLocaleString("en-IN")}
                       </p>
-                      <p className="font-mono text-xs font-bold text-slate-600">UTR: {payoutData.transaction_id}</p>
+                      <p className="font-mono text-xs font-bold text-[#52544D]">UTR: {payoutData.transaction_id}</p>
                     </div>
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-white shadow">
-                      <Check className="h-6 w-6" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-[#386641] text-white border-2 border-[#1E1F1C]">
+                      <Check className="h-5 w-5" />
                     </div>
                   </div>
                 </div>

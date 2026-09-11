@@ -184,84 +184,83 @@ export default function QualityInspectionModal({ lot, onClose }: QualityInspecti
 
   return (
     <div
-      className="fixed inset-0 z-[1000] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[1000] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-[#1E1F1C]/60 backdrop-blur-xs animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-lg max-h-[92vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl animate-in slide-in-from-bottom sm:zoom-in-95 duration-200"
+        className="bg-white rounded-sm w-full max-w-lg max-h-[92vh] sm:max-h-[90vh] overflow-y-auto border-2 border-[#1E1F1C] shadow-[6px_6px_0_0_#1E1F1C] animate-in slide-in-from-bottom sm:zoom-in-95 duration-150 flex flex-col justify-between"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur z-10">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
-              <Cpu className="h-5 w-5" />
+        <div className="p-4 sm:p-5 border-b-2 border-[#1E1F1C] flex items-center justify-between sticky top-0 bg-[#EBECE8] z-10">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-[#1E1F1C] text-white border-2 border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]">
+              <Cpu className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="font-display text-lg font-extrabold text-slate-950">
+              <h2 className="font-display text-lg font-black text-[#1E1F1C]">
                 {t("AI Quality Inspection", "AI गुणवत्ता निरीक्षण", "AI गुणवत्ता जांच")}
               </h2>
-              <p className="text-xs font-semibold text-slate-500">
+              <p className="text-xs font-bold text-[#52544D]">
                 {lot.crop_type} {t("Lot", "लॉट", "लॉट")} #{lot.id}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-full bg-slate-100 p-2 text-slate-500 hover:text-slate-900 transition-colors"
+            className="rounded-sm border-2 border-[#1E1F1C] bg-white p-1 text-[#1E1F1C] hover:bg-[#EBECE8] shadow-[2px_2px_0_0_#1E1F1C] cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Scanning Animation */}
         {scanning && (
-          <div className="p-6 bg-slate-900 text-white space-y-4">
-            <div className="flex items-center gap-3">
+          <div className="p-5 bg-[#1E1F1C] text-white space-y-3">
+            <div className="flex items-center gap-2.5">
               <div className="relative">
-                <ScanLine className="h-6 w-6 text-emerald-400 animate-pulse" />
-                <div className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+                <ScanLine className="h-5 w-5 text-[#F4A261] animate-pulse" />
               </div>
               <div>
-                <p className="text-sm font-bold">{t("Multimodal Vision Analysis", "बहु-मोडल दृष्टि विश्लेषण", "AI आंख ले जांच")}</p>
-                <p className="text-[11px] text-emerald-300/80 font-medium">
+                <p className="text-xs font-black uppercase tracking-wider text-white">{t("Multimodal Vision Analysis", "बहु-मोडल दृष्टि विश्लेषण", "AI आंख ले जांच")}</p>
+                <p className="text-[11px] text-[#F4A261] font-bold">
                   {t("Scanning produce samples...", "उपज के नमूने स्कैन हो रहे हैं...", "फसल स्कैन होत हे...")}
                 </p>
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+            <div className="space-y-1">
+              <div className="h-2 bg-[#52544D] border border-white rounded-sm overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-100"
+                  className="h-full bg-[#386641] transition-all duration-100"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-[11px] text-slate-400 font-mono text-right">{progress}%</p>
+              <p className="text-[10px] text-[#EBECE8] font-mono text-right tabular-nums">{progress}%</p>
             </div>
           </div>
         )}
 
         {/* Results */}
         {!scanning && (
-          <div className="p-5 sm:p-6 space-y-4">
+          <div className="p-4 sm:p-5 space-y-3.5">
             {/* Overall Grade Badge */}
-            <div className="flex items-center justify-between rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 p-5">
+            <div className="flex items-center justify-between rounded-sm bg-[#d7e8db] border-2 border-[#1E1F1C] p-4 shadow-[2px_2px_0_0_#1E1F1C]">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-800">
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#112816]">
                   {t("AI Certified Grade", "AI प्रमाणित ग्रेड", "AI प्रमाणित ग्रेड")}
                 </p>
-                <p className="mt-1 font-display text-3xl font-black text-emerald-900">
+                <p className="mt-0.5 font-display text-2xl font-black text-[#112816]">
                   {t("Grade", "ग्रेड", "ग्रेड")} {lot.grade}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-[10px] font-bold text-emerald-600 uppercase">
+                <p className="text-[10px] font-black text-[#112816] uppercase">
                   {t("Confidence", "विश्वास", "भरोसा")}
                 </p>
-                <p className={`text-2xl font-black ${getScoreColor(data.overallConfidence)}`}>
+                <p className="text-xl font-black text-[#112816] tabular-nums">
                   {data.overallConfidence}%
                 </p>
-                <p className="text-[10px] text-slate-500 mt-0.5">
+                <p className="text-[10px] font-bold text-[#52544D]">
                   {data.samplesAnalyzed} {t("samples", "नमूने", "नमूना")}
                 </p>
               </div>
@@ -288,69 +287,67 @@ export default function QualityInspectionModal({ lot, onClose }: QualityInspecti
               const isExpanded = expandedSection === section.key;
               const SectionIcon = section.icon;
               return (
-                <div key={section.key} className="rounded-xl border border-slate-200 overflow-hidden">
+                <div key={section.key} className="rounded-sm border-2 border-[#1E1F1C] overflow-hidden bg-white shadow-[2px_2px_0_0_#1E1F1C]">
                   <button
                     onClick={() => toggleSection(section.key)}
-                    className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
+                    className="w-full flex items-center justify-between p-3 bg-[#EBECE8] hover:bg-white transition-colors cursor-pointer border-b-2 border-transparent"
                   >
                     <div className="flex items-center gap-2">
-                      <SectionIcon className="h-4 w-4 text-emerald-700" />
-                      <span className="text-sm font-bold text-slate-900">{section.title}</span>
+                      <SectionIcon className="h-4 w-4 text-[#1E1F1C]" />
+                      <span className="text-xs font-black uppercase text-[#1E1F1C]">{section.title}</span>
                     </div>
                     {isExpanded ? (
-                      <ChevronUp className="h-4 w-4 text-slate-400" />
+                      <ChevronUp className="h-4 w-4 text-[#1E1F1C]" />
                     ) : (
-                      <ChevronDown className="h-4 w-4 text-slate-400" />
+                      <ChevronDown className="h-4 w-4 text-[#1E1F1C]" />
                     )}
                   </button>
                   {isExpanded && (
-                    <div className="p-4 space-y-3 animate-in fade-in duration-150">
+                    <div className="p-3.5 space-y-2.5 border-t-2 border-[#1E1F1C] animate-in fade-in duration-100">
                       {section.key === "overview" && (
-                        <div className="space-y-3">
+                        <div className="space-y-2.5">
                           {[
                             { label: t("Color Vibrancy", "रंग चमक", "रंग चमक"), value: data.colorVibrancy },
                             { label: t("Size Uniformity", "आकार एकरूपता", "आकार एकसमान"), value: data.sizeUniformity },
                             { label: t("Ripeness Score", "पकने का स्कोर", "पकने का स्कोर"), value: data.ripenessScore },
                           ].map((metric) => (
                             <div key={metric.label} className="space-y-1">
-                              <div className="flex items-center justify-between text-xs">
-                                <span className="text-slate-600 font-semibold">{metric.label}</span>
-                                <span className={`font-bold ${getScoreColor(metric.value)}`}>{metric.value}%</span>
+                              <div className="flex items-center justify-between text-xs font-bold">
+                                <span className="text-[#1E1F1C]">{metric.label}</span>
+                                <span className="text-[#1E1F1C] tabular-nums font-black">{metric.value}%</span>
                               </div>
-                              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                              <div className="h-2 bg-[#EBECE8] border border-[#1E1F1C] rounded-sm overflow-hidden">
                                 <div
-                                  className={`h-full rounded-full ${
-                                    metric.value >= 90 ? "bg-emerald-500" : metric.value >= 75 ? "bg-amber-500" : "bg-red-500"
-                                  }`}
+                                  className="h-full bg-[#386641]"
                                   style={{ width: `${metric.value}%` }}
                                 />
                               </div>
                             </div>
                           ))}
-                          <div className="flex items-center justify-between rounded-lg bg-slate-50 border border-slate-100 p-3 mt-2">
-                            <span className="text-xs font-semibold text-slate-600">
+                          <div className="flex items-center justify-between rounded-sm bg-[#EBECE8] border-2 border-[#1E1F1C] p-2.5 mt-2">
+                            <span className="text-xs font-bold text-[#1E1F1C]">
                               {t("Moisture Level", "नमी का स्तर", "पानी के मात्रा")}
                             </span>
-                            <span className="text-xs font-bold text-emerald-700">{data.moistureLevel}</span>
+                            <span className="text-xs font-black text-[#1B4965]">{data.moistureLevel}</span>
                           </div>
                         </div>
                       )}
                       {section.key === "grades" && (
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           {data.gradeBreakdown.map((g) => (
                             <div key={g.grade} className="space-y-1">
-                              <div className="flex items-center justify-between text-xs">
-                                <div className="flex items-center gap-2">
-                                  <span className={`h-3 w-3 rounded ${getGradeColor(g.grade)}`} />
-                                  <span className="text-slate-700 font-bold">
+                              <div className="flex items-center justify-between text-xs font-bold">
+                                <div className="flex items-center gap-1.5">
+                                  <span className={`h-2.5 w-2.5 rounded-sm border border-[#1E1F1C] ${getGradeColor(g.grade)}`} />
+                                  <span className="text-[#1E1F1C]">
                                     {t("Grade", "ग्रेड", "ग्रेड")} {g.grade}
                                   </span>
                                 </div>
-                                <span className="font-bold text-slate-900">{g.pct}%</span>
+                                <span className="font-black text-[#1E1F1C] tabular-nums">{g.pct}%</span>
                               </div>
-                              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                              <div className="h-2 bg-[#EBECE8] border border-[#1E1F1C] rounded-sm overflow-hidden">
                                 <div
-                                  className={`h-full rounded-full ${getGradeColor(g.grade)}`}
+                                  className={`h-full ${getGradeColor(g.grade)}`}
                                   style={{ width: `${g.pct}%` }}
                                 />
                               </div>
@@ -363,26 +360,26 @@ export default function QualityInspectionModal({ lot, onClose }: QualityInspecti
                           {data.defectDetection.map((d, i) => (
                             <div
                               key={i}
-                              className="flex items-center justify-between rounded-lg bg-slate-50 border border-slate-100 p-3"
+                              className="flex items-center justify-between rounded-sm bg-[#EBECE8] border-2 border-[#1E1F1C] p-2"
                             >
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1.5">
                                 {d.pct === 0 ? (
-                                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                                  <CheckCircle2 className="h-3.5 w-3.5 text-[#386641] shrink-0" />
                                 ) : (
-                                  <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
+                                  <AlertTriangle className="h-3.5 w-3.5 text-[#C04A22] shrink-0" />
                                 )}
-                                <span className="text-xs font-semibold text-slate-700">{d.type}</span>
+                                <span className="text-xs font-bold text-[#1E1F1C]">{d.type}</span>
                               </div>
-                              <span className={`text-xs font-bold ${d.pct === 0 ? "text-emerald-700" : "text-amber-700"}`}>
+                              <span className="text-xs font-black text-[#1E1F1C] tabular-nums">
                                 {d.pct}%
                               </span>
                             </div>
                           ))}
-                          <p className="text-[11px] text-slate-400 text-center pt-2">
+                          <p className="text-[10px] font-bold text-[#52544D] text-center pt-1">
                             {t(
-                              "Inspected by KisanSetu Gemini Vision Model v2.1",
-                              "KisanSetu Gemini विज़न मॉडल v2.1 द्वारा निरीक्षित",
-                              "KisanSetu AI विज़न मॉडल v2.1 ले जांच करे गेहे"
+                              "Inspected by KisanSetu AI Vision Engine",
+                              "KisanSetu AI विज़न इंजन द्वारा निरीक्षित",
+                              "KisanSetu AI विज़न इंजन ले जांच करे गेहे"
                             )}
                           </p>
                         </div>
@@ -394,23 +391,23 @@ export default function QualityInspectionModal({ lot, onClose }: QualityInspecti
             })}
 
             {/* AI Insight Footer */}
-            <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 flex items-start gap-3">
-              <Sparkles className="h-5 w-5 text-emerald-600 mt-0.5 shrink-0" />
+            <div className="rounded-sm bg-[#d9e9f2] border-2 border-[#1E1F1C] p-3 flex items-start gap-2.5 shadow-[2px_2px_0_0_#1E1F1C]">
+              <Sparkles className="h-4 w-4 text-[#1B4965] mt-0.5 shrink-0" />
               <div>
-                <p className="text-xs font-bold text-emerald-900">
+                <p className="text-xs font-black text-[#082130] uppercase">
                   {t("AI Recommendation", "AI सिफारिश", "AI सलाह")}
                 </p>
-                <p className="text-[11px] text-emerald-800/80 mt-1 leading-relaxed">
+                <p className="text-[11px] font-bold text-[#082130]/80 mt-0.5 leading-normal">
                   {lot.grade === "A"
                     ? t(
-                        "Premium lot meets export-grade standards. High color uniformity and zero critical defects detected. Recommended for immediate bulk purchase.",
-                        "प्रीमियम लॉट निर्यात-ग्रेड मानकों को पूरा करता है। उच्च रंग एकरूपता और शून्य गंभीर दोष। तत्काल थोक खरीद के लिए अनुशंसित।",
-                        "प्रीमियम लॉट निर्यात ग्रेड अनुसार हे। बढ़िया रंग आ कोनो खराबी नइ। तुरंत बिसाव बर अच्छा हे।"
+                        "Premium lot meets standard quality requirements. Color uniformity high, zero critical defects. Recommended for bulk purchase.",
+                        "प्रीमियम लॉट मानक गुणवत्ता आवश्यकताओं को पूरा करता है। उच्च रंग एकरूपता, शून्य गंभीर दोष। थोक खरीद के लिए उपयुक्त।",
+                        "प्रीमियम लॉट मानक अनुसार हे। बढ़िया रंग, कोनो खराबी नइ। थोक बिसाव बर अच्छा हे।"
                       )
                     : t(
-                        "Good quality lot suitable for domestic wholesale. Minor cosmetic variations within acceptable thresholds. Cost-effective option.",
-                        "घरेलू थोक के लिए अच्छी गुणवत्ता। छोटी-मोटी सौंदर्य भिन्नताएं स्वीकार्य सीमा के भीतर। किफायती विकल्प।",
-                        "देशी थोक बर अच्छा लॉट हे। छोटी-मोटी भिन्नता हे जे सही हे। सस्ता आ बढ़िया।"
+                        "Standard quality lot suitable for domestic wholesale. Minor cosmetic variations within acceptable limits.",
+                        "घरेलू थोक के लिए मानक गुणवत्ता। छोटी-मोटी सौंदर्य भिन्नताएं स्वीकार्य सीमा के भीतर।",
+                        "घरेलू थोक बर ठीक लॉट हे। छोटी-मोटी भिन्नता हे जे चलहि।"
                       )}
                 </p>
               </div>
@@ -419,8 +416,8 @@ export default function QualityInspectionModal({ lot, onClose }: QualityInspecti
         )}
 
         {/* Footer */}
-        <div className="p-5 sm:p-6 bg-white border-t border-slate-100 sticky bottom-0 rounded-b-3xl">
-          <Button variant="primary" className="w-full rounded-xl" onClick={onClose}>
+        <div className="p-4 sm:p-5 bg-[#EBECE8] border-t-2 border-[#1E1F1C] sticky bottom-0">
+          <Button variant="buyer" className="w-full" onClick={onClose}>
             {t("Close Inspection Report", "निरीक्षण रिपोर्ट बंद करें", "जांच रिपोर्ट बंद करव")}
           </Button>
         </div>

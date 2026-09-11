@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Barlow, Zilla_Slab } from "next/font/google";
 import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
 import MobileBottomBar from "@/components/MobileBottomBar";
@@ -10,17 +10,18 @@ import DemoModeBanner from "@/components/DemoModeBanner";
 import { LanguageProvider } from "@/lib/language";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta",
+const barlow = Barlow({
+  variable: "--font-barlow",
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600", "700", "800"],
+});
+
+const zillaSlab = Zilla_Slab({
+  variable: "--font-zilla-slab",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -58,7 +59,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${inter.variable} ${plusJakartaSans.variable} h-full antialiased`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${barlow.variable} ${zillaSlab.variable} h-full antialiased`}>
       <body className="min-h-dvh flex flex-col bg-surface text-on-background" suppressHydrationWarning>
         <HydrationGuard />
         <LanguageProvider>
@@ -70,9 +71,9 @@ export default function RootLayout({
           </a>
 
           {/* Top APMC Mandi Live Rate Ticker */}
-          <div className="fixed top-0 left-0 right-0 z-[60] bg-emerald-950 text-emerald-100 text-[11px] font-semibold tracking-wide border-b border-emerald-900/80 h-7 flex items-center overflow-hidden">
-            <div className="flex items-center gap-1.5 px-2 sm:px-3 bg-emerald-900 text-amber-300 font-bold shrink-0 z-10 text-[10px] uppercase tracking-wider py-0.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
+          <div className="fixed top-0 left-0 right-0 z-[60] bg-[#1E1F1C] text-[#EBECE8] text-[11px] font-semibold tracking-wide border-b-2 border-[#1E1F1C] h-8 flex items-center overflow-hidden">
+            <div className="flex items-center gap-1.5 px-2 sm:px-3 bg-[#F4A261] text-[#1E1F1C] font-black shrink-0 z-10 text-[10px] uppercase tracking-wider py-1 border-r-2 border-[#1E1F1C]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C04A22] animate-ping inline-block" />
               <span className="hidden sm:inline">Live Mandi Rates</span>
               <span className="sm:hidden">Rates</span>
             </div>
@@ -80,84 +81,79 @@ export default function RootLayout({
               <div className="animate-marquee whitespace-nowrap flex items-center gap-8 py-1">
                 <span className="flex items-center gap-1.5">
                   <span>🍅 Tomato (Raipur Mandi):</span>
-                  <span className="font-bold text-white">₹24/kg</span>
-                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹2.50 (+11.6%)</span>
+                  <span className="font-black text-white">₹24/kg</span>
+                  <span className="text-[#386641] font-black text-[10px]">▲ +₹2.50 (+11.6%)</span>
                 </span>
-                <span className="text-emerald-700 font-bold">•</span>
+                <span className="text-[#52544D] font-black">•</span>
                 <span className="flex items-center gap-1.5">
                   <span>🧅 Onion (Lasalgaon APMC):</span>
-                  <span className="font-bold text-white">₹28/kg</span>
-                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹1.00 (+3.7%)</span>
+                  <span className="font-black text-white">₹28/kg</span>
+                  <span className="text-[#386641] font-black text-[10px]">▲ +₹1.00 (+3.7%)</span>
                 </span>
-                <span className="text-emerald-700 font-bold">•</span>
+                <span className="text-[#52544D] font-black">•</span>
                 <span className="flex items-center gap-1.5">
                   <span>🥔 Potato (Bhilai Rural):</span>
-                  <span className="font-bold text-white">₹18/kg</span>
-                  <span className="text-amber-300 font-bold text-[10px]">▼ -₹0.50 (-2.7%)</span>
+                  <span className="font-black text-white">₹18/kg</span>
+                  <span className="text-[#C04A22] font-black text-[10px]">▼ -₹0.50 (-2.7%)</span>
                 </span>
-                <span className="text-emerald-700 font-bold">•</span>
+                <span className="text-[#52544D] font-black">•</span>
                 <span className="flex items-center gap-1.5">
                   <span>🌶️ Chilli (Tilda APMC):</span>
-                  <span className="font-bold text-white">₹65/kg</span>
-                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹4.00 (+6.5%)</span>
+                  <span className="font-black text-white">₹65/kg</span>
+                  <span className="text-[#386641] font-black text-[10px]">▲ +₹4.00 (+6.5%)</span>
                 </span>
-                <span className="text-emerald-700 font-bold">•</span>
+                <span className="text-[#52544D] font-black">•</span>
                 <span className="flex items-center gap-1.5">
                   <span>🌾 Wheat (Durg Center):</span>
-                  <span className="font-bold text-white">₹24.50/kg</span>
-                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹0.80 (+3.3%)</span>
+                  <span className="font-black text-white">₹24.50/kg</span>
+                  <span className="text-[#386641] font-black text-[10px]">▲ +₹0.80 (+3.3%)</span>
                 </span>
-                <span className="text-emerald-700 font-bold">•</span>
+                <span className="text-[#52544D] font-black">•</span>
                 <span className="flex items-center gap-1.5">
                   <span>🫘 Soybean (Nagpur Hub):</span>
-                  <span className="font-bold text-white">₹44/kg</span>
-                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹1.50 (+3.5%)</span>
+                  <span className="font-black text-white">₹44/kg</span>
+                  <span className="text-[#386641] font-black text-[10px]">▲ +₹1.50 (+3.5%)</span>
                 </span>
                 {/* Duplicate for seamless infinite loop */}
-                <span className="text-emerald-700 font-bold">•</span>
+                <span className="text-[#52544D] font-black">•</span>
                 <span className="flex items-center gap-1.5">
                   <span>🍅 Tomato (Raipur Mandi):</span>
-                  <span className="font-bold text-white">₹24/kg</span>
-                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹2.50 (+11.6%)</span>
+                  <span className="font-black text-white">₹24/kg</span>
+                  <span className="text-[#386641] font-black text-[10px]">▲ +₹2.50 (+11.6%)</span>
                 </span>
-                <span className="text-emerald-700 font-bold">•</span>
+                <span className="text-[#52544D] font-black">•</span>
                 <span className="flex items-center gap-1.5">
                   <span>🧅 Onion (Lasalgaon APMC):</span>
-                  <span className="font-bold text-white">₹28/kg</span>
-                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹1.00 (+3.7%)</span>
+                  <span className="font-black text-white">₹28/kg</span>
+                  <span className="text-[#386641] font-black text-[10px]">▲ +₹1.00 (+3.7%)</span>
                 </span>
-                <span className="text-emerald-700 font-bold">•</span>
+                <span className="text-[#52544D] font-black">•</span>
                 <span className="flex items-center gap-1.5">
                   <span>🥔 Potato (Bhilai Rural):</span>
-                  <span className="font-bold text-white">₹18/kg</span>
-                  <span className="text-amber-300 font-bold text-[10px]">▼ -₹0.50 (-2.7%)</span>
+                  <span className="font-black text-white">₹18/kg</span>
+                  <span className="text-[#C04A22] font-black text-[10px]">▼ -₹0.50 (-2.7%)</span>
                 </span>
               </div>
             </div>
           </div>
 
           {/* Fixed top navigation */}
-          <header className="fixed top-7 left-0 z-50 w-full border-b border-emerald-900/10 bg-white/85 backdrop-blur-md shadow-xs transition-all">
+          <header className="fixed top-8 left-0 z-50 w-full border-b-2 border-[#1E1F1C] bg-[#EBECE8]/95 backdrop-blur-md shadow-none transition-all">
             <div className="mx-auto h-full w-full max-w-7xl px-3 sm:px-6 lg:px-8">
               <div className="flex h-16 items-center justify-between gap-2 sm:gap-6">
                 <Link
                   href="/"
-                  className="flex items-center gap-2 sm:gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 rounded-lg"
+                  className="flex items-center gap-2 sm:gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C04A22] rounded-lg"
                 >
-                  <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-800 to-emerald-600 shadow-md shadow-emerald-900/20 text-white font-black text-lg sm:text-xl">
+                  <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-sm bg-[#C04A22] text-white font-black text-lg sm:text-xl border-2 border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]">
                     🌾
                   </div>
                   <div className="flex flex-col">
-                    <div className="flex items-center gap-1 sm:gap-1.5">
-                      <span className="font-extrabold text-lg sm:text-xl tracking-tight text-emerald-950 font-display group-hover:text-emerald-700 transition-colors">
-                        KisanSetu
-                      </span>
-                      <span className="hidden sm:inline-block rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.2 border border-emerald-300">
-                        PS 26033
-                      </span>
-                    </div>
-                    <span className="hidden sm:block text-[10px] font-semibold text-emerald-800 tracking-wider uppercase -mt-0.5">
-                      Direct Agri Marketplace
+                    <span className="font-extrabold text-xl tracking-tight text-[#1E1F1C] font-display group-hover:text-[#C04A22] transition-colors">
+                      KisanSetu
+                    </span>
+                    <span className="hidden sm:block text-[9px] font-bold text-[#52544D] tracking-widest uppercase -mt-0.5">
+                      Direct Market
                     </span>
                   </div>
                 </Link>
