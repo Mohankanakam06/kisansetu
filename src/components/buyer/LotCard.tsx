@@ -54,6 +54,21 @@ export default function LotCard({ lot, isFeatured, onOrderClick }: LotCardProps)
   const { t } = useLanguage();
   const cropEmoji = cropEmojis[lot.crop_type] || "🌿";
   const benchmarkPrice = BENCHMARK_MANDI[lot.crop_type] || lot.price_per_kg * 1.18;
+
+  // Freshness: lots expire from the buyer pool after 24 hours
+  const freshnessHoursLeft = (() => {
+    try {
+      if (!lot.created_at) return null;
+      const created = new Date(lot.created_at).getTime();
+      if (Number.isNaN(created)) return null;
+      const ageMs = Date.now() - created;
+      const remainingMs = 24 * 60 * 60 * 1000 - ageMs;
+      const hrs = Math.ceil(remainingMs / (60 * 60 * 1000));
+      return Math.max(0, hrs);
+    } catch {
+      return null;
+    }
+  })();
   const savingsPerKg = Math.max(0, benchmarkPrice - lot.price_per_kg);
   const savingsPct = Math.round((savingsPerKg / benchmarkPrice) * 100);
 
@@ -98,6 +113,14 @@ export default function LotCard({ lot, isFeatured, onOrderClick }: LotCardProps)
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold text-white bg-amber-600 shadow-sm">
               <Check className="h-3 w-3" /> {t("Grade B", "ग्रेड B", "ग्रेड B")}
             </span>
+          )}
+
+          {typeof freshnessHoursLeft === "number" && freshnessHoursLeft > 0 && (
+            <div className="mt-2">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-100 shadow-sm">
+                ⏳ {freshnessHoursLeft}h {t("Fresh", "ताज़ा", "ताजा")}
+              </span>
+            </div>
           )}
         </div>
 

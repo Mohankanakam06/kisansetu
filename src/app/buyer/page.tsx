@@ -21,6 +21,7 @@ import {
   PackageCheck,
   Filter,
   TrendingUp,
+  LocateFixed,
 } from "lucide-react";
 
 // Client-only dynamic Leaflet Map to avoid SSR errors
@@ -38,6 +39,21 @@ const GRADES: string[] = ["All", "A", "B", "C"];
 
 export default function BuyerPage() {
   const { t } = useLanguage();
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("kisansetu_user");
+      if (stored) {
+        const user = JSON.parse(stored);
+        if (user.role === "farmer") {
+          window.location.href = "/farmer";
+        }
+      } else {
+        window.location.href = "/login";
+      }
+    } catch(e) {}
+  }, []);
+
   const [lots, setLots] = useState<Lot[]>([]);
   const [selectedLot, setSelectedLot] = useState<Lot | null>(null);
   const [orderingLot, setOrderingLot] = useState<Lot | null>(null);
@@ -50,6 +66,30 @@ export default function BuyerPage() {
   const [orderSuccess, setOrderSuccess] = useState<any>(null);
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
 
+  const [nearbyEnabled, setNearbyEnabled] = useState(false);
+  const [nearbyRadiusKm, setNearbyRadiusKm] = useState(10);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [locating, setLocating] = useState(false);
+
+  const getMyLocation = async () => {
+    if (!("geolocation" in navigator)) return;
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+        setNearbyEnabled(true);
+        setLocating(false);
+      },
+      () => {
+        setNearbyEnabled(false);
+        setLocating(false);
+      }
+    );
+  };
+
   const fetchLots = async () => {
     setIsLoading(true);
     try {
@@ -59,6 +99,9 @@ export default function BuyerPage() {
         search: searchQuery || undefined,
         minPrice: priceMin ? Number(priceMin) : undefined,
         maxPrice: priceMax ? Number(priceMax) : undefined,
+        lat: nearbyEnabled && userLocation ? userLocation.lat : undefined,
+        lng: nearbyEnabled && userLocation ? userLocation.lng : undefined,
+        radiusKm: nearbyEnabled && userLocation ? nearbyRadiusKm : undefined,
       });
       setLots(res.lots);
       if (res.lots.length > 0 && !selectedLot) {
@@ -73,7 +116,12 @@ export default function BuyerPage() {
 
   useEffect(() => {
     fetchLots();
-  }, [cropFilter, gradeFilter, priceMin, priceMax, searchQuery]);
+    // Real-time updates for new clusters
+    const interval = setInterval(() => {
+      fetchLots();
+    }, 15000);
+    return () => clearInterval(interval);
+  }, [cropFilter, gradeFilter, priceMin, priceMax, searchQuery, nearbyEnabled, nearbyRadiusKm, userLocation]);
 
   const clearFilters = () => {
     setCropFilter("All");
@@ -226,6 +274,50 @@ export default function BuyerPage() {
                     className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all"
                   />
                 </div>
+              </div>
+
+              {/* Nearby discovery */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-2 uppercase tracking-wider">
+                  {t("Nearby Lots", "पास के लॉट", "पास के लॉट")}
+                </label>
+
+                <button
+                  type="button"
+                  onClick={getMyLocation}
+                  disabled={locating}
+                  className={`w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
+                    nearbyEnabled
+                      ? "bg-emerald-50 border-emerald-200 text-emerald-900"
+                      : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  <LocateFixed className="h-4 w-4 text-emerald-700" />
+                  {locating
+                    ? t("Locating...", "लोकेट हो रहा...", "लोकेट होत हे...")
+                    : nearbyEnabled
+                      ? t(`Nearby within ${nearbyRadiusKm}km`, `आसपास ${nearbyRadiusKm}किमी`, `आसपास ${nearbyRadiusKm}किमी`)
+                      : t("Use my location", "मेरी लोकेशन", "मोर लोकेशन")}
+                </button>
+
+                {userLocation && nearbyEnabled && (
+                  <div className="mt-2 flex gap-2">
+                    {[5, 10, 20].map((r) => (
+                      <button
+                        key={r}
+                        type="button"
+                        onClick={() => setNearbyRadiusKm(r)}
+                        className={`flex-1 px-2 py-1 rounded-lg text-[11px] font-bold border transition-all ${
+                          nearbyRadiusKm === r
+                            ? "bg-emerald-700 text-white border-emerald-700"
+                            : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                        }`}
+                      >
+                        {r}km
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Live AI Insight Pill */}

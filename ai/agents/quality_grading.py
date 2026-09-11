@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import requests
+import base64
 from dotenv import load_dotenv
 
 logger = logging.getLogger("kisansetu.quality_grading")
@@ -37,19 +38,37 @@ def grade_photo(lot_id: str, photo_url: str):
         raise ValueError("photo_url is required")
 
     try:
-        img_bytes = requests.get(photo_url, timeout=10).content
-        if len(img_bytes) > 5 * 1024 * 1024:
-            raise ValueError("Image too large (max 5MB)")
+        # photo_url may be a reachable URL (https://...) or a data URL (data:image/...;base64,...) from the frontend
+        mime_t = "image/jpeg"
+        if photo_url.startswith("data:"):
+            try:
+                header, b64_part = photo_url.split(",", 1)
+                img_bytes = base64.b64decode(b64_part)
+                parsed_mime = header.split(";", 1)[0].replace("data:", "")
+                if parsed_mime:
+                    mime_t = parsed_mime
+            except Exception as e:
+                raise ValueError(f"Invalid base64 photo data URL: {e}")
+        else:
+            img_bytes = requests.get(photo_url, timeout=10).content
+            photo_url_l = photo_url.lower()
+            if any(x in photo_url_l for x in [".mp4", "video"]):
+                mime_t = "video/mp4"
+
+        if len(img_bytes) > 50 * 1024 * 1024:
+            raise ValueError("File too large (max 50MB)")
 
         if _genai_client:
             response = _genai_client.models.generate_content(
                 model="gemini-1.5-flash",
                 contents=[
                     GRADING_RUBRIC,
-                    types.Part.from_bytes(data=img_bytes, mime_type="image/jpeg"),
+                    types.Part.from_bytes(data=img_bytes, mime_type=mime_t),
                 ]
             )
-            text = response.text.strip().strip("```json").strip("```").strip()
+            text = response.text.strip()
+            # Handle possible markdown-wrapped JSON from the model
+            text = text.strip("```json").strip("```").strip()
             result = json.loads(text)
         else:
             raise ValueError("Gemini client not configured")

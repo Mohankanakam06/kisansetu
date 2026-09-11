@@ -201,6 +201,9 @@ class ApiService {
     search?: string;
     minPrice?: number;
     maxPrice?: number;
+    lat?: number;
+    lng?: number;
+    radiusKm?: number;
   }): Promise<{ lots: Lot[] }> {
     if (!USE_MOCK) {
       try {
@@ -209,6 +212,12 @@ class ApiService {
         if (params?.grade) query.append("grade", params.grade);
         if (params?.minPrice != null) query.append("minPrice", String(params.minPrice));
         if (params?.maxPrice != null) query.append("maxPrice", String(params.maxPrice));
+        if (params?.lat != null && params?.lng != null && params?.radiusKm != null) {
+          query.append("lat", String(params.lat));
+          query.append("lng", String(params.lng));
+          query.append("radius_km", String(params.radiusKm));
+        }
+
         const res = await fetch(`${API_BASE_URL}/lots?${query.toString()}`);
         if (res.ok) {
           return await res.json();
@@ -241,6 +250,30 @@ class ApiService {
     if (params?.maxPrice != null) {
       filtered = filtered.filter((l) => l.price_per_kg <= params!.maxPrice!);
     }
+
+    // Optional nearby filter for mock mode
+    if (params?.lat != null && params?.lng != null && params?.radiusKm != null) {
+      const haversineKm = (lat1: number, lng1: number, lat2: number, lng2: number) => {
+        const R = 6371;
+        const dLat = ((lat2 - lat1) * Math.PI) / 180;
+        const dLng = ((lng2 - lng1) * Math.PI) / 180;
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos((lat1 * Math.PI) / 180) *
+            Math.cos((lat2 * Math.PI) / 180) *
+            Math.sin(dLng / 2) *
+            Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+      };
+
+      filtered = filtered.filter((l) => {
+        const ll = l.centroid;
+        const distKm = haversineKm(params.lat!, params.lng!, ll.lat, ll.lng);
+        return distKm <= params!.radiusKm!;
+      });
+    }
+
     return { lots: filtered };
   }
 
@@ -366,7 +399,17 @@ class ApiService {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ lot_id: lotId, photo_url: photoUrl }),
         });
-        if (res.ok) return await res.json();
+        if (res.ok) {
+          const result = await res.json();
+          // Update lot grade in memory
+          const targetLot = this.lots.find(l => l.id === lotId);
+          if (targetLot && result && result.grade) {
+            targetLot.grade = result.grade;
+            targetLot.defects = result.defects || [];
+            targetLot.photo_url = photoUrl;
+          }
+          return result;
+        }
       } catch (e) {
         console.warn("API /quality/grade failed, using fallback", e);
       }
@@ -374,6 +417,13 @@ class ApiService {
 
     await delay(1000);
     // Simulating intelligent vision analysis
+    const targetLot = this.lots.find(l => l.id === lotId);
+    if(targetLot) {
+      targetLot.grade = "A";
+      targetLot.defects = ["Zero fungal presence", "Firmness index: 94%", "Uniform 55-65mm diameter", "Export grade surface"];
+      targetLot.photo_url = photoUrl;
+    }
+
     return {
       grade: "A",
       defects: ["Zero fungal presence", "Firmness index: 94%", "Uniform 55-65mm diameter", "Export grade surface"],

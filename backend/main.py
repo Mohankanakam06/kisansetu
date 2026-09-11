@@ -104,6 +104,13 @@ def create_order(order: OrderCreate):
         """, (order.buyer_id, order.lot_id, order.quantity_kg))
 
         new_order = cur.fetchone()
+
+        # Move lot out of buyer-visible state once an order is placed.
+        cur.execute(
+            "UPDATE lots SET status = 'ordered' WHERE id = %s AND status = 'open'",
+            (order.lot_id,),
+        )
+
         conn.commit()
 
         return {

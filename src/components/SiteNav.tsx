@@ -30,7 +30,7 @@ interface NavItem {
   icon?: any;
 }
 
-// Public links shown when user is NOT logged in
+// Links shown when user is NOT logged in
 const PUBLIC_NAV: NavItem[] = [
   { href: "/#features", label: "Features", labelHi: "सुविधाएं", labelCg: "सुविधा", icon: Sparkles },
   { href: "/#how-it-works", label: "How It Works", labelHi: "कैसे काम करता है", labelCg: "कसे काम करत हे", icon: Zap },
@@ -38,12 +38,16 @@ const PUBLIC_NAV: NavItem[] = [
   { href: "/about", label: "About", labelHi: "हमारे बारे में", labelCg: "हमर बारे मं", icon: Globe2 },
 ];
 
-// Internal dashboard links shown when user IS logged in
-const DASHBOARD_NAV: NavItem[] = [
-  { href: "/buyer", label: "Marketplace", labelHi: "मंडी बाजार", labelCg: "बाजार", icon: Store },
+// Role-specific navigation items
+const FARMER_NAV: NavItem[] = [
   { href: "/farmer", label: "Sell Produce", labelHi: "फसल बेचें", labelCg: "फसल बेचंव", icon: Sprout },
   { href: "/orders", label: "Logistics", labelHi: "लॉजिस्टिक्स", labelCg: "लॉजिस्टिक्स", icon: LayoutDashboard },
   { href: "/earnings", label: "Earnings", labelHi: "कमाई और भुगतान", labelCg: "कमाई आ भुगतान", icon: Wallet },
+];
+
+const BUYER_NAV: NavItem[] = [
+  { href: "/buyer", label: "Marketplace", labelHi: "मंडी बाजार", labelCg: "बाजार", icon: Store },
+  { href: "/orders", label: "My Orders", labelHi: "मेरे ऑर्डर", labelCg: "मोर ऑर्डर", icon: LayoutDashboard },
 ];
 
 const LANGUAGES = [
@@ -98,7 +102,11 @@ export default function SiteNav() {
     };
   }, [mobileMenuOpen]);
 
-  const activeNavItems = user ? DASHBOARD_NAV : PUBLIC_NAV;
+  const activeNavItems = !user
+    ? PUBLIC_NAV
+    : user.role === "buyer"
+    ? BUYER_NAV
+    : FARMER_NAV;
 
   return (
     <nav aria-label="Primary" className="flex flex-1 items-center justify-end gap-2 sm:gap-6">

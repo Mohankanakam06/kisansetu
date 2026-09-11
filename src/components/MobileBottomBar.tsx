@@ -40,33 +40,70 @@ export default function MobileBottomBar() {
     return null;
   }
 
-  const navItems = [
-    {
-      href: "/buyer",
-      label: t("Market", "बाजार", "बाजार"),
-      icon: Store,
-      badge: null,
-    },
-    {
-      href: "/orders",
-      label: t("Dispatch", "लॉजिस्टिक्स", "लॉजिस्टिक्स"),
-      icon: LayoutDashboard,
-      badge: "LIVE",
-    },
-    // Center Action Button: Sell / List Produce
-    {
-      href: "/farmer",
-      label: t("Sell", "बेचें", "बेचंव"),
-      icon: Sprout,
-      isCenter: true,
-    },
-    {
-      href: "/earnings",
-      label: t("Payouts", "कमाई", "कमाई"),
-      icon: Wallet,
-      badge: null,
-    },
-  ];
+  const role = user?.role as "buyer" | "farmer" | undefined;
+
+  // Bottom-bar links are role-aware.
+  // Important: buyers must not see any link that navigates to /farmer.
+  const navItems =
+    role === "farmer"
+      ? [
+          {
+            href: "/orders",
+            label: t("Logistics", "लॉजिस्टिक्स", "लॉजिस्टिक्स"),
+            icon: LayoutDashboard,
+            badge: "LIVE",
+          },
+          {
+            href: "/earnings",
+            label: t("Earnings", "कमाई", "कमाई"),
+            icon: Wallet,
+            badge: null,
+          },
+          {
+            href: "/orders",
+            label: t("Logistics", "लॉजिस्टिक्स", "लॉजिस्टिक्स"),
+            icon: LayoutDashboard,
+            badge: null,
+          },
+          {
+            href: "/earnings",
+            label: t("Earnings", "कमाई", "कमाई"),
+            icon: Wallet,
+            badge: null,
+          },
+        ]
+      : [
+          {
+            href: "/orders",
+            label: t("My Orders", "मेरे ऑर्डर", "मोर ऑर्डर"),
+            icon: LayoutDashboard,
+            badge: "LIVE",
+          },
+          {
+            href: "/buyer",
+            label: t("Marketplace", "मंडी बाजार", "बाजार"),
+            icon: Store,
+            badge: null,
+          },
+          {
+            href: "/orders",
+            label: t("My Orders", "मेरे ऑर्डर", "मोर ऑर्डर"),
+            icon: LayoutDashboard,
+            badge: null,
+          },
+          {
+            href: "/buyer",
+            label: t("Marketplace", "मंडी बाजार", "बाजार"),
+            icon: Store,
+            badge: null,
+          },
+        ];
+
+  const centerHref = role === "farmer" ? "/farmer" : "/buyer";
+  const CenterIcon = role === "farmer" ? Sprout : Store;
+  const centerText = role === "farmer" ? t("List", "दर्ज", "लिखव") : t("Browse", "देखें", "देखव");
+  const centerAriaLabel = role === "farmer" ? t("List Produce", "फसल दर्ज", "फसल लिखव") : t("Market", "बाजार", "बाजार");
+
 
   return (
     <nav
@@ -105,14 +142,14 @@ export default function MobileBottomBar() {
         {/* Center Primary Action: List Produce Button */}
         <div className="flex flex-col items-center justify-center px-1 -mt-4">
           <Link
-            href="/farmer"
-            aria-label="List Produce"
+            href={centerHref}
+            aria-label={centerAriaLabel}
             className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-800 to-emerald-600 text-white shadow-lg shadow-emerald-950/30 ring-4 ring-white active:scale-95 transition-transform"
           >
-            <Sprout className="h-6 w-6" />
+            <CenterIcon className="h-6 w-6" />
           </Link>
           <span className="text-[10px] font-black tracking-tight text-emerald-900 mt-1">
-            + {t("List", "दर्ज", "लिखव")}
+            + {centerText}
           </span>
         </div>
 

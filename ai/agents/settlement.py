@@ -133,6 +133,13 @@ def process_payout(order_id: str, stage: str):
             })
 
         cur.execute("UPDATE orders SET status = %s WHERE id = %s", (new_order_status, order_id))
+
+        # Update lot lifecycle for buyer pool visibility.
+        # - pickup stage keeps lots in ordered state
+        # - delivery stage marks lots delivered
+        next_lot_status = "delivered" if stage == "delivery" else "ordered"
+        cur.execute("UPDATE lots SET status = %s WHERE id = %s", (next_lot_status, order["lot_id"]))
+
         conn.commit()
 
         return {

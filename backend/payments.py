@@ -65,13 +65,14 @@ async def create_order(payload: CreateOrderRequest):
 
 @router.post("/verify")
 async def verify_payment(payload: VerifyPaymentRequest):
-    if "your_key_id" in RAZORPAY_KEY_ID:
-         logger.warning("Using test Razorpay keys. Bypassing real signature verification.")
-         # We still try to update the DB if possible
+    is_test_mode = "your_key_id" in RAZORPAY_KEY_ID or client is None
+
+    if is_test_mode:
+        logger.warning("Using test Razorpay keys or SDK not present. Bypassing real signature verification.")
 
     try:
-        # Verify the payment signature to ensure the request came from Razorpay
-        if client:
+        # Verify the payment signature to ensure the request came from Razorpay if not in test mode
+        if not is_test_mode and client:
             client.utility.verify_payment_signature({
                 "razorpay_order_id": payload.order_id,
                 "razorpay_payment_id": payload.payment_id,

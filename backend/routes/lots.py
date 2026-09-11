@@ -18,7 +18,7 @@ def aggregate():
 @router.get("/api/lots")
 def list_lots(crop: str = None, grade: str = None,
               lat: float = None, lng: float = None, radius_km: float = None):
-    """List available lots with optional filters."""
+    """List available lots with optional filters and 24-hour freshness time limit."""
     from backend.db import get_conn, release_conn
     conn = get_conn()
     try:
@@ -39,7 +39,7 @@ def list_lots(crop: str = None, grade: str = None,
             LEFT JOIN LATERAL (
                 SELECT photo_url, defects FROM quality_grades WHERE lot_id = l.id ORDER BY graded_at DESC LIMIT 1
             ) q ON true
-            WHERE 1=1 AND l.status = 'open'
+            WHERE 1=1 AND l.status = 'open' AND l.created_at >= NOW() - INTERVAL '24 hours'
         """
         params = []
 
