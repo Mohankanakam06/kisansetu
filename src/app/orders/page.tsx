@@ -102,16 +102,17 @@ export default function OrdersPage() {
     const otp = type === "pickup" ? otpDispatch : otpDelivery;
     if (!otp || otp.length < 4) return;
     setVerificationLoading(true);
-    setTimeout(() => {
-      if (type === "pickup") {
-        handleTriggerPayout(selectedOrder?.id!, "pickup");
-      } else {
-        handleTriggerPayout(selectedOrder?.id!, "delivery");
-      }
+    try {
+      const res = await apiService.verifyMilestoneOtp(selectedOrder?.id!, type, otp);
+      setPayoutData(res);
+      await loadOrders();
+    } catch (e) {
+      console.error("OTP verification failed", e);
+    } finally {
       setVerificationLoading(false);
       if (type === "pickup") setOtpDispatch("");
       else setOtpDelivery("");
-    }, 1500);
+    }
   };
 
   const filteredOrders = useMemo(() => {

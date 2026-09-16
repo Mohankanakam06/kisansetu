@@ -27,19 +27,49 @@ export default function EarningsPage() {
   const [downloaded, setDownloaded] = useState(false);
   const [showReceipt, setShowReceipt] = useState<string | null>(null);
   const [payoutLoading, setPayoutLoading] = useState(false);
+  const [withdrawnAmount, setWithdrawnAmount] = useState(0);
+  const [payoutHistory, setPayoutHistory] = useState<Array<{ id: string; amount: number; timestamp: string; utr: string }>>([]);
+
+  useEffect(() => {
+    try {
+      const savedWithdrawn = localStorage.getItem("kisansetu_withdrawn_total");
+      if (savedWithdrawn) setWithdrawnAmount(Number(savedWithdrawn));
+      const savedPayouts = localStorage.getItem("kisansetu_payout_history");
+      if (savedPayouts) setPayoutHistory(JSON.parse(savedPayouts));
+    } catch (e) {
+      console.warn("Error loading stored payouts", e);
+    }
+  }, []);
 
   const handleManualWithdraw = async (amount: number) => {
+    if (amount <= 0) return;
     setPayoutLoading(true);
     setTimeout(() => {
       setPayoutLoading(false);
+      const newTotal = withdrawnAmount + amount;
+      const newEntry = {
+        id: `PAY-${Date.now().toString().slice(-6)}`,
+        amount,
+        timestamp: new Date().toISOString(),
+        utr: `UTR${Date.now().toString().slice(-12)}`,
+      };
+      const updatedHistory = [newEntry, ...payoutHistory];
+      setWithdrawnAmount(newTotal);
+      setPayoutHistory(updatedHistory);
+      try {
+        localStorage.setItem("kisansetu_withdrawn_total", String(newTotal));
+        localStorage.setItem("kisansetu_payout_history", JSON.stringify(updatedHistory));
+      } catch (e) {
+        console.warn("Error saving payout", e);
+      }
       alert(
         t(
-          "Payout of ₹" + amount.toLocaleString("en-IN") + " initiated to linked UPI.",
-          "लिंक किए गए UPI पर ₹" + amount.toLocaleString("en-IN") + " का भुगतान शुरू किया गया।",
-          "UPI म ₹" + amount.toLocaleString("en-IN") + " भेजे के प्रक्रिया सुरु हो गे।"
+          "Payout of ₹" + amount.toLocaleString("en-IN") + " initiated to linked UPI (UTR: " + newEntry.utr + ").",
+          "लिंक किए गए UPI पर ₹" + amount.toLocaleString("en-IN") + " का भुगतान शुरू किया गया (UTR: " + newEntry.utr + ")।",
+          "UPI म ₹" + amount.toLocaleString("en-IN") + " भेजे के प्रक्रिया सुरु हो गे (UTR: " + newEntry.utr + ")।"
         )
       );
-    }, 1500);
+    }, 1200);
   };
 
   useEffect(() => {
@@ -66,8 +96,9 @@ export default function EarningsPage() {
       .filter((o) => o.status === "placed" || o.status === "routed" || o.status === "picked_up")
       .reduce((sum, o) => sum + o.total_amount * 0.4, 0);
     const active = orders.filter((o) => o.status !== "settled").length;
-    return { settled, pending, active };
-  }, [orders]);
+    const available = Math.max(0, settled - withdrawnAmount);
+    return { settled, pending, active, available };
+  }, [orders, withdrawnAmount]);
 
   const handleDownload = () => {
     const rows = [
@@ -284,14 +315,14 @@ export default function EarningsPage() {
               <div className="rounded-lg bg-white border border-emerald-200 p-3 flex items-center justify-between shadow-2xs">
                 <div>
                   <p className="text-[10px] font-bold text-slate-500 uppercase">{t("Available for Payout", "निकासी योग्य राशि", "निकाले बर राशि")}</p>
-                  <p className="font-display text-lg font-extrabold text-slate-900 tabular-nums">₹{stats.settled.toLocaleString("en-IN")}</p>
+                  <p className="font-display text-lg font-extrabold text-slate-900 tabular-nums">₹{stats.available.toLocaleString("en-IN")}</p>
                 </div>
                 <Button
                   size="sm"
                   variant="farmer"
-                  disabled={payoutLoading || stats.settled <= 0}
+                  disabled={payoutLoading || stats.available <= 0}
                   isLoading={payoutLoading}
-                  onClick={() => handleManualWithdraw(stats.settled)}
+                  onClick={() => handleManualWithdraw(stats.available)}
                   className="min-h-[36px]"
                 >
                   {t("Instant Withdraw", "तत्काल निकासी", "तुरंत निकालव")}
@@ -420,12 +451,25 @@ export default function EarningsPage() {
               </div>
             </Card>
 
-            {/* Recent Settlement Transactions */}
+            {/* Recent Bank / UPI Credits + Payout History */}
             <Card className="p-0 overflow-hidden">
               <div className="p-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
                 <h2 className="font-display text-sm font-extrabold text-slate-900">{t("Recent Bank / UPI Credits", "हाल के बैंक / UPI क्रेडिट", "हाल के बैंक / UPI क्रेडिट")}</h2>
                 <span className="text-[11px] font-bold text-slate-500 uppercase">{t("Direct Farm-Gate Vouchers", "सीधे फार्म-गेट वाउचर", "फार्म-गेट वाउचर")}</span>
               </div>
+
+              {payoutHistory.length > 0 && (
+                <div className="p-3 bg-emerald-50/50 border-b border-emerald-100">
+                  <p className="text-[10px] font-bold text-emerald-800 uppercase mb-2">Instant Payout History</p>
+                  {payoutHistory.slice(0, 3).map((p) => (
+                    <div key={p.id} className="flex justify-between items-center text-xs font-medium text-emerald-900 py-1 border-b border-emerald-100 last:border-0">
+                      <span>Withdrawn • {new Date(p.timestamp).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}</span>
+                      <span className="font-extrabold">-₹{p.amount.toLocaleString("en-IN")}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div className="max-h-[400px] overflow-y-auto divide-y divide-slate-100">
                 {orders.length === 0 ? (
                   <div className="p-8 text-center text-slate-500 text-xs font-medium">{t("No transactions recorded.", "कोई लेन-देन दर्ज नहीं है।", "कोनो लेन-देन नइ हे।")}</div>

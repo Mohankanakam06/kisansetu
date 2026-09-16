@@ -3,8 +3,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
-from backend.routes import lots, routing, settlement, farmer, orchestrator, quality, auth
-from backend import payments
+from backend.routes import lots, routing, settlement, farmer, orchestrator, quality, auth, mandi
+from backend import payments, websockets
 from backend.db import get_conn, release_conn
 
 app = FastAPI(
@@ -37,7 +37,9 @@ app.include_router(settlement.router, tags=["Settlement"])
 app.include_router(farmer.router, tags=["Farmer Interface"])
 app.include_router(orchestrator.router, tags=["Orchestrator"])
 app.include_router(quality.router, tags=["Quality Grading"])
+app.include_router(mandi.router, tags=["Mandi Prices"])
 app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
+app.include_router(websockets.router, tags=["WebSockets"])
 
 
 # Health check
@@ -62,6 +64,7 @@ def health_check():
             "/api/farmer/listing",
             "/api/orchestrator/query",
             "/api/quality/grade",
+            "/api/mandi/prices",
             "/api/payments/create-order",
             "/api/payments/verify"
         ]
@@ -112,6 +115,21 @@ def create_order(order: OrderCreate):
         )
 
         conn.commit()
+
+        # Emit websocket broadcast
+        try:
+            from backend.websockets import manager as ws_manager
+            ws_manager.emit_sync({
+                "type": "order_placed",
+                "order_id": new_order["id"],
+                "buyer_id": new_order["buyer_id"],
+                "lot_id": new_order["lot_id"],
+                "crop_type": lot["crop_type"],
+                "quantity_kg": float(new_order["quantity_kg"]),
+                "status": new_order["status"]
+            })
+        except Exception:
+            pass
 
         return {
             "order_id": new_order["id"],

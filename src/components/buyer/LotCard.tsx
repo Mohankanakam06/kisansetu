@@ -48,6 +48,18 @@ const BENCHMARK_MANDI: Record<string, number> = {
 // Deterministic farmer avatar palettes for the pooled stack
 const AVATAR_COLORS = ["bg-emerald-600", "bg-amber-500", "bg-teal-600", "bg-forest-700", "bg-lime-600", "bg-green-700"];
 
+function safeParseDate(d: any): number | null {
+  if (!d) return null;
+  if (typeof d === "number") return d > 1e11 ? d : d * 1000;
+  let s = String(d).trim();
+  if (!s) return null;
+  if (!s.includes("T") && s.includes(" ")) {
+    s = s.replace(" ", "T");
+  }
+  const ts = new Date(s).getTime();
+  return Number.isNaN(ts) ? null : ts;
+}
+
 function useTradeWindow(tradeStart?: string, tradeEnd?: string) {
   const [label, setLabel] = useState<string | null>(null);
 
@@ -56,8 +68,8 @@ function useTradeWindow(tradeStart?: string, tradeEnd?: string) {
 
     const compute = () => {
       const now = Date.now();
-      const start = tradeStart ? new Date(tradeStart).getTime() : NaN;
-      const end = tradeEnd ? new Date(tradeEnd).getTime() : NaN;
+      const start = safeParseDate(tradeStart) ?? NaN;
+      const end = safeParseDate(tradeEnd) ?? NaN;
 
       if (!Number.isNaN(start) && now < start) {
         const diff = start - now;
@@ -99,9 +111,8 @@ export default function LotCard({ lot, isFeatured, onOrderClick }: LotCardProps)
   // Freshness: lots expire from the buyer pool after 24 hours
   const freshnessHoursLeft = (() => {
     try {
-      if (!lot.created_at) return null;
-      const created = new Date(lot.created_at).getTime();
-      if (Number.isNaN(created)) return null;
+      const created = safeParseDate(lot.created_at);
+      if (!created) return null;
       const ageMs = Date.now() - created;
       const remainingMs = 24 * 60 * 60 * 1000 - ageMs;
       const hrs = Math.ceil(remainingMs / (60 * 60 * 1000));

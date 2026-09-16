@@ -39,18 +39,18 @@ export function Badge({
     default: "bg-slate-100 text-slate-800 border-slate-200",
     neutral: "bg-slate-100 text-slate-700 border-slate-200",
     outline: "border-slate-300 text-slate-700 bg-white",
-    success: "bg-emerald-50 text-emerald-800 border-emerald-200",
-    warning: "bg-amber-50 text-amber-800 border-amber-200",
-    danger: "bg-rose-50 text-rose-800 border-rose-200",
-    info: "bg-sky-50 text-sky-800 border-sky-200",
-    verified: "bg-emerald-100/80 text-emerald-900 border-emerald-300 font-bold",
-    gradeA: "bg-emerald-100 text-emerald-900 border-emerald-300 font-bold",
-    gradeB: "bg-amber-100 text-amber-900 border-amber-300 font-bold",
-    gradeC: "bg-slate-100 text-slate-800 border-slate-300 font-semibold",
-    live: "bg-emerald-50 text-emerald-900 border-emerald-300 font-bold",
-    savings: "bg-amber-100 text-amber-900 border-amber-300 font-bold",
-    farmer: "bg-emerald-50 text-emerald-900 border-emerald-200 font-bold",
-    buyer: "bg-blue-50 text-blue-900 border-blue-200 font-bold",
+    success: "bg-emerald-50 text-emerald-950 border-emerald-300 font-bold",
+    warning: "bg-amber-50 text-amber-950 border-amber-300 font-bold",
+    danger: "bg-rose-50 text-rose-950 border-rose-300 font-bold",
+    info: "bg-sky-50 text-sky-950 border-sky-300 font-bold",
+    verified: "bg-emerald-100/90 text-emerald-950 border-emerald-400 font-bold",
+    gradeA: "bg-emerald-100 text-emerald-950 border-emerald-400 font-bold",
+    gradeB: "bg-amber-100 text-amber-950 border-amber-400 font-bold",
+    gradeC: "bg-slate-100 text-slate-900 border-slate-300 font-semibold",
+    live: "bg-emerald-50 text-emerald-950 border-emerald-300 font-bold",
+    savings: "bg-amber-100 text-amber-950 border-amber-400 font-bold",
+    farmer: "bg-emerald-50 text-emerald-950 border-emerald-300 font-bold",
+    buyer: "bg-blue-50 text-blue-950 border-blue-300 font-bold",
   };
 
   const sizes = {
@@ -107,29 +107,29 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-1 cursor-pointer select-none border text-center";
+    "inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800 focus-visible:ring-2 focus-visible:ring-emerald-700/50 cursor-pointer select-none border text-center";
 
   const variants = {
     primary:
-      "bg-emerald-800 text-white border-emerald-900/20 hover:bg-emerald-900 shadow-xs",
+      "bg-emerald-800 text-white border-emerald-900/20 hover:bg-emerald-900 shadow-xs focus-visible:outline-emerald-800 focus-visible:ring-emerald-700/50",
     farmer:
-      "bg-emerald-800 text-white border-emerald-900/20 hover:bg-emerald-900 shadow-xs",
+      "bg-emerald-800 text-white border-emerald-900/20 hover:bg-emerald-900 shadow-xs focus-visible:outline-emerald-800 focus-visible:ring-emerald-700/50",
     buyer:
-      "bg-slate-900 text-white border-slate-950 hover:bg-slate-800 shadow-xs",
+      "bg-slate-900 text-white border-slate-950 hover:bg-slate-800 shadow-xs focus-visible:outline-slate-900 focus-visible:ring-slate-700/50",
     forest:
-      "bg-emerald-800 text-white border-emerald-900/20 hover:bg-emerald-900 shadow-xs",
+      "bg-emerald-800 text-white border-emerald-900/20 hover:bg-emerald-900 shadow-xs focus-visible:outline-emerald-800 focus-visible:ring-emerald-700/50",
     glow:
-      "bg-emerald-800 text-white border-emerald-900/20 hover:bg-emerald-900 shadow-sm",
+      "bg-emerald-800 text-white border-emerald-900/20 hover:bg-emerald-900 shadow-sm focus-visible:outline-emerald-800 focus-visible:ring-emerald-700/50",
     secondary:
-      "bg-white text-slate-900 border-slate-300 hover:bg-slate-50 hover:border-slate-400 shadow-xs",
+      "bg-white text-slate-900 border-slate-300 hover:bg-slate-50 hover:border-slate-400 shadow-xs focus-visible:outline-slate-700 focus-visible:ring-slate-400/50",
     outline:
-      "border-slate-300 bg-transparent text-slate-800 hover:bg-slate-100 hover:text-slate-950 shadow-none",
+      "border-slate-300 bg-transparent text-slate-800 hover:bg-slate-100 hover:text-slate-950 shadow-none focus-visible:outline-slate-700 focus-visible:ring-slate-400/50",
     ghost:
-      "border-transparent shadow-none bg-transparent text-slate-700 hover:bg-slate-100 hover:text-slate-900",
+      "border-transparent shadow-none bg-transparent text-slate-700 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-slate-700 focus-visible:ring-slate-400/50",
     danger:
-      "bg-rose-700 text-white border-rose-800 hover:bg-rose-800 shadow-xs",
+      "bg-rose-700 text-white border-rose-800 hover:bg-rose-800 shadow-xs focus-visible:outline-rose-700 focus-visible:ring-rose-500/50",
     harvest:
-      "bg-amber-600 text-white border-amber-700 hover:bg-amber-700 shadow-xs",
+      "bg-amber-600 text-white border-amber-700 hover:bg-amber-700 shadow-xs focus-visible:outline-amber-600 focus-visible:ring-amber-500/50",
   };
 
   const sizes = {

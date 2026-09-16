@@ -49,19 +49,23 @@ export default function FarmerListingForm() {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
-      
+
       let step = 0;
       const draw = () => {
+        if (typeof document !== "undefined" && document.hidden) {
+          animationRef.current = requestAnimationFrame(draw);
+          return;
+        }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.beginPath();
         ctx.moveTo(0, canvas.height / 2);
-        
+
         for (let i = 0; i < canvas.width; i+=4) {
           const amplitude = 15 + Math.random() * 15;
           const y = canvas.height/2 + Math.sin((i + step)/10) * amplitude;
           ctx.lineTo(i, y);
         }
-        
+
         ctx.strokeStyle = '#059669'; // emerald-600
         ctx.lineWidth = 3;
         ctx.stroke();
@@ -72,11 +76,17 @@ export default function FarmerListingForm() {
     } else if (!isRecording && canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d');
       if (ctx) ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
     }
-    
+
     return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
     };
   }, [isRecording]);
 

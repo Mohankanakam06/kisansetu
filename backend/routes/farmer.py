@@ -117,6 +117,20 @@ def farmer_listing(body: FarmerListingRequest):
         logger.warning(f"Auto-aggregation failed after listing: {agg_err}")
         result["cluster_status"] = "Listing created; aggregation pending"
 
+    # Emit real-time pool aggregation event to websockets
+    try:
+        from backend.websockets import manager as ws_manager
+        ws_manager.emit_sync({
+            "type": "pool_updated",
+            "lot_id": result.get("assigned_lot_id"),
+            "crop_type": result.get("crop_type") or body.crop_type,
+            "quantity_kg": result.get("quantity_kg") or body.quantity_kg,
+            "farmer_id": farmer_id,
+            "cluster_status": result.get("cluster_status")
+        })
+    except Exception:
+        pass
+
     return result
 
 

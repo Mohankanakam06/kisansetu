@@ -36,6 +36,7 @@ export default function DemoModeBanner() {
     const retryMs = 3000;
 
     const tick = async () => {
+      if (typeof document !== "undefined" && document.hidden) return;
       attempts++;
       const ok = await probe();
       if (cancelled) return;

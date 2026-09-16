@@ -16,6 +16,16 @@ export default function PWAInstallPrompt() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Check if user previously dismissed prompt
+    try {
+      const dismissed = localStorage.getItem("kisansetu_pwa_dismissed");
+      if (dismissed && Date.now() - parseInt(dismissed, 10) < 7 * 24 * 60 * 60 * 1000) {
+        return; // Don't show if dismissed within 7 days
+      }
+    } catch {
+      // Ignore localStorage errors
+    }
+
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
@@ -25,6 +35,9 @@ export default function PWAInstallPrompt() {
     const handleAppInstalled = () => {
       setInstalled(true);
       setVisible(false);
+      try {
+        localStorage.setItem("kisansetu_pwa_installed", "true");
+      } catch {}
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -43,11 +56,17 @@ export default function PWAInstallPrompt() {
     if (choice && "accepted" === choice.outcome) {
       setInstalled(true);
       setVisible(false);
+      try {
+        localStorage.setItem("kisansetu_pwa_installed", "true");
+      } catch {}
     }
   };
 
   const handleDismiss = () => {
     setVisible(false);
+    try {
+      localStorage.setItem("kisansetu_pwa_dismissed", Date.now().toString());
+    } catch {}
   };
 
   if (installed || !visible || !deferredPrompt) return null;

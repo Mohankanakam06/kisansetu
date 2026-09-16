@@ -286,7 +286,7 @@ export default function SiteNav() {
                   {t("Navigation", "नेविगेशन", "नेविगेशन")}
                 </p>
                 {activeNavItems.map((item) => {
-                  const isActive = pathname === item.href;
+                  const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
                   const Icon = item.icon || Store;
                   return (
                     <Link
@@ -300,7 +300,7 @@ export default function SiteNav() {
                           : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                       }`}
                     >
-                      <Icon className={`h-4 w-4 ${isActive ? "text-emerald-800" : "text-slate-400"}`} />
+                      <Icon className={`h-4 w-4 ${isActive ? (isBuyer ? "text-blue-800" : "text-emerald-800") : "text-slate-400"}`} />
                       <span>{getLabel(item)}</span>
                     </Link>
                   );

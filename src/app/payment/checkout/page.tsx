@@ -30,7 +30,7 @@ function CheckoutContent() {
   const price = parseFloat(searchParams.get("price") || "22");
   const initialAmount = searchParams.get("amount")
     ? parseFloat(searchParams.get("amount")!)
-    : qty * price;
+    : Math.round(qty * price);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -187,12 +187,25 @@ function CheckoutContent() {
               <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
                 {t("Total Escrow Lock", "कुल एस्क्रो सुरक्षा", "कुल एस्क्रो राशि")}
               </span>
-              <p className="text-xs font-medium text-slate-500">{t("40% on dispatch • 60% on delivery", "40% रवानगी पर • 60% डिलीवरी पर", "40% डिस्पैच म • 60% पहुंचे म")}</p>
+              <p className="text-xs font-medium text-slate-500">{t("2-Stage Verified Release", "2-चरण सत्यापित रिलीज", "2-चरण सत्यापित रिलीज")}</p>
             </div>
             <p className="flex items-center gap-1 font-display text-2xl font-black text-emerald-800">
               <IndianRupee className="h-6 w-6" />
-              <span>{initialAmount.toLocaleString("en-IN")}</span>
+              <span>{initialAmount.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</span>
             </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 mt-3">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{t("1. Dispatch", "1. प्रेषण", "1. डिस्पैच")} (40%)</p>
+              <p className="text-sm font-bold text-slate-900 mt-1">₹{(initialAmount * 0.4).toLocaleString("en-IN", { maximumFractionDigits: 0 })}</p>
+              <p className="text-[10px] text-slate-500 mt-0.5">{t("Vehicle loaded", "वाहन लोड होने पर", "गाड़ी लोड होए म")}</p>
+            </div>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{t("2. Delivery", "2. डिलीवरी", "2. डिलीवरी")} (60%)</p>
+              <p className="text-sm font-bold text-slate-900 mt-1">₹{(initialAmount * 0.6).toLocaleString("en-IN", { maximumFractionDigits: 0 })}</p>
+              <p className="text-[10px] text-slate-500 mt-0.5">{t("Quality passed", "गुणवत्ता पास होने पर", "गुणवत्ता सही निकले म")}</p>
+            </div>
           </div>
 
           <div className="rounded-xl bg-emerald-50/70 border border-emerald-100 p-3.5 flex items-start gap-3 mt-4">

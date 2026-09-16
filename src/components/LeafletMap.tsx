@@ -51,6 +51,7 @@ export default function LeafletMap({
   const markersLayerRef = useRef<any>(null);
   const routeLayerRef = useRef<any>(null);
   const convergenceLayerRef = useRef<any>(null);
+  const boundsCalculatedRef = useRef<L.LatLngBounds | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined" || !mapContainerRef.current) return;
@@ -300,9 +301,9 @@ export default function LeafletMap({
             try {
               const gLayer = L.geoJSON(routeGeojson, {
                 style: {
-                  color: "#386641",
+                  color: "#166534",
                   weight: 5,
-                  opacity: 0.9,
+                  opacity: 0.95,
                   lineJoin: "round",
                 },
               });
@@ -314,13 +315,52 @@ export default function LeafletMap({
             // Fallback polyline connecting sequentially
             const latLngs = stops.map((s) => [s.lat, s.lng]);
             L.polyline(latLngs, {
-              color: "#386641",
+              color: "#166534",
               weight: 5,
-              opacity: 0.9,
+              opacity: 0.95,
               lineJoin: "round",
             }).addTo(routeLayerRef.current);
           }
         }
+      }
+
+      // 6. Auto-fit bounds to visible lots, stops, & selected location
+      const validPoints: Array<[number, number]> = [];
+
+      if (lots.length > 0) {
+        lots.forEach((lot) => {
+          if (lot.centroid?.lat != null && lot.centroid?.lng != null) {
+            validPoints.push([lot.centroid.lat, lot.centroid.lng]);
+          }
+        });
+      }
+
+      if (stops.length > 0) {
+        stops.forEach((s) => {
+          if (s.lat != null && s.lng != null) {
+            validPoints.push([s.lat, s.lng]);
+          }
+        });
+      }
+
+      if (selectedLocation && selectedLocation.lat != null && selectedLocation.lng != null) {
+        validPoints.push([selectedLocation.lat, selectedLocation.lng]);
+      }
+
+      if (validPoints.length > 1) {
+        try {
+          const bounds = L.latLngBounds(validPoints);
+          const newBoundsStr = bounds.toBBoxString();
+          const prevBoundsStr = boundsCalculatedRef.current?.toBBoxString() || "";
+          if (newBoundsStr !== prevBoundsStr) {
+            boundsCalculatedRef.current = bounds;
+            map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12, animate: true });
+          }
+        } catch (err) {
+          console.warn("LeafletMap fitBounds failed", err);
+        }
+      } else if (validPoints.length === 1) {
+        map.setView(validPoints[0], 11, { animate: true });
       }
     };
 

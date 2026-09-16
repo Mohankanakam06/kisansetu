@@ -1,10 +1,13 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { CropType, GeoLocation, CreateListingRequest } from "@/types";
 import { apiService } from "@/services/api";
-import { Button, Badge, Card, cn } from "@/components/ui";
+import { Button, Badge, Card, cn, Skeleton } from "@/components/ui";
 import { useLanguage } from "@/lib/language";
+import { useRoleGuard } from "@/hooks/useRoleGuard";
+import { useWebSocket } from "@/hooks/useWebSocket";
+import { useOfflineQueue } from "@/hooks/useOfflineQueue";
 import {
   Search,
   CheckCircle,
@@ -24,6 +27,10 @@ import {
   UploadCloud,
   FileCheck,
   Info,
+  Wifi,
+  WifiOff,
+  AlertTriangle,
+  RefreshCw,
 } from "lucide-react";
 
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
@@ -59,35 +66,58 @@ const makeEmptyQualityState = (): QualityState => ({
 
 export default function FarmerPage() {
   const { t } = useLanguage();
+  const { isAuthorized, isLoading, user: guardUser } = useRoleGuard("farmer");
 
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<any>(guardUser ?? null);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("kisansetu_user");
-      if (stored) {
-        const user = JSON.parse(stored);
-        if (user.role === "buyer") {
-          window.location.href = "/buyer";
-        } else {
-          setCurrentUser(user);
-          if (user.location) {
-            if (typeof user.location === "string") {
-              setAddress(user.location);
-              setLocation((prev) => ({ ...prev, address: user.location }));
-            } else if (typeof user.location === "object" && user.location.address) {
-              setAddress(user.location.address);
-              setLocation((prev) => ({ ...prev, ...user.location }));
-            }
-          }
+    if (guardUser) {
+      setCurrentUser(guardUser);
+      if (guardUser.location) {
+        if (typeof guardUser.location === "string") {
+          setAddress(guardUser.location);
+          setLocation((prev) => ({ ...prev, address: guardUser.location }));
+        } else if (typeof guardUser.location === "object" && guardUser.location.address) {
+          setAddress(guardUser.location.address);
+          setLocation((prev) => ({ ...prev, ...guardUser.location }));
         }
-      } else {
-        window.location.href = "/login";
       }
-    } catch (e) {}
-  }, []);
+    }
+  }, [guardUser]);
 
   const [step, setStep] = useState(0);
+  const [liveMandiMap, setLiveMandiMap] = useState<Record<string, { price: number; market: string; state: string }>>({});
+
+  useEffect(() => {
+    apiService.getMandiPrices({ limit: 50 }).then((res) => {
+        if (res && res.records && res.records.length > 0) {
+            const map: Record<string, { price: number; market: string; state: string }> = {};
+            res.records.forEach((r: any) => {
+                const cKey = (r.commodity || "").toLowerCase().trim();
+                let mappedKey = cKey;
+                if (cKey.includes("tomato")) mappedKey = "tomato";
+                else if (cKey.includes("onion")) mappedKey = "onion";
+                else if (cKey.includes("potato")) mappedKey = "potato";
+                else if (cKey.includes("wheat")) mappedKey = "wheat";
+                else if (cKey.includes("rice")) mappedKey = "rice";
+                else if (cKey.includes("soy")) mappedKey = "soybean";
+                else if (cKey.includes("chilli")) mappedKey = "chilli";
+                else if (cKey.includes("cotton")) mappedKey = "cotton";
+
+                if (mappedKey && (!map[mappedKey] || r.modal_price_kg > 0)) {
+                    map[mappedKey] = {
+                        price: r.modal_price_kg || (r.modal_price ? r.modal_price / 100 : 0),
+                        market: r.market || "APMC",
+                        state: r.state || "Chhattisgarh"
+                    };
+                }
+            });
+            setLiveMandiMap(map);
+        }
+    }).catch((err) => {
+        console.warn("Failed to load live mandi rates in farmer form", err);
+    });
+  }, []);
 
   const STEPS = [
     { label: t("Crop Selection", "फसल चुनें", "फसल चुनव"), sub: t("Select Crop", "फसल चुनें", "फसल चुनव") },
@@ -146,6 +176,56 @@ export default function FarmerPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [poolUpdateNotice, setPoolUpdateNotice] = useState<string | null>(null);
+
+  // Offline queue hook
+  const { isOffline, pendingCount, addToQueue, processQueue } = useOfflineQueue();
+
+  // WebSocket for farmer updates & pool status
+  const handleWSMessage = useCallback((msg: any) => {
+    if (msg?.type === "pool_updated" || msg?.type === "order_placed") {
+      setPoolUpdateNotice(
+        msg.type === "pool_updated"
+          ? `Live Pool Event: ${msg.crop_type} ${msg.quantity_kg}kg aggregated into regional lot (${msg.cluster_status})`
+          : `Live Order: Lot ${msg.lot_id} ordered for ₹${msg.quantity_kg}kg produce!`
+      );
+      setTimeout(() => setPoolUpdateNotice(null), 6000);
+    }
+  }, []);
+
+  const { isConnected: wsConnected } = useWebSocket(
+    "ws/orders",
+    handleWSMessage,
+    currentUser?.id || "farmer-01"
+  );
+
+  // Attempt to sync offline queue when back online
+  useEffect(() => {
+    if (!isOffline && pendingCount > 0) {
+      processQueue(async (item) => {
+        try {
+          await apiService.createFarmerListing(item);
+          return true;
+        } catch {
+          return false;
+        }
+      });
+    }
+  }, [isOffline, pendingCount, processQueue]);
+
+  const getCropMeta = (crop_type: CropType) => {
+    const base = CROPS.find((c) => c.value === crop_type) || CROPS[0];
+    const cKey = crop_type.toLowerCase();
+    const live = liveMandiMap[cKey];
+
+    return {
+        ...base,
+        mandiPrice: live && live.price > 0 ? live.price : base.mandiPrice,
+        mandiMarket: live?.market || "Raipur APMC",
+        mandiState: live?.state || "Chhattisgarh",
+        isLiveMandi: live && live.price > 0
+    };
+  };
 
   const selectedCropSet = new Set(cropLines.map((l) => l.crop_type));
 
@@ -153,7 +233,10 @@ export default function FarmerPage() {
     (c) =>
       c.label.toLowerCase().includes(searchQ.toLowerCase()) ||
       c.labelHi.toLowerCase().includes(searchQ.toLowerCase())
-  );
+  ).map(c => {
+    const meta = getCropMeta(c.value);
+    return { ...c, price: meta.mandiPrice > 0 ? Math.round(meta.mandiPrice * 1.25) : c.price, mandiPrice: meta.mandiPrice, isLive: meta.isLiveMandi };
+  });
 
   const toggleCrop = (crop_type: CropType) => {
     setCropLines((prev) => {
@@ -168,10 +251,6 @@ export default function FarmerPage() {
       const basePrice = found?.price ?? 1;
       return [...prev, { crop_type, quantity_kg: baseQty, price_expectation: basePrice }];
     });
-  };
-
-  const getCropMeta = (crop_type: CropType) => {
-    return CROPS.find((c) => c.value === crop_type) || CROPS[0];
   };
 
   const toggleVoice = () => {
@@ -310,35 +389,47 @@ export default function FarmerPage() {
           language: "hi",
         };
 
-        const res = await apiService.createFarmerListing(reqData);
-        createdResults.push({ ...res, crop_type: line.crop_type });
+        if (isOffline) {
+          addToQueue(reqData);
+          createdResults.push({
+            ...reqData,
+            listing_id: `offline-${Date.now()}-${line.crop_type}`,
+            assigned_lot_id: "Queued (Offline Mode)",
+            cluster_status: "Saved in offline queue. Auto-syncing when online.",
+            crop_type: line.crop_type,
+            is_offline: true,
+          });
+        } else {
+          const res = await apiService.createFarmerListing(reqData);
+          createdResults.push({ ...res, crop_type: line.crop_type });
 
-        const assignedLotId = (res as any)?.assigned_lot_id;
-        if (media && assignedLotId) {
-          setQualityByCrop((prev) => ({
-            ...prev,
-            [line.crop_type]: { ...prev[line.crop_type], uploading: true },
-          }));
-          try {
-            const grade = await apiService.gradeProducePhoto(String(assignedLotId), media);
+          const assignedLotId = (res as any)?.assigned_lot_id;
+          if (media && assignedLotId) {
             setQualityByCrop((prev) => ({
               ...prev,
-              [line.crop_type]: {
-                ...prev[line.crop_type],
-                gradeResult: grade,
-                uploading: false,
-              },
+              [line.crop_type]: { ...prev[line.crop_type], uploading: true },
             }));
-          } catch (e) {
-            setQualityByCrop((prev) => ({
-              ...prev,
-              [line.crop_type]: { ...prev[line.crop_type], uploading: false },
-            }));
+            try {
+              const grade = await apiService.gradeProducePhoto(String(assignedLotId), media);
+              setQualityByCrop((prev) => ({
+                ...prev,
+                [line.crop_type]: {
+                  ...prev[line.crop_type],
+                  gradeResult: grade,
+                  uploading: false,
+                },
+              }));
+            } catch (e) {
+              setQualityByCrop((prev) => ({
+                ...prev,
+                [line.crop_type]: { ...prev[line.crop_type], uploading: false },
+              }));
+            }
           }
         }
       }
 
-      setResult({ createdResults });
+      setResult({ createdResults, isOfflineMode: isOffline });
     } catch (err) {
       console.error(err);
     } finally {
@@ -350,6 +441,17 @@ export default function FarmerPage() {
     if (step === 3) handleSubmit();
     else setStep(step + 1);
   };
+
+  // ── FOUC blocker — shown until useRoleGuard finishes localStorage read ──
+  if (isLoading) {
+    return (
+      <div className="flex-1 bg-[#F8FAFC] flex flex-col items-center justify-center py-24 gap-4">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-700" aria-label="Loading" />
+        <p className="text-sm font-semibold text-slate-500">{t("Verifying access…", "पहुंच सत्यापित हो रही है…", "पहुंच जांचत हन…")}</p>
+      </div>
+    );
+  }
+  if (!isAuthorized) return null; // redirect already triggered by useRoleGuard
 
   // Success Confirmation Screen
   if (result) {
@@ -488,6 +590,40 @@ export default function FarmerPage() {
             )}
           </p>
         </div>
+
+        {/* Offline Queue Indicators */}
+        {(isOffline || pendingCount > 0) && (
+          <div className="mb-6 space-y-2">
+            {isOffline && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2 text-amber-900 font-medium">
+                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+                  {t("You are offline. Listings will be saved to device.", "आप ऑफ़लाइन हैं। फसल उपकरण में सेव होगी।", "तय ऑफ़लाइन हव। फसल मोबाइल म सेव होही।")}
+                </div>
+              </div>
+            )}
+
+            {pendingCount > 0 && !isOffline && (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 flex items-center justify-between text-sm shadow-sm">
+                <div className="flex items-center gap-2 text-emerald-900 font-medium">
+                  <UploadCloud className="h-4 w-4" />
+                  {pendingCount} {t("saved listings waiting to sync", "फ़सलें सिंक होने की प्रतीक्षा में हैं", "फसल मन सिंक होय बर बाचे हे")}
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => processQueue(async (item) => {
+                    try { await apiService.createFarmerListing(item); return true; }
+                    catch { return false; }
+                  })}
+                  className="bg-emerald-700 hover:bg-emerald-800 text-white rounded-md px-3 py-1 flex items-center gap-2 !h-auto min-h-[32px]"
+                >
+                  <RefreshCw className="h-3 w-3" />
+                  {t("Sync Now", "अभी सिंक करें", "अभी सिंक करव")}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Stepper Header */}
         <div className="mb-6">
@@ -716,9 +852,14 @@ export default function FarmerPage() {
                       </div>
 
                       <div className="flex items-center justify-between text-xs text-slate-600 font-medium px-1 tabular-nums">
-                        <span>
-                          {t("Raipur APMC Mandi Benchmark: ₹", "रायपुर APMC मंडी बेंचमार्क: ₹", "रायपुर मंडी बेंचमार्क: ₹")}
-                          {meta.mandiPrice}/{t("kg", "किलो", "किलो")}
+                        <span className="inline-flex items-center gap-1.5">
+                          {meta.isLiveMandi && (
+                            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Live Agmarknet Data" />
+                          )}
+                          <span>
+                            {meta.mandiMarket} {t("Mandi Benchmark: ₹", "मंडी बेंचमार्क: ₹", "मंडी बेंचमार्क: ₹")}
+                            {meta.mandiPrice}/{t("kg", "किलो", "किलो")}
+                          </span>
                         </span>
                         <span className="text-emerald-800 font-bold">
                           +{Math.round(((line.price_expectation - meta.mandiPrice) / meta.mandiPrice) * 100)}% {t("over mandi rate", "मंडी दर से अधिक", "मंडी ले जादा")}

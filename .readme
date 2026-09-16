@@ -71,7 +71,7 @@ pip install psycopg2-binary fastapi uvicorn python-dotenv requests
 ### 3. Start the Server
 
 ```bash
-uvicorn app.main:app --reload --port 8000
+uvicorn backend.main:app --reload --port 8000
 ```
 
 The API will be available at `http://localhost:8000`.
@@ -106,7 +106,7 @@ python check_db.py
 Uses PostGIS `ST_ClusterDBSCAN` to cluster active listings of the same crop type into geographically cohesive lots.
 
 ```python
-from app.agents.aggregations import run_aggregation
+from ai.agents.aggregations import run_aggregation
 lot_ids = run_aggregation(eps_km=3.0, min_points=2)
 ```
 
@@ -117,7 +117,7 @@ lot_ids = run_aggregation(eps_km=3.0, min_points=2)
 Calls OpenRouteService to compute multi-pickup delivery routes with a 5km snap radius for rural coordinates.
 
 ```python
-from app.agents.routing import optimize_route, compare_individual_vs_consolidated
+from ai.agents.routing import optimize_route, compare_individual_vs_consolidated
 route = optimize_route(order_id="...")
 comparison = compare_individual_vs_consolidated(order_id="...")
 ```
@@ -131,7 +131,7 @@ comparison = compare_individual_vs_consolidated(order_id="...")
 Processes multi-farmer proportional payouts: 50% on pickup, 100% on delivery.
 
 ```python
-from app.agents.settlement import process_payout
+from ai.agents.settlement import process_payout
 result = process_payout(order_id="...", stage="pickup")
 ```
 
@@ -142,65 +142,39 @@ result = process_payout(order_id="...", stage="pickup")
 Generate realistic test data:
 
 ```bash
-python -m app.seed
+python -m database.seed
 ```
-
-This creates:
-- 15 farmers across 3 geographic clusters (Nadiad, Gujarat area)
-- 3 buyers
-- 15 crop listings
-- 180 days of price history
-
-## Integration Testing
-
-Run the full end-to-end test:
-
-```bash
-python -m app.integration_check
-```
-
-This validates:
-- Lot creation via DBSCAN clustering
-- Order placement
-- Route optimization with savings comparison
-- Two-stage settlement (pickup + delivery)
-
-## Demo Presentation
-
-Display the cached demo scenario:
-
-```bash
-python -m app.demo_cache
-```
-
-To replay the cached demo without live ORS calls, modify the comparison function to return the cached data when a demo flag is set.
 
 ## Project Structure
 
 ```
-backend/
-  .env                      # Environment variables (not committed)
-  .env.example              # Template for team
-  check_db.py               # Database verification script
-  check_constraint.py       # Database constraint checker
-  app/
+frontend/
+  backend/
     __init__.py
     db.py                   # Shared database connection pool
     main.py                 # FastAPI application
-    seed.py                 # Test data generation
-    integration_check.py    # End-to-end test suite
-    demo_cache.py           # Demo scenario caching
-    agents/
-      __init__.py
-      aggregations.py       # PostGIS DBSCAN clustering
-      routing.py            # OpenRouteService integration
-      settlement.py         # Multi-farmer payout processing
+    payments.py             # Razorpay payment routes
+    redis_client.py         # Redis caching
+    requirements.txt        # Python dependencies
     routes/
       __init__.py
+      auth.py               # Auth & OTP endpoints
+      farmer.py             # Farmer listing endpoints
       lots.py               # Lots and aggregation endpoints
+      orchestrator.py       # Conversational AI assistant
+      quality.py            # Quality grading endpoints
       routing.py            # Routing endpoints
       settlement.py         # Settlement endpoints
-    demo_cache/             # Cached demo scenarios
+  ai/
+    agents/
+      aggregations.py       # PostGIS DBSCAN clustering
+      farmer_interface.py   # Farmer listing agent
+      orchestrator.py       # Gemini multi-tool orchestrator
+      quality_grading.py    # CV quality grading
+      routing.py            # OpenRouteService integration
+      settlement.py         # Multi-farmer payout processing
+  database/
+    seed.py                 # Test data generation
 ```
 
 ## Configuration
