@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { CropType, GeoLocation, CreateListingRequest } from "@/types";
 import { apiService } from "@/services/api";
 import { Button, Card, Badge } from "@/components/ui";
@@ -13,15 +13,25 @@ import {
   FileText,
   CheckCircle2,
   AlertCircle,
+  Mic,
   MicOff,
   ChevronDown,
   Send,
+  Loader2,
+  Volume2
 } from "lucide-react";
 
 export default function FarmerListingForm() {
   const { t, language } = useLanguage();
   const [formStep, setFormStep] = useState(0); // 0: form, 1: processing, 2: result
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [transcriptText, setTranscriptText] = useState("");
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number | null>(null);
+  
   const [listing, setListing] = useState({
+
     cropType: "Tomato" as CropType,
     quantity: 100,
     price: 22,
@@ -31,6 +41,69 @@ export default function FarmerListingForm() {
   });
   const [result, setResult] = useState<any>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+
+
+  // Simulated Voice Recording & Audio Waveform (Oscilloscope)
+  useEffect(() => {
+    if (isRecording && canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      
+      let step = 0;
+      const draw = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height / 2);
+        
+        for (let i = 0; i < canvas.width; i+=4) {
+          const amplitude = 15 + Math.random() * 15;
+          const y = canvas.height/2 + Math.sin((i + step)/10) * amplitude;
+          ctx.lineTo(i, y);
+        }
+        
+        ctx.strokeStyle = '#059669'; // emerald-600
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        step += 2;
+        animationRef.current = requestAnimationFrame(draw);
+      };
+      draw();
+    } else if (!isRecording && canvasRef.current) {
+      const ctx = canvasRef.current.getContext('2d');
+      if (ctx) ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    }
+    
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [isRecording]);
+
+  const handleMicToggle = () => {
+    if (isRecording) {
+      // STOP recording
+      setIsRecording(false);
+      setIsTranscribing(true);
+      
+      // Simulate backend processing latency and Gemini extraction
+      setTimeout(() => {
+        setIsTranscribing(false);
+        setTranscriptText("मेरे पास 1000 किलो टमाटर है, 25 रुपये किलो में बेचना है।"); // "I have 1000 kg tomato to sell at 25 Rs/kg"
+        setListing(prev => ({
+          ...prev,
+          cropType: "Tomato",
+          quantity: 1000,
+          price: 25
+        }));
+      }, 1800);
+      
+    } else {
+      // START recording
+      setIsRecording(true);
+      setTranscriptText("");
+    }
+  };
 
   const CROPS: { value: CropType; label: string; emoji: string; price: number }[] = [
     { value: "Tomato", label: t("Tomato (टमाटर)", "टमाटर (Tomato)", "पाताल (Tomato)"), emoji: "🍅", price: 22 },
@@ -79,7 +152,55 @@ export default function FarmerListingForm() {
           <p className="text-sm text-slate-600">{t("Your produce has been aggregated into a larger lot pool.", "आपकी उपज को बड़े क्लस्टर लॉट में शामिल कर लिया गया है।", "आप मन के फसल ला बड़े लॉट म जोड़ दे गेहे।")}</p>
         </div>
 
-        <Card className="relative overflow-hidden">
+  
+      <Card className="relative overflow-hidden bg-emerald-50/50 border-emerald-200">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-black text-emerald-900 uppercase tracking-widest">{t("Voice Auto-Fill", "आवाज़ से भरें", "आवाज ले भरव")}</h3>
+              <p className="text-xs text-emerald-700 font-medium mt-1">{t("Speak your crop, quantity & price.", "अपनी फसल, मात्रा और भाव बोलें।", "अपन फसल, मात्रा अउ भाव गोठियाव।")}</p>
+            </div>
+            <button
+               type="button"
+               onClick={handleMicToggle}
+               className={`flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full border-2 shadow-sm transition-all ${
+                 isRecording 
+                   ? 'border-red-600 bg-red-100 text-red-600 animate-pulse' 
+                   : 'border-[#1E1F1C] bg-white text-[#1B4965] hover:bg-slate-50'
+               }`}
+            >
+              {isRecording ? <Volume2 className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+            </button>
+          </div>
+          
+          {(isRecording || isTranscribing || transcriptText) && (
+            <div className="bg-white rounded-xl border border-emerald-200 p-3 shadow-xs">
+              {isRecording ? (
+                <div className="flex flex-col items-center justify-center h-16 w-full opacity-80">
+                   <canvas ref={canvasRef} width={200} height={40} className="w-full max-w-[200px]" />
+                   <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest animate-pulse mt-2">{t("Listening via Sarvam AI...", "सरवम AI सुन रहा है...", "सुनत हे...")}</p>
+                </div>
+              ) : isTranscribing ? (
+                <div className="flex flex-col items-center justify-center h-16 gap-2">
+                   <Loader2 className="h-5 w-5 text-emerald-600 animate-spin" />
+                   <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{t("Parsing intent via Gemini...", "जेमिनी द्वारा विश्लेषण...", "विश्लेषण करत हे...")}</p>
+                </div>
+              ) : (
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs text-slate-600 font-medium italic">"{transcriptText}"</p>
+                    <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1.5">{t("Auto-filled below", "नीचे फॉर्म भर दिया गया है", "नीचे फॉर्म म भर देहे")}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </Card>
+
+      <Card className="relative overflow-hidden">
+
           <div className="relative space-y-4">
             <div className="flex items-start justify-between">
               <div>

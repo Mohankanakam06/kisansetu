@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -25,10 +25,9 @@ import {
 } from "lucide-react";
 import { Button, Card, Badge, cn } from "@/components/ui";
 import { useLanguage } from "@/lib/language";
+import ProfitImpactSimulator from "@/components/simulator/ProfitImpactSimulator";
 
 export default function Home() {
-  const [calcProduceKg, setCalcProduceKg] = useState(2500);
-  const [calcCrop, setCalcCrop] = useState("Tomato");
   const { t } = useLanguage();
 
   const demoPresets = [
@@ -81,24 +80,6 @@ export default function Home() {
       badge: "✨ Premium Export",
     },
   ];
-
-  const cropPrices: Record<
-    string,
-    { mandiFarmer: number; dehaatNinjacart: number; directFarmer: number }
-  > = {
-    Tomato: { mandiFarmer: 16, dehaatNinjacart: 18.5, directFarmer: 22 },
-    Onion: { mandiFarmer: 20, dehaatNinjacart: 23.5, directFarmer: 28 },
-    Potato: { mandiFarmer: 12.5, dehaatNinjacart: 14.5, directFarmer: 18 },
-    Chilli: { mandiFarmer: 48, dehaatNinjacart: 54, directFarmer: 65 },
-    Wheat: { mandiFarmer: 19, dehaatNinjacart: 21, directFarmer: 24.5 },
-  };
-
-  const currentPrice = cropPrices[calcCrop] || cropPrices.Tomato;
-  const traditionalEarnings = calcProduceKg * currentPrice.mandiFarmer;
-  const dehaatEarnings = calcProduceKg * currentPrice.dehaatNinjacart;
-  const kisanSetuEarnings = calcProduceKg * currentPrice.directFarmer;
-  const extraEarnings = kisanSetuEarnings - traditionalEarnings;
-  const percentageGain = Math.round((extraEarnings / traditionalEarnings) * 100);
 
   return (
     <div className="flex-1 flex flex-col bg-[#f8faf9]">
@@ -362,107 +343,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Interactive Profit Calculator */}
-      <section id="savings" className="py-16 md:py-20 bg-emerald-950 text-white rounded-3xl mx-3 sm:mx-6 lg:mx-8 mb-16 shadow-2xl overflow-hidden relative scroll-mt-16">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-800/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-900 border border-emerald-700 text-amber-300 text-xs font-bold">
-                <TrendingUp className="w-3.5 h-3.5" />
-                {t("Real-Time Economic Advantage Simulator", "वास्तविक समय आर्थिक लाभ सिम्युलेटर", "लाइव फायदा सिम्युलेटर")}
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold font-display leading-tight">
-                {t("Calculate Your Extra Earnings with KisanSetu", "KisanSetu के साथ अपनी अतिरिक्त कमाई की गणना करें", "KisanSetu ले अपन जादा कमाई के हिसाब लगाव")}
-              </h2>
-              <p className="text-emerald-200 text-sm leading-relaxed">
-                {t(
-                  "By cutting out 3 layers of mandi agents and commission cuts, smallholders earn 18% to 35% higher real farm-gate net cash.",
-                  "मंडी एजेंटों और कमीशन कटौती की 3 परतों को हटाकर, छोटे किसान 18% से 35% अधिक शुद्ध नकदी कमाते हैं।",
-                  "दलाल के 3 परत हटाके, साना किसान 18% ले 35% जादा पइसा कमाथे।"
-                )}
-              </p>
-
-              <div className="space-y-3 pt-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-emerald-300">
-                  {t("Select Crop Type", "फसल प्रकार चुनें", "फसल चुनव")}
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {Object.keys(cropPrices).map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => setCalcCrop(c)}
-                      className={cn(
-                        "px-4 py-2 rounded-xl text-xs font-bold transition-all",
-                        calcCrop === c
-                          ? "bg-emerald-500 text-emerald-950 shadow-md"
-                          : "bg-emerald-900/80 border border-emerald-800 text-emerald-200 hover:bg-emerald-800"
-                      )}
-                    >
-                      {c}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white text-slate-900 p-6 sm:p-8 rounded-2xl shadow-xl space-y-6">
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs font-bold text-slate-500">
-                  <span>{t("Harvest Volume (kg)", "फसल मात्रा (किग्रा)", "फसल मात्रा (किग्रा)")}</span>
-                  <span className="font-mono text-emerald-800 text-sm">{calcProduceKg.toLocaleString()} kg</span>
-                </div>
-                <input
-                  type="range"
-                  min="200"
-                  max="10000"
-                  step="100"
-                  value={calcProduceKg}
-                  onChange={(e) => setCalcProduceKg(Number(e.target.value))}
-                  className="w-full accent-emerald-700 h-2 bg-slate-100 rounded-lg cursor-pointer"
-                />
-                <div className="flex justify-between text-[10px] text-slate-400 font-medium">
-                  <span>200 kg ({t("Smallholder", "छोटा किसान", "साना किसान")})</span>
-                  <span>10,000 kg ({t("Cluster Lot", "क्लस्टर लॉट", "क्लस्टर लॉट")})</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50">
-                  <p className="text-[11px] font-bold text-slate-500">{t("Traditional Mandi", "पारंपरिक मंडी", "पारंपरिक मंडी")}</p>
-                  <p className="text-lg font-black font-mono text-slate-800 mt-1">₹{traditionalEarnings.toLocaleString("en-IN")}</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">₹{currentPrice.mandiFarmer}/kg (-20% cuts)</p>
-                </div>
-                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50">
-                  <p className="text-[11px] font-bold text-slate-500">DeHaat / Ninjacart</p>
-                  <p className="text-lg font-black font-mono text-slate-800 mt-1">₹{dehaatEarnings.toLocaleString("en-IN")}</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">₹{currentPrice.dehaatNinjacart}/kg (-12% cut)</p>
-                </div>
-                <div className="p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-50/80">
-                  <p className="text-[11px] font-bold text-emerald-900">{t("KisanSetu Direct", "KisanSetu सीधा", "KisanSetu सीधा")}</p>
-                  <p className="text-lg font-black font-mono text-emerald-950 mt-1">₹{kisanSetuEarnings.toLocaleString("en-IN")}</p>
-                  <p className="text-[10px] font-black text-emerald-700 uppercase mt-0.5">
-                    +₹{extraEarnings.toLocaleString("en-IN")} (+{percentageGain}%)
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-bold text-emerald-950">{t("Net Direct Farmer Advantage", "शुद्ध सीधा किसान लाभ", "सीधा किसान फायदा")}</p>
-                  <p className="text-[11px] text-emerald-800">
-                    {t("Guaranteed into your Bank Account via UPI Escrow", "UPI एस्क्रो द्वारा सीधे आपके बैंक खाते में गारंटीशुदा", "UPI एस्क्रो ले सीधा बैंक खाता म गारंटी")}
-                  </p>
-                </div>
-                <Link href="/farmer">
-                  <Button size="sm" variant="primary" className="font-bold text-xs">
-                    {t("Claim Rate", "दर प्राप्त करें", "रेट पाव")}
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Interactive Profit & Impact Simulator */}
+      <section id="savings" className="py-12 md:py-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 scroll-mt-16 w-full">
+        <ProfitImpactSimulator />
       </section>
     </div>
   );

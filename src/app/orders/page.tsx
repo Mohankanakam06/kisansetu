@@ -33,6 +33,8 @@ import {
   Battery,
   UserCircle2,
   Lock,
+  Download,
+  FileText,
 } from "lucide-react";
 
 // Client-only dynamic Leaflet Map to avoid SSR errors
@@ -55,6 +57,7 @@ const statusPillColor: Record<string, string> = {
 
 export default function OrdersPage() {
   const { t } = useLanguage();
+  const [user, setUser] = useState<any>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [routeData, setRouteData] = useState<OptimizeRouteResponse | null>(null);
@@ -67,6 +70,17 @@ export default function OrdersPage() {
   const [otpDelivery, setOtpDelivery] = useState("");
   const [verificationLoading, setVerificationLoading] = useState(false);
   const [driverETA, setDriverETA] = useState(25); // minutes
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("kisansetu_user");
+      if (stored) {
+        setUser(JSON.parse(stored));
+      }
+    } catch (e) {
+      // Ignore
+    }
+  }, []);
 
   const loadOrders = async () => {
     try {
@@ -404,6 +418,8 @@ export default function OrdersPage() {
                 }
                 routeGeojson={routeData?.route_geojson}
                 stops={currentStops}
+                routingViewMode={routingViewMode}
+                showConvergenceLines={true}
                 height="h-[300px] sm:h-[380px] md:h-[460px]"
               />
             </div>
@@ -618,8 +634,16 @@ export default function OrdersPage() {
                       </p>
                       <p className="font-mono text-xs font-bold text-[#52544D]">UTR: {payoutData.transaction_id}</p>
                     </div>
-                    <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-[#386641] text-white border-2 border-[#1E1F1C]">
-                      <Check className="h-5 w-5" />
+                    <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3">
+                      <button
+                        onClick={() => alert(`Downloaded Ledger Voucher for UTR ${payoutData.transaction_id}`)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-sm border-2 border-[#1E1F1C] text-[10px] font-black uppercase text-[#1E1F1C] hover:bg-[#EBECE8] cursor-pointer"
+                      >
+                        <FileText className="h-3.5 w-3.5 text-[#1B4965]" /> {t("Download Ledger", "लेजर डाउनलोड", "लेजर डाउनलोड")}
+                      </button>
+                      <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-[#386641] text-white border-2 border-[#1E1F1C]">
+                        <Check className="h-5 w-5" />
+                      </div>
                     </div>
                   </div>
                 </div>

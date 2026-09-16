@@ -8,6 +8,7 @@ import {
   Sprout,
   Wallet,
   Menu,
+  CircleUser,
 } from "lucide-react";
 import { useLanguage } from "@/lib/language";
 
@@ -60,9 +61,9 @@ export default function MobileBottomBar() {
             badge: null,
           },
           {
-            href: "/orders",
-            label: t("Logistics", "लॉजिस्टिक्स", "लॉजिस्टिक्स"),
-            icon: LayoutDashboard,
+            href: "/profile",
+            label: t("Profile", "प्रोफ़ाइल", "प्रोफ़ाइल"),
+            icon: CircleUser,
             badge: null,
           },
           {
@@ -86,9 +87,9 @@ export default function MobileBottomBar() {
             badge: null,
           },
           {
-            href: "/orders",
-            label: t("My Orders", "मेरे ऑर्डर", "मोर ऑर्डर"),
-            icon: LayoutDashboard,
+            href: "/profile",
+            label: t("Profile", "प्रोफ़ाइल", "प्रोफ़ाइल"),
+            icon: CircleUser,
             badge: null,
           },
           {
@@ -153,7 +154,7 @@ export default function MobileBottomBar() {
           </span>
         </div>
 
-        {navItems.slice(2).map((item) => {
+        {navItems.slice(2, 3).map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
           const Icon = item.icon;
           return (

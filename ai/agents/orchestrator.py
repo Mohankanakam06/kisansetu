@@ -123,7 +123,7 @@ def handle_query(user_id: str, message: str, message_type: str = "text", media_u
 
         if _genai_client:
             chat = _genai_client.chats.create(
-                model="gemini-1.5-flash",
+                model="gemini-2.0-flash-exp",
                 config=types.GenerateContentConfig(
                     tools=TOOLS,
                 )

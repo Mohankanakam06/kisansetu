@@ -55,6 +55,8 @@ const makeEmptyQualityState = (): QualityState => ({
 export default function FarmerPage() {
   const { t } = useLanguage();
 
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
   useEffect(() => {
     try {
       const stored = localStorage.getItem("kisansetu_user");
@@ -62,6 +64,17 @@ export default function FarmerPage() {
         const user = JSON.parse(stored);
         if (user.role === "buyer") {
           window.location.href = "/buyer";
+        } else {
+          setCurrentUser(user);
+          if (user.location) {
+            if (typeof user.location === "string") {
+              setAddress(user.location);
+              setLocation((prev) => ({ ...prev, address: user.location }));
+            } else if (typeof user.location === "object" && user.location.address) {
+              setAddress(user.location.address);
+              setLocation((prev) => ({ ...prev, ...user.location }));
+            }
+          }
         }
       } else {
         window.location.href = "/login";
@@ -286,8 +299,8 @@ export default function FarmerPage() {
           crop_type: line.crop_type,
           quantity_kg: line.quantity_kg,
           price_expectation: line.price_expectation,
-          farmer_name: "Farmer S. Verma",
-          farmer_phone: "+91 98271 23456",
+          farmer_name: currentUser?.name || "Farmer S. Verma",
+          farmer_phone: currentUser?.phone || "+91 98271 23456",
           location: { ...location, address },
           photo_url: media || undefined,
           language: "hi",
@@ -778,7 +791,11 @@ export default function FarmerPage() {
                   isPicker
                   center={location}
                   selectedLocation={location}
-                  onLocationSelect={(loc: any) => setLocation({ ...loc, address: address || "Pinned Location" })}
+                  onLocationSelect={(loc: any) => {
+                    const resolvedAddr = loc.address || address || "Pinned Location";
+                    setLocation({ ...loc, address: resolvedAddr });
+                    if (loc.address) setAddress(loc.address);
+                  }}
                   height="h-full"
                 />
               </div>

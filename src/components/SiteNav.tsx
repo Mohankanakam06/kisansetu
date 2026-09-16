@@ -91,6 +91,13 @@ export default function SiteNav() {
     setMobileMenuOpen(false);
   }, [pathname]);
 
+  // Allow MobileBottomBar "Options" button to open the drawer
+  useEffect(() => {
+    const toggle = () => setMobileMenuOpen((prev) => !prev);
+    window.addEventListener("toggle-mobile-drawer", toggle);
+    return () => window.removeEventListener("toggle-mobile-drawer", toggle);
+  }, []);
+
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -286,9 +293,26 @@ export default function SiteNav() {
             </div>
 
             <div className="border-t-2 border-[#1E1F1C] pt-4 space-y-3">
-              <div className="flex items-center justify-between px-2 text-xs text-[#52544D] font-bold">
-                <span>{t("Language:", "भाषा:", "भाषा:")}</span>
-                <span className="font-black text-[#1E1F1C] uppercase">{language}</span>
+              <div className="space-y-2">
+                <span className="px-2 text-[10px] font-black uppercase tracking-wider text-[#52544D]">
+                  {t("Language:", "भाषा:", "भाषा:")}
+                </span>
+                <div className="grid grid-cols-3 gap-2">
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className={`flex flex-col items-center justify-center rounded-sm border-2 py-2 text-[10px] font-bold transition-all cursor-pointer ${
+                        language === lang.code
+                          ? "bg-[#1E1F1C] text-white border-[#1E1F1C] shadow-none"
+                          : "bg-white text-[#1E1F1C] border-[#1E1F1C] hover:bg-[#EBECE8]"
+                      }`}
+                    >
+                      <span className="font-black uppercase">{lang.code}</span>
+                      <span className="mt-0.5 leading-none opacity-80">{lang.label.split(" ")[0]}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
               {user ? (
                 <button

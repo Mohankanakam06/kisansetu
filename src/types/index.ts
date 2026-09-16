@@ -18,6 +18,7 @@ export type LotStatus = "open" | "ordered" | "delivered";
 
 export type OrderStatus =
   | "placed"
+  | "paid"
   | "routed"
   | "picked_up"
   | "delivered"
@@ -64,6 +65,9 @@ export interface LotListingItem {
 }
 
 export interface Lot {
+  // Trading window timestamps (ISO 8601). Optional; if present, UI shows countdown to start/end.
+  trade_start?: string;
+  trade_end?: string;
   id: string;
   crop_type: string;
   total_quantity_kg: number;

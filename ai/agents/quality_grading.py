@@ -60,7 +60,7 @@ def grade_photo(lot_id: str, photo_url: str):
 
         if _genai_client:
             response = _genai_client.models.generate_content(
-                model="gemini-1.5-flash",
+                model="gemini-2.0-flash-exp",
                 contents=[
                     GRADING_RUBRIC,
                     types.Part.from_bytes(data=img_bytes, mime_type=mime_t),

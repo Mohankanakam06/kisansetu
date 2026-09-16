@@ -83,12 +83,9 @@ async def verify_payment(payload: VerifyPaymentRequest):
         conn = get_conn()
         try:
             cur = conn.cursor()
-            # Ensure 'paid' is valid in your DB schema constraint or use an existing valid status like 'placed'/'funded'.
-            # Assuming 'paid' was intended, but your DB schema only allows ('placed', 'routed', 'picked_up', 'delivered', 'settled').
-            # Using 'placed' to indicate an active order that has been funded but not yet routed.
-            cur.execute("UPDATE orders SET status = 'placed' WHERE id = %s", (payload.order_id,))
+            cur.execute("UPDATE orders SET status = 'paid' WHERE id = %s", (payload.order_id,))
             conn.commit()
-            logger.info(f"Successfully verified payment and updated order {payload.order_id} to status 'placed'.")
+            logger.info(f"Successfully verified payment and updated order {payload.order_id} to status 'paid'.")
         except Exception as db_err:
             logger.error(f"DB update failed after payment verification for order {payload.order_id}: {db_err}")
             # We don't want to fail the user request if the DB write fails after successful payment, but we must log it.

@@ -15,3 +15,6 @@ tsconfig.tsbuildinfo
 .graphify/scope.json
 .graphify/transcripts/
 .graphify/converted/
+venv/
+codebase_summary.txt
+*.md

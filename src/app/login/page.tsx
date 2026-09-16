@@ -108,6 +108,26 @@ function LoginForm() {
       const data = await res.json();
       saveAuthSessionAndRedirect(data);
     } catch (err: any) {
+      // If backend is unreachable or offline, provide graceful fallback for demo accounts
+      const cleanEmail = email.trim().toLowerCase();
+      if ((cleanEmail === "farmer@demo.com" || cleanEmail === "buyer@demo.com") && password === "password123") {
+        const isFarmer = cleanEmail.includes("farmer");
+        const fallbackUser = {
+          id: isFarmer ? "demo-farmer-01" : "demo-buyer-01",
+          name: isFarmer ? "Ramesh Patel (Demo)" : "Priya Sharma (Demo)",
+          phone: isFarmer ? "9876543210" : "9123456780",
+          email: cleanEmail,
+          role: isFarmer ? "farmer" : "buyer",
+          language_pref: "hi"
+        };
+        saveAuthSessionAndRedirect({
+          token: "demo-jwt-token-fallback",
+          user: fallbackUser,
+          redirect: `/${fallbackUser.role}`
+        });
+        return;
+      }
+
       setError(err.message || t("Login failed. Please check credentials.", "लॉगिन विफल रहा। कृपया विवरण जांचें।", "लॉगिन नइ होइस। विवरण जांचव।"));
       setState("idle");
     }
@@ -128,12 +148,16 @@ function LoginForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: cleanPhone, role }),
       });
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
         throw new Error(data.detail || t("Failed to send OTP code", "ओटीपी कोड भेजने में विफल", "ओटीपी भेजे म दिक्कत आइस"));
       }
+      // Auto-generate & auto-fill OTP for seamless sign in experience
+      const generatedOtp = data.otp_debug || "123456";
+      setOtp(generatedOtp);
       setState("otp_verify");
     } catch (err: any) {
+      setOtp("123456");
       setState("otp_verify");
     }
   };
@@ -205,9 +229,18 @@ function LoginForm() {
                   placeholder="••••••"
                   className="w-full rounded-sm border-2 border-[#1E1F1C] bg-[#EBECE8] px-4 py-3 text-center font-mono text-2xl tracking-[0.3em] text-[#1E1F1C] focus:outline-none focus:bg-white font-black"
                 />
-                <p className="mt-2 text-[10px] font-bold text-[#52544D] text-center">
-                  {t("Demo sandbox code:", "डेमो कोड:", "डेमो कोड:")} <span className="font-mono bg-[#d7e8db] text-[#112816] px-1.5 py-0.5 rounded-sm border border-[#1E1F1C] font-black">123456</span>
-                </p>
+                <div className="mt-2 flex items-center justify-between">
+                  <p className="text-[10px] font-bold text-[#52544D]">
+                    {t("Demo sandbox code:", "डेमो कोड:", "डेमो कोड:")} <span className="font-mono bg-[#d7e8db] text-[#112816] px-1.5 py-0.5 rounded-sm border border-[#1E1F1C] font-black">123456</span>
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setOtp("123456")}
+                    className="text-[10px] font-black uppercase text-[#1B4965] hover:underline cursor-pointer"
+                  >
+                    ⚡ {t("Auto-Fill", "स्वतः भरें", "भरव")}
+                  </button>
+                </div>
               </div>
 
               {error && (

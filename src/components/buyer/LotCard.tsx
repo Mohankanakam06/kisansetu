@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Lot } from "@/types";
 import { Badge, Button } from "@/components/ui";
@@ -48,10 +48,53 @@ const BENCHMARK_MANDI: Record<string, number> = {
 // Deterministic farmer avatar palettes for the pooled stack
 const AVATAR_COLORS = ["bg-emerald-600", "bg-amber-500", "bg-teal-600", "bg-forest-700", "bg-lime-600", "bg-green-700"];
 
+function useTradeWindow(tradeStart?: string, tradeEnd?: string) {
+  const [label, setLabel] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!tradeStart && !tradeEnd) return;
+
+    const compute = () => {
+      const now = Date.now();
+      const start = tradeStart ? new Date(tradeStart).getTime() : NaN;
+      const end = tradeEnd ? new Date(tradeEnd).getTime() : NaN;
+
+      if (!Number.isNaN(start) && now < start) {
+        const diff = start - now;
+        const hrs = Math.floor(diff / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        setLabel(`⏳ Starts in ${hrs}h ${mins}m`);
+        return;
+      }
+      if (!Number.isNaN(end) && !Number.isNaN(start) && now >= start && now <= end) {
+        const diff = end - now;
+        const hrs = Math.floor(diff / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        setLabel(`⏳ Ends in ${hrs}h ${mins}m`);
+        return;
+      }
+      if (!Number.isNaN(end) && now > end) {
+        setLabel("⏳ Closed");
+        return;
+      }
+      setLabel(null);
+    };
+
+    compute();
+    const id = setInterval(compute, 60_000);
+    return () => clearInterval(id);
+  }, [tradeStart, tradeEnd]);
+
+  return label;
+}
+
 export default function LotCard({ lot, isFeatured, onOrderClick }: LotCardProps) {
   const { t } = useLanguage();
   const cropEmoji = cropEmojis[lot.crop_type] || "🌿";
   const benchmarkPrice = BENCHMARK_MANDI[lot.crop_type] || lot.price_per_kg * 1.18;
+
+  // Trading window countdown (live, updates every minute)
+  const tradeWindowLabel = useTradeWindow(lot.trade_start, lot.trade_end);
 
   // Freshness: lots expire from the buyer pool after 24 hours
   const freshnessHoursLeft = (() => {
@@ -115,11 +158,11 @@ export default function LotCard({ lot, isFeatured, onOrderClick }: LotCardProps)
           )}
         </div>
 
-        {/* Trading window (mockup: dynamic from lot data ideally) */}
+        {/* Trading window — live countdown when trade_start/trade_end present, otherwise static fallback */}
         <div className="absolute bottom-2 right-2">
-            <span className="bg-[#EBECE8] border-2 border-[#1E1F1C] rounded-sm px-2 py-0.5 text-[10px] font-black text-[#1E1F1C]">
-                ⏳ 06:00 - 10:00 AM
-            </span>
+          <span className="bg-[#EBECE8] border-2 border-[#1E1F1C] rounded-sm px-2 py-0.5 text-[10px] font-black text-[#1E1F1C]">
+            {tradeWindowLabel || "⏳ 06:00 - 10:00 AM"}
+          </span>
         </div>
       </div>
 
