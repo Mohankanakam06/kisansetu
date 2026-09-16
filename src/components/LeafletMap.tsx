@@ -339,10 +339,10 @@ export default function LeafletMap({
   }, [selectedLot]);
 
   return (
-    <div className={`relative w-full ${height} rounded-sm overflow-hidden border-2 border-[#1E1F1C] shadow-[3px_3px_0_0_#1E1F1C] bg-[#EBECE8]`}>
+    <div className={`relative w-full ${height} rounded-xl overflow-hidden border border-slate-200 shadow-xs bg-slate-100`}>
       <div ref={mapContainerRef} className="w-full h-full absolute inset-0 z-0" />
-      <div className="absolute top-3 right-3 z-[400] bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-sm border-2 border-[#1E1F1C] text-[10px] font-black uppercase text-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C] flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-[#386641] animate-ping" />
+      <div className="absolute top-3 right-3 z-[400] bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-900 shadow-xs flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
         <span>
           {isPicker
             ? "Click map to pin farm location"

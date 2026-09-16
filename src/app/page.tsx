@@ -6,7 +6,6 @@ import {
   Truck,
   ShieldCheck,
   CheckCircle2,
-  XCircle,
   Mic,
   Sprout,
   Store,
@@ -19,9 +18,11 @@ import {
   Scale,
   Zap,
   Check,
-  Percent,
+  ChevronRight,
+  PhoneCall,
   Clock,
-  Globe2,
+  CircleDot,
+  FileCheck,
 } from "lucide-react";
 import { Button, Card, Badge, cn } from "@/components/ui";
 import { useLanguage } from "@/lib/language";
@@ -34,226 +35,318 @@ export default function Home() {
     {
       id: "lot-101",
       name: "Raipur Tomato Cluster",
-      crop: "Tomato",
+      crop: "Desi Tomato",
       qty: "2,400 kg",
       price: "₹22.00/kg",
       mandiRef: "₹16.00/kg",
       farmers: 4,
       grade: "Grade A (94%)",
-      hub: "Raipur Hub, CG",
-      badge: "🔥 High Demand",
+      hub: "Raipur Centroid Hub, CG",
+      badge: "High Demand",
     },
     {
       id: "lot-102",
-      name: "Nashik Onion Cluster",
-      crop: "Onion",
+      name: "Nashik Red Onion Cluster",
+      crop: "Red Onion",
       qty: "4,500 kg",
       price: "₹28.00/kg",
       mandiRef: "₹20.00/kg",
       farmers: 6,
       grade: "Grade A (92%)",
-      hub: "Lasalgaon Hub, MH",
-      badge: "⚡ 1-Truck Ready",
+      hub: "Lasalgaon Yard, MH",
+      badge: "1-Truck Ready",
     },
     {
       id: "lot-103",
       name: "Durg Potato Cluster",
-      crop: "Potato",
+      crop: "Chandramukhi Potato",
       qty: "3,200 kg",
       price: "₹18.00/kg",
       mandiRef: "₹12.50/kg",
       farmers: 3,
       grade: "Grade B (88%)",
-      hub: "Bhilai Center, CG",
-      badge: "🌱 Fresh Harvest",
+      hub: "Bhilai Rural Center, CG",
+      badge: "Fresh Harvest",
     },
     {
       id: "lot-104",
       name: "Tilda Green Chilli",
-      crop: "Chilli",
+      crop: "G4 Green Chilli",
       qty: "1,100 kg",
       price: "₹65.00/kg",
       mandiRef: "₹48.00/kg",
       farmers: 2,
       grade: "Grade A (96%)",
-      hub: "Tilda APMC, CG",
-      badge: "✨ Premium Export",
+      hub: "Tilda Yard, CG",
+      badge: "Premium Export",
     },
   ];
 
   return (
-    <div className="flex-1 flex flex-col bg-[#f8faf9]">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-white py-14 md:py-20 border-b border-slate-100">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-50/70 via-white to-white z-0" />
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-bold text-emerald-900 shadow-2xs">
-              <Sparkles className="h-3.5 w-3.5 text-emerald-600 animate-pulse" />
-              <span>{t("SIH 2026 Problem Statement 26033 · AI Direct-to-Market Engine", "SIH 2026 समस्या कथन 26033 · AI प्रत्यक्ष कृषि बाज़ार", "SIH 2026 समस्या बिबरन 26033 · AI सीधा बाज़ार")}</span>
-            </div>
+    <div className="flex-1 flex flex-col bg-[#F8FAFC]">
+      {/* Hero Section: Asymmetric Split Hero with Live Mandi Trading Terminal */}
+      <section className="relative overflow-hidden bg-white border-b border-slate-200/90 py-12 lg:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            {/* Left Column: Core Value Proposition */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-900 shadow-2xs">
+                <ShieldCheck className="h-4 w-4 text-emerald-700" />
+                <span>Smart India Hackathon 2026 · Problem Statement 26033</span>
+              </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-950 font-display leading-[1.12] max-w-3xl mx-auto">
-              {t(
-                "Outperforming Mandis & Middlemen with 4 Autonomous AI Agents.",
-                "4 स्वायत्त AI एजेंटों के साथ मंडियों और बिचौलियों को पीछे छोड़ें।",
-                "4 AI एजेंट के संग मंडी आ बिचौलिया ला पाछू छोड़व।"
-              )}
-            </h1>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 font-display leading-[1.15]">
+                {t(
+                  "Autonomous Agri Marketplace Eliminating Middlemen via 4 AI Agents.",
+                  "4 स्वायत्त AI एजेंटों के माध्यम से बिचौलियों को खत्म करने वाला सीधा कृषि बाज़ार।",
+                  "4 AI एजेंट के संग मंडी बिचौलिया खतम करइया सीधा कृषि बाज़ार।"
+                )}
+              </h1>
 
-            <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
-              {t(
-                "KisanSetu replaces 3 layers of mandi middlemen with DBSCAN geo-clustering, Gemini photo grading, 1-truck smart routing, and guaranteed 2-stage milestone escrow.",
-                "KisanSetu 3 स्तरीय मंडी बिचौलियों को DBSCAN क्लस्टरिंग, Gemini फोटो ग्रेडिंग, 1-ट्रक स्मार्ट रूटिंग और गारंटीशुदा 2-चरणीय माइलस्टोन एस्क्रो से बदलता है।",
-                "KisanSetu 3 परत के बिचौलिया ला DBSCAN क्लस्टरिंग, Gemini फोटो जांच, 1-गाड़ी रूटिंग आ 2-चरणीय एस्क्रो भुगतान ले बदल देथे।"
-              )}
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-              <Link href="/farmer" className="w-full sm:w-auto">
-                <Button size="lg" variant="primary" className="w-full sm:w-auto px-7 py-3.5 text-sm font-bold shadow-glow flex items-center justify-center gap-2">
-                  <Mic className="h-5 w-5" />
-                  {t("List Produce with AI Voice", "AI आवाज़ से फसल दर्ज करें", "AI आवाज ले फसल दर्ज करव")}
-                </Button>
-              </Link>
-              <Link href="/buyer" className="w-full sm:w-auto">
-                <Button size="lg" variant="secondary" className="w-full sm:w-auto px-7 py-3.5 text-sm font-bold bg-white border-slate-200 text-slate-800 shadow-xs flex items-center justify-center gap-2">
-                  <Store className="h-5 w-5 text-emerald-700" />
-                  {t("Browse Wholesale Lots", "थोक लॉट देखें", "थोक लॉट देखव")}
-                </Button>
-              </Link>
-            </div>
-
-            {/* Quick Live Demo Presets for SIH Judges */}
-            <div className="pt-6">
-              <p className="text-[11px] uppercase tracking-wider font-bold text-slate-400 mb-3 flex items-center justify-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-amber-500" />
-                {t("Quick SIH Judge Live Demo Clusters (Click to Inspect)", "त्वरित SIH जज लाइव डेमो क्लस्टर (जांचने के लिए क्लिक करें)", "लाइव डेमो क्लस्टर (जांचे बर क्लिक करव)")}
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
+                {t(
+                  "KisanSetu aggregates fragmented smallholder harvests with DBSCAN spatial clustering, performs instant computer vision photo grading, synthesizes 1-truck logistics loops, and guarantees 2-stage UPI escrow payouts.",
+                  "KisanSetu छोटे किसानों की फसलों को DBSCAN क्लस्टरिंग से 2000 किग्रा+ लॉट बनाता है, Gemini विज़न से तत्काल फोटो ग्रेडिंग करता है और 2-चरणीय UPI एस्क्रो भुगतान की गारंटी देता है।",
+                  "KisanSetu साना किसान के फसल ला DBSCAN ले थोक लॉट बनाथे, मोबाइल फोटो ले ग्रेडिंग करथे आ तुरत UPI एस्क्रो ले पइसा देथे।"
+                )}
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 max-w-4xl mx-auto text-left">
-                {demoPresets.map((preset) => (
-                  <Link
-                    key={preset.id}
-                    href={`/buyer/${preset.id}`}
-                    className="p-3 rounded-xl border border-emerald-200/80 bg-emerald-50/40 hover:bg-emerald-50 hover:border-emerald-400 transition-all group shadow-2xs"
-                  >
-                    <div className="flex items-center justify-between text-[10px] font-bold text-emerald-800">
-                      <span>{preset.crop}</span>
-                      <span className="text-[9px] bg-white px-1.5 py-0.5 rounded border border-emerald-200">{preset.badge}</span>
-                    </div>
-                    <p className="font-display font-bold text-xs text-slate-900 mt-1 truncate group-hover:text-emerald-900">
-                      {preset.name}
-                    </p>
-                    <div className="flex items-center justify-between text-[11px] font-medium text-slate-600 mt-1.5">
-                      <span>{preset.qty}</span>
-                      <span className="font-bold text-emerald-700">{preset.price}</span>
-                    </div>
-                  </Link>
-                ))}
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                <Link href="/farmer" className="sm:w-auto">
+                  <Button size="lg" variant="primary" className="w-full sm:w-auto px-6 py-3 text-sm font-bold bg-emerald-800 hover:bg-emerald-900 text-white flex items-center justify-center gap-2 shadow-xs">
+                    <Mic className="h-4 w-4" />
+                    {t("Sell Produce (AI Voice Assistant)", "फसल दर्ज करें (AI आवाज)", "फसल दर्ज करव (AI आवाज)")}
+                  </Button>
+                </Link>
+                <Link href="/buyer" className="sm:w-auto">
+                  <Button size="lg" variant="secondary" className="w-full sm:w-auto px-6 py-3 text-sm font-bold bg-white border-slate-300 text-slate-800 hover:bg-slate-50 flex items-center justify-center gap-2 shadow-xs">
+                    <Store className="h-4 w-4 text-emerald-800" />
+                    {t("Explore Wholesale Lots", "थोक लॉट बाजार देखें", "थोक लॉट बाजार देखव")}
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Key Trust Counters */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-slate-100">
+                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                  <p className="text-xl font-black text-slate-900 font-display tabular-nums">0%</p>
+                  <p className="text-[11px] font-bold text-slate-600 uppercase tracking-tight mt-0.5">Broker Fee</p>
+                  <p className="text-[10px] text-emerald-700 font-semibold">vs 15-25% Mandi</p>
+                </div>
+                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                  <p className="text-xl font-black text-emerald-800 font-display tabular-nums">+18%–35%</p>
+                  <p className="text-[11px] font-bold text-slate-600 uppercase tracking-tight mt-0.5">Farmer Uplift</p>
+                  <p className="text-[10px] text-emerald-700 font-semibold">Direct bank transfer</p>
+                </div>
+                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                  <p className="text-xl font-black text-slate-900 font-display tabular-nums">72%</p>
+                  <p className="text-[11px] font-bold text-slate-600 uppercase tracking-tight mt-0.5">Logistics Saved</p>
+                  <p className="text-[10px] text-emerald-700 font-semibold">1-Truck loop pickup</p>
+                </div>
+                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                  <p className="text-xl font-black text-slate-900 font-display tabular-nums">Instant</p>
+                  <p className="text-[11px] font-bold text-slate-600 uppercase tracking-tight mt-0.5">UPI Escrow</p>
+                  <p className="text-[10px] text-emerald-700 font-semibold">40% load / 60% drop</p>
+                </div>
               </div>
             </div>
 
-            {/* Live Platform Proof Counters */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center border-t border-slate-100 pt-8 mt-6">
-              {[
-                { label: t("Broker Commission", "दलाल कमीशन", "दलाल कमीशन"), value: "0% Direct", sub: t("vs 15-25% Mandi", "बनाम 15-25% मंडी", "बनाम 15-25% मंडी") },
-                { label: t("Farmer Income Uplift", "किसान आय वृद्धि", "किसान आमदनी बढ़ोतरी"), value: "+18% to +35%", sub: t("Verified payouts", "सत्यापित भुगतान", "सत्यापित भुगतान") },
-                { label: t("1-Truck Mileage Saved", "1-ट्रक माइलेज बचत", "1-गाड़ी माइलेज बचत"), value: "72% Saved", sub: t("Single-loop routing", "सिंगल-लूप रूटिंग", "सिंगल-लूप रूटिंग") },
-                { label: t("Milestone Payment", "माइलस्टोन भुगतान", "माइलस्टोन पइसा"), value: "Instant UPI", sub: t("40% load / 60% drop", "40% रवानगी / 60% डिलीवरी", "40% डिस्पैच / 60% ड्रॉप") },
-              ].map((stat, idx) => (
-                <div key={idx} className="p-2">
-                  <p className="text-xl sm:text-2xl font-black text-slate-950 font-display">{stat.value}</p>
-                  <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider mt-0.5">{stat.label}</p>
-                  <p className="text-[9px] text-emerald-700 font-semibold">{stat.sub}</p>
+            {/* Right Column: Live Trading Terminal Card */}
+            <div className="lg:col-span-5">
+              <div className="rounded-xl border border-slate-300 bg-white shadow-card overflow-hidden">
+                {/* Terminal Header */}
+                <div className="bg-slate-900 px-4 py-3 text-white flex items-center justify-between border-b border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping inline-block" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
+                      Live Mandi Aggregation Feed
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-bold bg-slate-800 px-2 py-0.5 rounded text-slate-300 border border-slate-700">
+                    DBSCAN ACTIVE
+                  </span>
                 </div>
+
+                {/* Terminal Body */}
+                <div className="p-4 space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-xs">
+                    <span className="font-bold text-slate-700">Verified Aggregated Batches</span>
+                    <span className="text-[11px] text-slate-500 font-medium">Auto-updated 2m ago</span>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {demoPresets.slice(0, 3).map((item) => (
+                      <Link
+                        key={item.id}
+                        href={`/buyer/${item.id}`}
+                        className="block p-3 rounded-lg border border-slate-200 bg-slate-50/70 hover:bg-emerald-50/50 hover:border-emerald-300 transition-colors group"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs font-bold text-slate-900 group-hover:text-emerald-900 font-display">
+                                {item.name}
+                              </span>
+                              <span className="text-[10px] font-bold bg-white text-emerald-800 px-1.5 py-0.5 rounded border border-slate-200">
+                                {item.grade}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
+                              <MapPin className="h-3 w-3 text-slate-400" />
+                              <span>{item.hub}</span>
+                              <span>•</span>
+                              <span>{item.farmers} Farmers Pooled</span>
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-sm font-black text-emerald-800 tabular-nums font-display">
+                              {item.price}
+                            </span>
+                            <span className="block text-[10px] text-slate-500 font-medium line-through">
+                              Mandi: {item.mandiRef}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+                          <span className="font-semibold text-slate-700 tabular-nums">Volume: {item.qty}</span>
+                          <span className="font-bold text-emerald-800 flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+                            Inspect Lot <ChevronRight className="h-3 w-3" />
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+
+                  <div className="pt-2">
+                    <Link href="/buyer" className="w-full block">
+                      <Button variant="outline" size="sm" className="w-full justify-center text-xs font-bold border-slate-300 text-slate-800 hover:bg-slate-100">
+                        View All 14 Active Mandi Lots ({t("Live", "लाइव", "लाइव")})
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick SIH Judge Live Demo Clusters */}
+      <section className="py-6 bg-emerald-900 text-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Zap className="h-4 w-4 text-amber-400 shrink-0" />
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-emerald-200">
+                  SIH Evaluation Presets
+                </p>
+                <p className="text-sm font-bold text-white font-display">
+                  One-Click Access to Live Clustered Demonstrations
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {demoPresets.map((preset) => (
+                <Link
+                  key={preset.id}
+                  href={`/buyer/${preset.id}`}
+                  className="px-3 py-1.5 rounded-lg bg-emerald-800/90 hover:bg-emerald-750 text-white text-xs font-semibold border border-emerald-700/80 flex items-center gap-1.5 transition-colors shadow-2xs"
+                >
+                  <CircleDot className="h-3 w-3 text-emerald-300" />
+                  <span>{preset.crop} ({preset.qty})</span>
+                  <span className="text-[10px] text-emerald-200 font-bold">→</span>
+                </Link>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Competitive Benchmark: Why KisanSetu Beats DeHaat, Ninjacart & Mandis */}
-      <section id="how-it-works" className="py-16 md:py-20 bg-[#f8faf9] scroll-mt-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-100/60 px-3 py-1 rounded-full border border-emerald-200">
-              {t("Competitive Architectural Benchmark", "प्रतिस्पर्धी वास्तुकला बेंचमार्क", "प्रतिस्पर्धी बेंचमार्क")}
+      {/* Architectural Benchmark: Why KisanSetu Beats Mandis & Intermediaries */}
+      <section id="how-it-works" className="py-14 lg:py-18 bg-[#F8FAFC] scroll-mt-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="text-center max-w-3xl mx-auto space-y-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md border border-emerald-200">
+              {t("Architectural Verification", "वास्तुकला सत्यापन", "आर्किटेक्चर सत्यापन")}
             </span>
-            <h2 className="text-3xl font-extrabold text-slate-950 font-display mt-3">
-              {t("How KisanSetu Outperforms DeHaat & Ninjacart", "KisanSetu DeHaat और Ninjacart से बेहतर कैसे काम करता है", "KisanSetu DeHaat आ Ninjacart ले बढ़िया कइसे हे")}
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">
+              {t("Direct Comparison with Mandis & Centralized AgriTech", "पारंपरिक मंडियों एवं केंद्रीकृत एग्रीटेक से तुलना", "मंडी आ एग्रीटेक ले तुलना")}
             </h2>
-            <p className="text-sm text-slate-600 mt-2">
+            <p className="text-xs sm:text-sm text-slate-600">
               {t(
-                "Direct comparison of traditional mandis, centralized agritech platforms, and KisanSetu's autonomous multi-agent architecture.",
-                "पारंपरिक मंडियों, केंद्रीकृत एग्रीटेक प्लेटफॉर्मों और KisanSetu के स्वायत्त मल्टी-एजेंट आर्किटेक्चर की सीधी तुलना।",
-                "मंडी, एग्रीटेक कंपनी आ KisanSetu के सीधा तुलना।"
+                "How KisanSetu removes middleman markups while ensuring zero-delay UPI milestone settlement.",
+                "KisanSetu कैसे बिचौलियों के कमीशन को हटाकर त्वरित UPI भुगतान सुनिश्चित करता है।",
+                "KisanSetu कइसे बिचौलिया के कमीशन हटा के तुरत UPI पइसा देथे।"
               )}
             </p>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-card">
+          <div className="overflow-x-auto rounded-xl border border-slate-300 bg-white shadow-card">
             <table className="w-full text-left border-collapse text-xs sm:text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/80">
-                  <th className="p-4 font-bold text-slate-700">{t("Feature / Dimension", "सुविधा / आयाम", "फीचर / आयाम")}</th>
-                  <th className="p-4 font-bold text-slate-500">{t("Traditional Mandi", "पारंपरिक मंडी", "पारंपरिक मंडी")}</th>
-                  <th className="p-4 font-bold text-slate-500">{t("DeHaat / Ninjacart", "DeHaat / Ninjacart", "DeHaat / Ninjacart")}</th>
-                  <th className="p-4 font-bold text-emerald-800 bg-emerald-50/80">{t("KisanSetu (Our Platform)", "KisanSetu (हमारा प्लेटफॉर्म)", "KisanSetu (हमार मंच)")}</th>
+                <tr className="border-b border-slate-200 bg-slate-50">
+                  <th className="p-4 font-bold text-slate-800 uppercase text-[11px] tracking-wider">{t("Trade Dimension", "व्यापार आयाम", "व्यापार आयाम")}</th>
+                  <th className="p-4 font-bold text-slate-600 uppercase text-[11px] tracking-wider">{t("Traditional Mandi (APMC)", "पारंपरिक मंडी", "पारंपरिक मंडी")}</th>
+                  <th className="p-4 font-bold text-slate-600 uppercase text-[11px] tracking-wider">{t("Centralized Agritech", "केंद्रीकृत एग्रीटेक", "एग्रीटेक कंपनी")}</th>
+                  <th className="p-4 font-bold text-emerald-900 bg-emerald-50/80 uppercase text-[11px] tracking-wider border-l border-emerald-200">{t("KisanSetu Direct Platform", "KisanSetu डायरेक्ट", "KisanSetu")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 font-medium">
                 <tr>
-                  <td className="p-4 font-bold text-slate-900">{t("Intermediary Take-Rate", "बिचौलिया कमीशन", "बिचौलिया कमीशन")}</td>
-                  <td className="p-4 text-red-600 font-medium">15%–25% {t("(3 middleman layers)", "(3 बिचौलिया स्तर)", "(3 बिचौलिया लेयर)")}</td>
-                  <td className="p-4 text-amber-700 font-medium">8%–15% {t("(Platform margin)", "(प्लेटफॉर्म मार्जिन)", "(प्लेटफॉर्म मार्जिन)")}</td>
-                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-800">
-                    <span className="inline-flex items-center gap-1">
-                      <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                      0% Broker Fee {t("(P2P Escrow)", "(P2P एस्क्रो)", "(P2P एस्क्रो)")}
+                  <td className="p-4 font-bold text-slate-900">{t("Intermediary Commission", "बिचौलिया कमीशन", "बिचौलिया कमीशन")}</td>
+                  <td className="p-4 text-rose-700 font-semibold">15%–25% (Arhatiya + Traders)</td>
+                  <td className="p-4 text-amber-800 font-semibold">8%–15% Platform Take-Rate</td>
+                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-900 border-l border-emerald-200">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Check className="w-4 h-4 text-emerald-700 shrink-0" />
+                      0% Broker Cut (P2P Escrow)
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="p-4 font-bold text-slate-900">{t("Quality Assessment", "गुणवत्ता जांच", "गुणवत्ता जांच")}</td>
-                  <td className="p-4 text-slate-600">{t("Subjective manual glance (Trader biased)", "व्यक्तिपरक नज़र (व्यापारी पक्षपाती)", "व्यापारी के मनमर्जी नजर")}</td>
-                  <td className="p-4 text-slate-600">{t("Central warehouse inspection", "केंद्रीय गोदाम निरीक्षण", "गोदाम म जांच")}</td>
-                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-800">
-                    <span className="inline-flex items-center gap-1">
-                      <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                      {t("Instant AI Computer Vision (A/B/C/D)", "तत्काल AI कंप्यूटर विज़न (A/B/C/D)", "तुरत AI फोटो जांच (A/B/C/D)")}
+                  <td className="p-4 font-bold text-slate-900">{t("Quality Grading & Certification", "गुणवत्ता जांच एवं ग्रेडिंग", "क्वालिटी जांच")}</td>
+                  <td className="p-4 text-slate-600">Subjective visual glance by trader</td>
+                  <td className="p-4 text-slate-600">Central warehouse manual grading</td>
+                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-900 border-l border-emerald-200">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Check className="w-4 h-4 text-emerald-700 shrink-0" />
+                      Gemini Multimodal CV (Grade A/B/C/D)
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="p-4 font-bold text-slate-900">{t("Logistics Dispatch", "लॉजिस्टिक्स प्रेषण", "गाड़ी रवानगी")}</td>
-                  <td className="p-4 text-slate-600">{t("Individual farmer tractor trips", "अलग-अलग किसान ट्रैक्टर यात्रा", "हर किसान के अलग ट्रैक्टर")}</td>
-                  <td className="p-4 text-slate-600">{t("Hub-and-spoke warehousing", "हब-एंड-स्पोक वेयरहाउसिंग", "हब ले गोदाम")}</td>
-                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-800">
-                    <span className="inline-flex items-center gap-1">
-                      <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                      {t("DBSCAN 1-Truck Multi-Pickup (72% CO2 saved)", "DBSCAN 1-ट्रक मल्टी-पिकअप (72% CO2 बचत)", "DBSCAN 1-गाड़ी मल्टी-पिकअप (72% बचत)")}
+                  <td className="p-4 font-bold text-slate-900">{t("Logistics Consolidation", "लॉजिस्टिक्स एकत्रीकरण", "गाड़ी एकत्रीकरण")}</td>
+                  <td className="p-4 text-slate-600">Each farmer hires separate tractor</td>
+                  <td className="p-4 text-slate-600">Central collection center haulage</td>
+                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-900 border-l border-emerald-200">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Check className="w-4 h-4 text-emerald-700 shrink-0" />
+                      DBSCAN 1-Truck Multi-Pickup (72% CO2 saved)
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="p-4 font-bold text-slate-900">{t("Farmer Settlement", "किसान भुगतान", "किसान पइसा निपटान")}</td>
-                  <td className="p-4 text-red-600 font-medium">15–45 {t("days delayed credit", "दिन विलंबित उधारी", "दिन उधारी")}</td>
-                  <td className="p-4 text-amber-700 font-medium">2–7 {t("business days", "कार्य दिवस", "दिन")}</td>
-                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-800">
-                    <span className="inline-flex items-center gap-1">
-                      <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                      {t("Instant 2-Stage UPI Escrow (40% load / 60% drop)", "तत्काल 2-चरणीय UPI एस्क्रो (40% लोड / 60% ड्रॉप)", "तुरत 2-चरणीय UPI एस्क्रो (40%/60%)")}
+                  <td className="p-4 font-bold text-slate-900">{t("Payment & Escrow Release", "भुगतान एवं एस्क्रो निपटान", "पइसा भुगतान")}</td>
+                  <td className="p-4 text-rose-700 font-semibold">15–45 days delayed credit</td>
+                  <td className="p-4 text-amber-800 font-semibold">3–7 banking days</td>
+                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-900 border-l border-emerald-200">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Check className="w-4 h-4 text-emerald-700 shrink-0" />
+                      Instant 2-Stage UPI (40% load / 60% delivery)
                     </span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="p-4 font-bold text-slate-900">{t("Inclusivity & Voice", "समावेशिता और आवाज़", "आवाज आ भाषा")}</td>
-                  <td className="p-4 text-slate-600">{t("Paper slips / Illiteracy barrier", "कागजी पर्चियां / निरक्षरता बाधा", "कागज के पर्ची")}</td>
-                  <td className="p-4 text-slate-600">{t("Standard mobile forms", "मानक मोबाइल फॉर्म", "मोबाइल फॉर्म")}</td>
-                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-800">
-                    <span className="inline-flex items-center gap-1">
-                      <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                      {t("Multilingual Voice Bot (Hindi / CG / English)", "बहुभाषी वॉयस बॉट (हिन्दी / CG / अंग्रेजी)", "बहुभाषी आवाज बॉट (हिन्दी/छत्तीसगढ़ी/अंग्रेजी)")}
+                  <td className="p-4 font-bold text-slate-900">{t("Voice & Multilingual Accessibility", "आवाज़ एवं बहुभाषी सुविधा", "आवाज आ भाषा")}</td>
+                  <td className="p-4 text-slate-600">Physical attendance required</td>
+                  <td className="p-4 text-slate-600">Complex app forms only</td>
+                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-900 border-l border-emerald-200">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Check className="w-4 h-4 text-emerald-700 shrink-0" />
+                      Voice Assistant (Hindi, CG, English)
                     </span>
                   </td>
                 </tr>
@@ -263,78 +356,93 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Bento Grid: The 4 Middleman Replacements */}
-      <section id="features" className="py-16 bg-white border-y border-slate-100 scroll-mt-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-100/60 px-3 py-1 rounded-full border border-emerald-200">
-              {t("Autonomous Multi-Agent Architecture", "स्वायत्त मल्टी-एजेंट आर्किटेक्चर", "4 AI एजेंट सिस्टम")}
+      {/* The 4 Autonomous AI Agent Pillars */}
+      <section id="features" className="py-14 lg:py-18 bg-white border-y border-slate-200/90 scroll-mt-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="text-center max-w-3xl mx-auto space-y-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md border border-emerald-200">
+              {t("Autonomous Multi-Agent Architecture", "स्वायत्त मल्टी-एजेंट प्रणाली", "4 AI एजेंट सिस्टम")}
             </span>
-            <h2 className="text-3xl font-extrabold text-slate-950 font-display mt-3">
-              {t("The Four Pillars Replacing Agri Middlemen", "कृषि बिचौलियों को बदलने वाले चार स्तंभ", "बिचौलिया खतम करइया चार स्तंभ")}
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">
+              {t("Four Specialized AI Agents Running the Entire Lifecycle", "चार विशिष्ट AI एजेंट जो संपूर्ण व्यापार चक्र संचालित करते हैं", "चार AI एजेंट जे सब काम पूरा करथे")}
             </h2>
-            <p className="text-sm text-slate-600 mt-2">
+            <p className="text-xs sm:text-sm text-slate-600">
               {t(
-                "Each agent autonomously executes a critical phase of the agricultural trade cycle.",
-                "प्रत्येक एजेंट कृषि व्यापार चक्र के एक महत्वपूर्ण चरण को स्वायत्त रूप से निष्पादित करता है।",
-                "हर एजेंट कृषि व्यापार के मुख्य काम ला खुद पूरा करथे।"
+                "Each agent is purpose-built to solve a core bottleneck in Indian agricultural supply chains.",
+                "प्रत्येक एजेंट भारतीय कृषि आपूर्ति श्रृंखला की मुख्य बाधा को हल करने के लिए बनाया गया है।",
+                "हर एजेंट कृषि मंडी के समस्या ला हल करथे।"
               )}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               {
                 icon: Layers,
-                title: t("1. Aggregation Agent", "1. एकत्रीकरण एजेंट", "1. जमा करइया एजेंट"),
-                subtitle: t("PostGIS Spatial DBSCAN", "PostGIS स्थानिक DBSCAN", "PostGIS DBSCAN"),
-                desc: t("Clusters fragmented smallholder crops into 2,000kg+ wholesale lots within a 15km geographic centroid.", "15 किमी के दायरे में छोटे किसानों की फसलों को 2,000 किग्रा+ थोक लॉट में समूहीकृत करता है।", "15 किमी इलाका म साना फसल ला 2,000+ किग्रा थोक लॉट बनाथे।"),
-                metric: t("15km Radius DBSCAN", "15 किमी दायरा DBSCAN", "15 किमी दायरा"),
+                number: "01",
+                title: t("Spatial Aggregation Agent", "1. स्थानिक एकत्रीकरण एजेंट", "1. जमा करइया एजेंट"),
+                subtitle: "PostGIS + DBSCAN",
+                desc: t("Clusters smallholder harvests within a 15km geographic centroid into 2,000kg+ wholesale lots.", "15 किमी के दायरे में छोटे किसानों की फसलों को 2,000 किग्रा+ थोक लॉट में समूहीकृत करता है।", "15 किमी इलाका म साना फसल ला 2,000+ किग्रा थोक लॉट बनाथे।"),
+                metric: "15km Radius DBSCAN",
                 href: "/buyer",
               },
               {
                 icon: Award,
-                title: t("2. AI Quality Agent", "2. AI गुणवत्ता एजेंट", "2. AI गुणवत्ता एजेंट"),
-                subtitle: t("Gemini Multimodal Vision", "Gemini मल्टीमॉडल विज़न", "Gemini फोटो विज़न"),
-                desc: t("Performs instant colorimetry, defect bounding-box detection, and assigns verifiable Grade A/B/C/D ratings.", "रंग, आकार, दोषों का पता लगाता है और सत्यापन योग्य ग्रेड A/B/C/D रेटिंग प्रदान करता है।", "रंग, आकार, खराबी जांच के ग्रेड A/B/C/D प्रमाणन देथे।"),
-                metric: t("94% CV Accuracy", "94% विज़न सटीकता", "94% विज़न सटीकता"),
+                number: "02",
+                title: t("Computer Vision Quality Agent", "2. कंप्यूटर विज़न गुणवत्ता एजेंट", "2. AI क्वालिटी एजेंट"),
+                subtitle: "Gemini Multimodal CV",
+                desc: t("Analyzes surface defects, colorimetry, and assigns verifiable Grade A/B/C/D quality certificates.", "रंग, आकार, दोषों का पता लगाता है और सत्यापन योग्य ग्रेड A/B/C/D रेटिंग प्रदान करता है।", "रंग, आकार, खराबी जांच के ग्रेड A/B/C/D प्रमाणन देथे।"),
+                metric: "94% Model Accuracy",
                 href: "/farmer",
               },
               {
                 icon: Truck,
-                title: t("3. Routing Agent", "3. रूटिंग एजेंट", "3. रूटिंग एजेंट"),
-                subtitle: t("OpenRouteService VRP", "OpenRouteService VRP", "OpenRouteService VRP"),
-                desc: t("Synthesizes multi-farmer pickup waypoints into a unified 1-truck loop saving 72% mileage and fuel emissions.", "कई किसानों के पिकअप को 1-ट्रक लूप में जोड़कर 72% माइलेज और ईंधन उत्सर्जन बचाता है।", "सबो किसान के माल ला 1 गाड़ी म लोड करके 72% माइलेज आ धुआं बचाथे।"),
-                metric: t("72% Mileage Saved", "72% माइलेज बचत", "72% माइलेज बचत"),
+                number: "03",
+                title: t("Smart Routing Agent", "3. स्मार्ट रूटिंग एजेंट", "3. गाड़ी रूटिंग एजेंट"),
+                subtitle: "OpenRouteService VRP",
+                desc: t("Consolidates multi-farm pickup waypoints into an optimal 1-truck single loop saving 72% mileage.", "कई किसानों के पिकअप को 1-ट्रक लूप में जोड़कर 72% माइलेज और ईंधन उत्सर्जन बचाता है।", "सबो किसान के माल ला 1 गाड़ी म लोड करके 72% माइलेज बचाथे।"),
+                metric: "72% Mileage Saved",
                 href: "/orders",
               },
               {
                 icon: Wallet,
-                title: t("4. Settlement Agent", "4. निपटान एजेंट", "4. निपटान एजेंट"),
-                subtitle: t("2-Stage UPI Escrow", "2-चरण UPI एस्क्रो", "2-चरण UPI एस्क्रो"),
-                desc: t("Locks buyer funds securely; releases 40% immediately upon vehicle dispatch and 60% on digital delivery sign-off.", "खरीदार की राशि सुरक्षित रखता है; 40% वाहन रवानगी पर और 60% डिजिटल डिलीवरी पर जारी करता है।", "खरीदार के पइसा सुरक्षित रखथे; 40% लोड म आ 60% पहुंचे म देथे।"),
-                metric: t("Instant UPI Payouts", "तत्काल UPI भुगतान", "तुरत UPI पइसा"),
+                number: "04",
+                title: t("Two-Stage Escrow Agent", "4. दो-चरणीय एस्क्रो एजेंट", "4. एस्क्रो भुगतान एजेंट"),
+                subtitle: "Automated UPI Milestones",
+                desc: t("Safeguards buyer payment; automatically releases 40% on dispatch and 60% on OTP-verified delivery.", "खरीदार की राशि सुरक्षित रखता है; 40% वाहन रवानगी पर और 60% डिजिटल डिलीवरी पर जारी करता है।", "खरीदार के पइसा सुरक्षित रखथे; 40% लोड म आ 60% पहुंचे म देथे।"),
+                metric: "Zero Payment Delay",
                 href: "/earnings",
               },
             ].map((card, i) => (
               <Link key={i} href={card.href} className="group">
-                <Card variant="interactive" className="h-full flex flex-col justify-between space-y-4 p-6 border-slate-200 hover:border-emerald-500">
-                  <div>
+                <Card variant="default" className="h-full flex flex-col justify-between p-5 border-slate-200 hover:border-emerald-500 hover:shadow-card-hover transition-all">
+                  <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="h-12 w-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-700 group-hover:text-white transition-colors">
-                        <card.icon className="h-6 w-6" />
+                      <div className="h-10 w-10 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center font-bold border border-emerald-200 group-hover:bg-emerald-800 group-hover:text-white transition-colors">
+                        <card.icon className="h-5 w-5" />
                       </div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded border border-emerald-200">
-                        {card.metric}
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">
+                        {card.number}
                       </span>
                     </div>
-                    <h3 className="text-lg font-bold text-slate-950 font-display mt-4">{card.title}</h3>
-                    <p className="text-xs font-semibold text-emerald-800 mt-0.5">{card.subtitle}</p>
-                    <p className="text-xs text-slate-600 leading-relaxed mt-2">{card.desc}</p>
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900 font-display group-hover:text-emerald-900 transition-colors">
+                        {card.title}
+                      </h3>
+                      <p className="text-[11px] font-bold text-emerald-700">{card.subtitle}</p>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      {card.desc}
+                    </p>
                   </div>
-                  <div className="pt-3 border-t border-slate-100 flex items-center text-xs font-bold text-emerald-700 group-hover:text-emerald-900">
-                    <span>{t("Explore Architecture", "आर्किटेक्चर देखें", "आर्किटेक्चर देखव")}</span>
-                    <ArrowRight className="w-3.5 h-3.5 ml-1 group-hover:translate-x-1 transition-transform" />
+
+                  <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <span className="text-[10px] font-bold uppercase bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
+                      {card.metric}
+                    </span>
+                    <span className="text-xs font-bold text-emerald-800 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                      View Demo <ChevronRight className="h-3.5 w-3.5" />
+                    </span>
                   </div>
                 </Card>
               </Link>
@@ -343,8 +451,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Interactive Profit & Impact Simulator */}
-      <section id="savings" className="py-12 md:py-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 scroll-mt-16 w-full">
+      {/* Econometric Simulator Section */}
+      <section id="savings" className="py-14 lg:py-18 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 scroll-mt-16 w-full">
         <ProfitImpactSimulator />
       </section>
     </div>

@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { CropType, GeoLocation, CreateListingRequest } from "@/types";
 import { apiService } from "@/services/api";
-import { Button, Badge, Card } from "@/components/ui";
+import { Button, Badge, Card, cn } from "@/components/ui";
 import { useLanguage } from "@/lib/language";
 import {
   Search,
@@ -19,12 +19,17 @@ import {
   Sprout,
   Sparkles,
   Award,
+  CircleDot,
+  ShieldCheck,
+  UploadCloud,
+  FileCheck,
+  Info,
 } from "lucide-react";
 
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[260px] bg-[#E2E4DE] border-2 border-[#1E1F1C] rounded-sm flex items-center justify-center text-xs text-[#1E1F1C] font-bold">
+    <div className="w-full h-[260px] bg-slate-100 border border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-600 font-semibold">
       Loading interactive map...
     </div>
   ),
@@ -92,14 +97,14 @@ export default function FarmerPage() {
   ];
 
   const CROPS: { value: CropType; label: string; labelHi: string; emoji: string; price: number; mandiPrice: number }[] = [
-    { value: "Tomato", label: t("Tomato", "टमाटर", "टमाटर"), labelHi: "टमाटर", emoji: "🍅", price: 22, mandiPrice: 16 },
-    { value: "Onion", label: t("Onion", "प्याज", "प्याज"), labelHi: "प्याज", emoji: "🧅", price: 28, mandiPrice: 20 },
-    { value: "Potato", label: t("Potato", "आलू", "आलू"), labelHi: "आलू", emoji: "🥔", price: 18, mandiPrice: 12 },
-    { value: "Wheat", label: t("Wheat", "गेहूं", "गेहूं"), labelHi: "गेहूं", emoji: "🌾", price: 24, mandiPrice: 19 },
-    { value: "Rice", label: t("Rice", "चावल", "चावल"), labelHi: "चावल", emoji: "🍚", price: 32, mandiPrice: 25 },
-    { value: "Soybean", label: t("Soybean", "सोयाबीन", "सोयाबीन"), labelHi: "सोयाबीन", emoji: "🫘", price: 42, mandiPrice: 34 },
-    { value: "Chilli", label: t("Chilli", "हरी मिर्च", "हरी मिर्च"), labelHi: "हरी मिर्च", emoji: "🌶️", price: 65, mandiPrice: 48 },
-    { value: "Cotton", label: t("Cotton", "कपास", "कपास"), labelHi: "कपास", emoji: "🌼", price: 55, mandiPrice: 42 },
+    { value: "Tomato", label: t("Desi Tomato", "देसी टमाटर", "टमाटर"), labelHi: "टमाटर", emoji: "🍅", price: 22, mandiPrice: 16 },
+    { value: "Onion", label: t("Nashik Red Onion", "नासिक लाल प्याज", "प्याज"), labelHi: "प्याज", emoji: "🧅", price: 28, mandiPrice: 20 },
+    { value: "Potato", label: t("Chandramukhi Potato", "चंद्रमुखी आलू", "आलू"), labelHi: "आलू", emoji: "🥔", price: 18, mandiPrice: 12 },
+    { value: "Wheat", label: t("Sharbati Wheat", "शरबती गेहूं", "गेहूं"), labelHi: "गेहूं", emoji: "🌾", price: 24, mandiPrice: 19 },
+    { value: "Rice", label: t("Jeera Rice", "जीरा फूल चावल", "चावल"), labelHi: "चावल", emoji: "🍚", price: 32, mandiPrice: 25 },
+    { value: "Soybean", label: t("JS 335 Soybean", "सोयाबीन JS-335", "सोयाबीन"), labelHi: "सोयाबीन", emoji: "🫘", price: 42, mandiPrice: 34 },
+    { value: "Chilli", label: t("G4 Green Chilli", "G4 हरी मिर्च", "हरी मिर्च"), labelHi: "हरी मिर्च", emoji: "🌶️", price: 65, mandiPrice: 48 },
+    { value: "Cotton", label: t("Hybrid Cotton", "कपास हाइब्रिड", "कपास"), labelHi: "कपास", emoji: "🌼", price: 55, mandiPrice: 42 },
   ];
 
   const initialCropLines: CropLine[] = [
@@ -135,7 +140,6 @@ export default function FarmerPage() {
   const [geocoding, setGeocoding] = useState(false);
   const [searchQ, setSearchQ] = useState("");
 
-  // Voice assistant state
   const [listening, setListening] = useState(false);
   const [voiceTranscript, setVoiceTranscript] = useState("");
   const voiceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -347,63 +351,64 @@ export default function FarmerPage() {
     else setStep(step + 1);
   };
 
+  // Success Confirmation Screen
   if (result) {
-    const createdResults: any[] = result.createdResults || [];
-
     return (
-      <div className="flex-1 bg-[#EBECE8] py-12">
+      <div className="flex-1 bg-[#F8FAFC] py-12">
         <div className="mx-auto max-w-lg px-4 space-y-6">
           <div className="text-center space-y-3">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-sm border-2 border-[#1E1F1C] bg-[#386641] text-white shadow-[3px_3px_0_0_#1E1F1C]">
-              <Check className="h-8 w-8" />
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-800 text-white shadow-xs">
+              <Check className="h-7 w-7" />
             </div>
-            <h1 className="text-3xl font-black text-[#1E1F1C] font-display uppercase tracking-tight">{t("Harvest Listed Successfully!", "फसल सूची सफल!", "फसल के सूची बन गे!")}</h1>
-            <p className="text-sm font-semibold text-[#52544D]">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">
+              {t("Harvest Listed & Clustered Successfully!", "फसल सूची एवं एकत्रीकरण सफल!", "फसल के सूची बन गे!")}
+            </h1>
+            <p className="text-sm text-slate-600">
               {t(
-                "Your harvest has been published to the KisanSetu wholesale aggregation pool.",
-                "आपकी फसल KisanSetu थोक एकत्रीकरण पूल में प्रकाशित हो गई है।",
-                "तुंहर फसल KisanSetu थोक एकत्रीकरण पूल म दर्ज हो गे हे।"
+                "Your produce has been published into the regional wholesale aggregation pool.",
+                "आपकी फसल क्षेत्रीय थोक एकत्रीकरण पूल में प्रकाशित हो गई है।",
+                "तुंहर फसल क्षेत्रीय थोक एकत्रीकरण पूल म दर्ज हो गे हे।"
               )}
             </p>
           </div>
 
-          <Card className="space-y-5 bg-white">
-            <div className="flex items-center justify-between pb-3 border-b-2 border-[#1E1F1C]">
-              <span className="text-xs font-black uppercase tracking-wider text-[#52544D]">{t("Total Estimated UPI Payout", "कुल अनुमानित UPI भुगतान", "कुल अनुमानित UPI भुगतान")}</span>
-              <Badge variant="verified">
+          <Card className="space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <span className="text-xs font-bold uppercase tracking-wide text-slate-500">{t("Total Expected UPI Payout", "कुल अनुमानित UPI भुगतान", "कुल अनुमानित UPI भुगतान")}</span>
+              <span className="text-xl font-black text-emerald-800 font-display tabular-nums">
                 ₹{totalPayout.toLocaleString("en-IN")}
-              </Badge>
+              </span>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {cropLines.map((line) => {
                 const qc = qualityByCrop[line.crop_type];
                 const grade = qc?.gradeResult?.grade || "A";
                 return (
-                  <div key={line.crop_type} className="rounded-sm border-2 border-[#1E1F1C] bg-[#F7F7F6] p-4 space-y-2">
+                  <div key={line.crop_type} className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 space-y-2.5">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <div className="text-sm font-black text-[#1E1F1C]">
+                        <div className="text-sm font-bold text-slate-900 font-display">
                           {getCropMeta(line.crop_type).emoji} {line.crop_type} — {line.quantity_kg.toLocaleString()} {t("kg", "किलो", "किलो")}
                         </div>
-                        <div className="text-xs text-[#52544D] font-bold">
-                          {t("Locked Rate", "निर्धारित दर", "पक्का दर")} : ₹{line.price_expectation}/{t("kg", "किलो", "किलो")}
+                        <div className="text-xs text-slate-500 font-medium">
+                          {t("Locked Rate", "निर्धारित दर", "पक्का दर")}: ₹{line.price_expectation}/{t("kg", "किलो", "किलो")}
                         </div>
                       </div>
                       <Badge variant="gradeA">
-                        {t("Grade", "ग्रेड", "ग्रेड")} {grade}
+                        {t("Grade", "ग्रेड", "ग्रेड")} {grade} Certified
                       </Badge>
                     </div>
 
-                    <div className="pt-2 border-t-2 border-[#1E1F1C] flex justify-between text-xs mt-2">
-                      <span className="text-[#52544D] font-bold">{t("Estimated Value", "अनुमानित मूल्य", "अनुमानित मूल्य")}</span>
-                      <span className="font-black text-[#1E1F1C]">₹{(line.price_expectation * line.quantity_kg).toLocaleString("en-IN")}</span>
+                    <div className="pt-2 border-t border-slate-200/80 flex justify-between text-xs font-semibold">
+                      <span className="text-slate-600">{t("Total Lot Value", "कुल लॉट मूल्य", "कुल मूल्य")}</span>
+                      <span className="font-bold text-slate-900 tabular-nums">₹{(line.price_expectation * line.quantity_kg).toLocaleString("en-IN")}</span>
                     </div>
 
-                    {qc?.gradeResult?.defects?.length ? (
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        {qc.gradeResult.defects.slice(0, 4).map((d: string, idx: number) => (
-                          <span key={idx} className="text-[11px] font-bold text-[#1E1F1C] bg-[#E2E4DE] border border-[#1E1F1C] px-2.5 py-1 rounded-sm">
+                    {qc?.gradeResult?.passed_items?.length ? (
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {qc.gradeResult.passed_items.map((d: string, idx: number) => (
+                          <span key={idx} className="text-[10px] font-bold text-emerald-900 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
                             ✓ {d}
                           </span>
                         ))}
@@ -418,7 +423,7 @@ export default function FarmerPage() {
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
               variant="outline"
-              className="flex-1 h-12"
+              className="flex-1"
               onClick={() => {
                 for (const line of cropLines) {
                   try {
@@ -448,21 +453,13 @@ export default function FarmerPage() {
                   Chilli: makeEmptyQualityState(),
                   Cotton: makeEmptyQualityState(),
                 });
-
-                setAddress("Village Birgaon, Block Dharsiwa, Raipur, CG");
-                setLocation({
-                  lat: 21.28,
-                  lng: 81.65,
-                  district: "Raipur",
-                  address: "Village Birgaon, Block Dharsiwa, Raipur, CG",
-                });
               }}
             >
               {t("List Another Crop", "दूसरी फसल दर्ज करें", "अउर फसल लिखव")}
             </Button>
             <a href="/buyer" className="flex-1">
-              <Button variant="farmer" className="w-full h-12">
-                {t("Explore Buyer Market", "खरीदार बाजार देखें", "खरीदार बाजार देखव")}
+              <Button variant="farmer" className="w-full">
+                {t("Explore Buyer Marketplace", "थोक बाजार देखें", "खरीदार बाजार देखव")}
               </Button>
             </a>
           </div>
@@ -472,26 +469,28 @@ export default function FarmerPage() {
   }
 
   return (
-    <div className="flex-1 bg-[#EBECE8] py-8 md:py-12">
+    <div className="flex-1 bg-[#F8FAFC] py-8 md:py-12">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
+        {/* Top Header */}
         <div className="mb-8 text-center space-y-2">
-          <Badge variant="farmer" className="mb-2">
+          <Badge variant="farmer" className="mb-1">
             <Sprout className="h-3.5 w-3.5 mr-1" />
-            {t("Farmer Produce Gateway", "किसान उपज गेटवे", "किसान उपज गेटवे")}
+            {t("Farmer Direct Portal", "किसान प्रत्यक्ष पोर्टल", "किसान सीधा पोर्टल")}
           </Badge>
-          <h1 className="text-3xl sm:text-4xl font-black text-[#1E1F1C] font-display tracking-tight uppercase">
-            {t("Sell Your Harvest Directly to Wholesale Buyers", "अपनी फसल सीधे थोक खरीदारों को बेचें", "अपन फसल सीधा थोक खरीदार मन ला बेचव")}
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">
+            {t("List Harvest Directly to Wholesale Buyers", "अपनी फसल सीधे थोक खरीदारों को बेचें", "अपन फसल सीधा थोक खरीदार मन ला बेचव")}
           </h1>
-          <p className="text-sm font-bold text-[#52544D] max-w-lg mx-auto tabular-nums">
+          <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto">
             {t(
-              "List your harvest with voice or touch. Earn 20–40% higher profits by skipping local mandi middlemen.",
-              "आवाज़ या टच से अपनी फसल दर्ज करें। स्थानीय मंडी बिचौलियों को छोड़कर 20-40% अधिक मुनाफा कमाएं।",
-              "आवाज़ या टच ले अपन फसल लिखव। स्थानीय मंडी बिचौलिया ला छोड़ के 20-40% जादा मुनाफा कमाव।"
+              "List your produce via AI voice or touch. Save 15–25% mandi commission cuts with 1-truck pooled logistics.",
+              "आवाज़ या टच से अपनी फसल दर्ज करें। 1-ट्रक लॉजिस्टिक्स के साथ 15-25% मंडी दलाली बचाएं।",
+              "आवाज़ या टच ले फसल लिखव। 1-गाड़ी लॉजिस्टिक्स संग मंडी बिचौलिया के कमीशन बचावा।"
             )}
           </p>
         </div>
 
-        <div className="mb-8">
+        {/* Stepper Header */}
+        <div className="mb-6">
           <div className="grid grid-cols-4 gap-2">
             {STEPS.map((s, i) => {
               const isActive = i === step;
@@ -499,59 +498,60 @@ export default function FarmerPage() {
               return (
                 <button
                   key={s.label}
+                  type="button"
                   onClick={() => i <= step && setStep(i)}
-                  className={`flex flex-col items-center text-center p-2.5 rounded-sm border-2 transition-all ${
+                  className={`flex flex-col items-center text-center p-3 rounded-xl border transition-all cursor-pointer min-h-[64px] ${
                     isActive
-                      ? "border-[#1E1F1C] bg-[#C04A22] text-[#EBECE8] shadow-[3px_3px_0_0_#1E1F1C]"
+                      ? "border-emerald-700 bg-emerald-50 text-emerald-950 font-bold shadow-xs ring-1 ring-emerald-700/20"
                       : isPast
-                      ? "border-[#1E1F1C] bg-white text-[#1E1F1C]"
-                      : "border-[#C2C5BC] bg-white/60 text-[#52544D] opacity-60"
+                      ? "border-emerald-300 bg-white text-emerald-800 font-semibold"
+                      : "border-slate-200 bg-white/70 text-slate-400 opacity-70"
                   }`}
                 >
                   <span
-                    className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-black mb-1 border border-current ${
+                    className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold mb-1 ${
                       isActive
-                        ? "bg-[#1E1F1C] text-white"
+                        ? "bg-emerald-800 text-white"
                         : isPast
-                        ? "bg-[#C04A22] text-white border-none"
-                        : "bg-transparent text-[#52544D]"
+                        ? "bg-emerald-100 text-emerald-800"
+                        : "bg-slate-100 text-slate-400"
                     }`}
                   >
                     {isPast ? <Check className="h-3.5 w-3.5" /> : i + 1}
                   </span>
-                  <span className="text-[11px] sm:text-xs font-bold leading-tight line-clamp-1">{s.label}</span>
-                  <span className="text-[10px] opacity-80 font-bold hidden sm:inline">{s.sub}</span>
+                  <span className="text-[11px] font-bold leading-tight line-clamp-1">{s.label}</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        <Card className="p-6 sm:p-8 space-y-6 bg-white">
+        <Card className="space-y-6">
+          {/* AI Voice Assistant Trigger Banner (Step 0) */}
           {step === 0 && (
-            <div className={`relative overflow-hidden rounded-sm border-2 border-[#1E1F1C] p-4 transition-all shadow-[inset_0_3px_6px_rgba(0,0,0,0.1)] ${listening ? 'bg-[#fae8e0]' : 'bg-[#F7F7F6]'}`}>
+            <div className={`relative overflow-hidden rounded-xl border p-4 transition-all ${listening ? 'bg-rose-50 border-rose-300' : 'bg-emerald-50/60 border-emerald-200'}`}>
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3.5">
                   <div
-                    className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-sm text-white font-black border-2 border-[#1E1F1C] ${
-                      listening ? "bg-red-600 animate-pulse border-red-950" : "bg-[#C04A22] shadow-[2px_2px_0_0_#1E1F1C]"
+                    className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white font-bold transition-colors shadow-xs ${
+                      listening ? "bg-rose-600 animate-pulse" : "bg-emerald-800"
                     }`}
                   >
-                    <Mic className="h-6 w-6" />
+                    <Mic className="h-5 w-5" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="text-xs font-black uppercase tracking-wider text-[#1E1F1C]">{t("AI Voice Assistant", "AI आवाज़ सहायक", "AI बोलइया सहायक")}</p>
-                      <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-sm bg-[#1E1F1C] text-[#EBECE8]">Multilingual</span>
+                      <p className="text-xs font-bold uppercase tracking-wider text-slate-900">{t("AI Voice Assistant", "AI आवाज़ सहायक", "AI बोलइया सहायक")}</p>
+                      <Badge variant="success" size="sm">Multilingual</Badge>
                     </div>
-                    <p className="text-sm font-bold text-[#1E1F1C] mt-0.5">
+                    <p className="text-xs font-medium text-slate-600 mt-0.5">
                       {listening ? (
-                        <span className="text-[#C04A22] font-black flex items-center gap-1.5">
-                          <span className="flex h-2 w-2 rounded-full bg-[#1E1F1C] animate-ping"></span>
+                        <span className="text-rose-700 font-bold flex items-center gap-1.5">
+                          <span className="flex h-2 w-2 rounded-full bg-rose-600 animate-ping inline-block"></span>
                           {t("Listening... speak your crop, quantity, and location", "सुन रहे हैं... फसल, मात्रा और स्थान बोलिए", "सुनत हन... फसल, मात्रा आ पता बोलव")}
                         </span>
                       ) : (
-                        voiceTranscript || t("Press speak and say: 'Tomato 500 kg Raipur'", "बोलने के लिए दबाएं: 'टमाटर 500 किलो रायपुर'", "बोले बर दबावत: 'टमाटर 500 किलो रायपुर'")
+                        voiceTranscript || t("Tap speak and say: 'Tomato 500 kg Raipur ₹22'", "बोलने के लिए दबाएं: 'टमाटर 500 किलो रायपुर ₹22'", "बोले बर दबावत: 'टमाटर 500 किलो रायपुर ₹22'")
                       )}
                     </p>
                   </div>
@@ -562,39 +562,28 @@ export default function FarmerPage() {
                   onClick={toggleVoice}
                   variant={listening ? "danger" : "farmer"}
                   size="sm"
-                  className="px-5 shrink-0 w-full sm:w-auto"
+                  className="px-4 shrink-0 w-full sm:w-auto"
                 >
                   {listening ? <MicOff className="h-4 w-4 mr-1.5" /> : <Mic className="h-4 w-4 mr-1.5" />}
-                  {listening ? t("Stop Recording", "रिकॉर्डिंग रोकें", "रिकॉर्डिंग रोकव") : t("Speak Now", "अभी बोलें", "अब बोलव")}
+                  {listening ? t("Stop Listening", "रिकॉर्डिंग रोकें", "रिकॉर्डिंग रोकव") : t("Speak Now", "अभी बोलें", "अब बोलव")}
                 </Button>
               </div>
-
-              {listening && (
-                <div className="mt-3 flex items-center justify-center gap-1.5 py-2">
-                  {[4, 12, 24, 18, 8, 20, 28, 14, 6, 22, 16, 8].map((h, idx) => (
-                    <span
-                      key={idx}
-                      className="w-1.5 rounded-sm bg-[#C04A22] animate-pulse"
-                      style={{ height: `${h}px`, animationDelay: `${idx * 0.1}s` }}
-                    />
-                  ))}
-                </div>
-              )}
             </div>
           )}
 
+          {/* STEP 0: CROP SELECTION */}
           {step === 0 && (
             <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-2 border-[#1E1F1C]">
-                <label className="text-sm font-black uppercase text-[#1E1F1C] tracking-wide">{t("Select Produce", "फसल चुनें", "फसल चुनव")}</label>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                <label className="text-xs font-bold uppercase tracking-wide text-slate-700">{t("Select Harvest Produce", "फसल चुनें", "फसल चुनव")}</label>
                 <div className="relative w-full sm:w-64">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#52544D]" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
                   <input
                     type="text"
                     value={searchQ}
                     onChange={(e) => setSearchQ(e.target.value)}
                     placeholder={t("Search crop...", "फसल खोजें...", "फसल खोजव...")}
-                    className="w-full rounded-sm border-2 border-[#1E1F1C] bg-white pl-9 pr-4 py-1.5 text-xs font-bold text-[#1E1F1C] focus:outline-none focus:ring-2 focus:ring-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]"
+                    className="w-full rounded-lg border border-slate-300 bg-white pl-8 pr-3 py-1.5 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-700 min-h-[38px]"
                   />
                 </div>
               </div>
@@ -607,43 +596,44 @@ export default function FarmerPage() {
                       key={c.value}
                       type="button"
                       onClick={() => toggleCrop(c.value)}
-                      className={`flex flex-col items-center justify-between p-4 rounded-sm border-2 text-center transition-all cursor-pointer ${
+                      className={`flex flex-col items-center justify-between p-3.5 rounded-xl border text-center transition-all cursor-pointer min-h-[120px] ${
                         active
-                          ? "border-[#1E1F1C] bg-[#fae8e0] shadow-[3px_3px_0_0_#1E1F1C] translate-x-[-1px] translate-y-[-1px]"
-                          : "border-[#1E1F1C] bg-white hover:bg-[#F7F7F6] text-[#1E1F1C] hover:shadow-[3px_3px_0_0_#1E1F1C]"
+                          ? "border-emerald-700 bg-emerald-50/70 text-emerald-950 font-bold ring-1 ring-emerald-700/20 shadow-xs"
+                          : "border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-700"
                       }`}
                     >
-                      <span className="text-3xl mb-1.5">{c.emoji}</span>
-                      <p className="font-display text-sm font-bold text-[#1E1F1C]">{c.label}</p>
-                      <p className="text-[10px] uppercase font-bold text-[#52544D]">{c.labelHi}</p>
-                      <div className="mt-2 w-full pt-1.5 border-t-2 border-[#1E1F1C] flex items-center justify-between text-[10px] font-black uppercase tabular-nums">
-                        <span className="text-[#1E1F1C]">{t("Direct", "सीधा", "सीधा")}</span>
-                        <span className="text-[#386641]">₹{c.price}/{t("kg", "किलो", "किलो")}</span>
+                      <span className="text-2xl mb-1">{c.emoji}</span>
+                      <p className="text-xs font-bold text-slate-900 leading-tight font-display">{c.label}</p>
+                      <p className="text-[10px] text-slate-500 font-medium">{c.labelHi}</p>
+                      <div className="mt-2 w-full pt-1.5 border-t border-slate-200/80 flex items-center justify-between text-[10px] font-bold tabular-nums">
+                        <span className="text-slate-500">{t("Direct", "सीधा", "सीधा")}</span>
+                        <span className="text-emerald-800 font-bold">₹{c.price}/{t("kg", "किलो", "किलो")}</span>
                       </div>
                     </button>
                   );
                 })}
               </div>
 
-              <div className="text-[11px] font-bold text-[#52544D] italic pt-2">
+              <p className="text-xs text-slate-500 font-medium">
                 {t(
-                  "Tip: You can select multiple crops and submit them together.",
-                  "टिप: आप एक साथ कई फसल चुन सकते हैं।",
-                  "टिप: एक साथ कई फसल चुन सकत हन।"
+                  "Multi-Crop Support: You can select and pool multiple crops in a single listing.",
+                  "आप एक साथ कई फसल चुनकर दर्ज कर सकते हैं।",
+                  "एक संग कई फसल चुन सकत हव।"
                 )}
-              </div>
+              </p>
             </div>
           )}
 
+          {/* STEP 1: VOLUME & PRICE */}
           {step === 1 && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-2 text-sm font-black uppercase text-[#1E1F1C] px-1 pb-3 border-b-2 border-[#1E1F1C]">
-                <span>{t("Selected Crops:", "चुनी गई फसलें:", "चुनी गई फसल मन:")}</span>
+            <div className="space-y-5">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-slate-700 pb-3 border-b border-slate-100">
+                <span>{t("Configuring Produce Volumes:", "फसल मात्रा विन्यास:", "फसल मात्रा सेट करव:")}</span>
                 <div className="flex gap-1.5 flex-wrap">
                   {cropLines.map((l) => {
                     const cm = getCropMeta(l.crop_type);
                     return (
-                      <span key={l.crop_type} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm bg-[#1E1F1C] text-[#EBECE8] text-[10px] font-bold">
+                      <span key={l.crop_type} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 text-xs font-bold border border-emerald-200">
                         {cm.emoji} {l.crop_type}
                       </span>
                     );
@@ -655,22 +645,22 @@ export default function FarmerPage() {
                 const meta = getCropMeta(line.crop_type);
                 const netAdvantage = line.quantity_kg * line.price_expectation - line.quantity_kg * meta.mandiPrice;
                 return (
-                  <div key={line.crop_type} className="rounded-sm border-2 border-[#1E1F1C] bg-white p-4 space-y-4 shadow-[3px_3px_0_0_#1E1F1C]">
-                    <div className="flex items-start justify-between pb-3 border-b border-[#1E1F1C]">
+                  <div key={line.crop_type} className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 space-y-4 shadow-xs">
+                    <div className="flex items-start justify-between pb-3 border-b border-slate-100">
                       <div>
-                        <div className="text-base font-display font-black text-[#1E1F1C]">
-                          {meta.emoji} {meta.labelHi} ({meta.label})
+                        <div className="text-sm font-bold text-slate-900 font-display">
+                          {meta.emoji} {meta.label} ({meta.labelHi})
                         </div>
-                        <div className="text-[10px] uppercase text-[#52544D] font-bold">
-                          {t("Set volume & expected rate", "मात्रा और अपेक्षित भाव सेट करें", "मात्रा आ अपेक्षित भाव सेट करव")}
+                        <div className="text-xs text-slate-500 font-medium">
+                          {t("Set harvest quantity and desired unit price", "मात्रा और अपेक्षित भाव सेट करें", "मात्रा आ भाव सेट करव")}
                         </div>
                       </div>
-                      <Badge variant="farmer">{t("Direct", "सीधा", "सीधा")}</Badge>
+                      <Badge variant="verified">{t("Direct-to-Buyer", "सीधा खरीदार", "सीधा खरीदार")}</Badge>
                     </div>
 
-                    <div className="space-y-3">
-                      <label className="text-xs font-black uppercase tracking-wider text-[#1E1F1C]">{t("Harvest Quantity", "फसल की मात्रा", "फसल के मात्रा")}</label>
-                      <div className="flex gap-1.5 flex-wrap">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wide text-slate-700">{t("Harvest Quantity", "फसल की मात्रा", "फसल के मात्रा")}</label>
+                      <div className="flex gap-2 flex-wrap">
                         {[100, 500, 1000, 2500].map((q) => (
                           <button
                             key={q}
@@ -678,10 +668,10 @@ export default function FarmerPage() {
                             onClick={() =>
                               setCropLines((prev) => prev.map((l) => (l.crop_type === line.crop_type ? { ...l, quantity_kg: q } : l)))
                             }
-                            className={`px-3 py-1.5 rounded-sm text-xs font-bold border-2 transition-colors ${
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer min-h-[36px] ${
                               line.quantity_kg === q
-                                ? "bg-[#1E1F1C] text-white border-[#1E1F1C]"
-                                : "bg-[#F7F7F6] text-[#1E1F1C] border-[#1E1F1C] hover:bg-[#E2E4DE]"
+                                ? "bg-emerald-800 text-white border-emerald-900 shadow-xs"
+                                : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
                             }`}
                           >
                             {q} {t("kg", "किलो", "किलो")}
@@ -698,18 +688,18 @@ export default function FarmerPage() {
                             setCropLines((prev) => prev.map((l) => (l.crop_type === line.crop_type ? { ...l, quantity_kg: v } : l)));
                           }}
                           min={10}
-                          className="w-full rounded-sm border-2 border-[#1E1F1C] px-4 py-2.5 text-lg font-black tabular-nums text-[#1E1F1C] bg-[#F7F7F6] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#1E1F1C]"
+                          className="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-base font-bold tabular-nums text-slate-900 bg-white focus:outline-none focus:border-emerald-700 min-h-[44px]"
                         />
-                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-[#52544D]">
-                          {t("kg", "किलो", "किलो")} ({Math.round(line.quantity_kg / 100)} {t("Quintal", "क्विंटल", "क्विंटल")})
+                        <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-500">
+                          {t("kg", "किलो", "किलो")} ({(line.quantity_kg / 100).toFixed(1)} {t("Quintal", "क्विंटल", "क्विंटल")})
                         </span>
                       </div>
                     </div>
 
-                    <div className="space-y-3">
-                      <label className="text-xs font-black uppercase tracking-wider text-[#1E1F1C]">{t("Direct Target Price", "वांछित दर प्रति किलो", "सीधा बेचे के भाव प्रति किलो")}</label>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wide text-slate-700">{t("Direct Target Price", "वांछित दर प्रति किलो", "सीधा बेचे के भाव प्रति किलो")}</label>
                       <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-black text-[#1E1F1C]">₹</span>
+                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base font-bold text-slate-500">₹</span>
                         <input
                           type="number"
                           value={line.price_expectation}
@@ -720,31 +710,31 @@ export default function FarmerPage() {
                             );
                           }}
                           min={1}
-                          className="w-full rounded-sm border-2 border-[#1E1F1C] pl-9 pr-16 py-2.5 text-lg font-black text-[#C04A22] tabular-nums bg-[#F7F7F6] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#1E1F1C]"
+                          className="w-full rounded-lg border border-slate-300 pl-8 pr-16 py-2.5 text-base font-bold text-emerald-900 tabular-nums bg-white focus:outline-none focus:border-emerald-700 min-h-[44px]"
                         />
-                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-[#52544D]">/ {t("kg", "किलो", "किलो")}</span>
+                        <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-500">/ {t("kg", "किलो", "किलो")}</span>
                       </div>
 
-                      <div className="flex items-center justify-between text-[11px] text-[#1E1F1C] font-bold px-1 tabular-nums">
+                      <div className="flex items-center justify-between text-xs text-slate-600 font-medium px-1 tabular-nums">
                         <span>
-                          {t("Raipur Mandi Benchmark Rate: ₹", "रायपुर मंडी बेंचमार्क दर: ₹", "रायपुर मंडी बेंचमार्क दर: ₹")}
+                          {t("Raipur APMC Mandi Benchmark: ₹", "रायपुर APMC मंडी बेंचमार्क: ₹", "रायपुर मंडी बेंचमार्क: ₹")}
                           {meta.mandiPrice}/{t("kg", "किलो", "किलो")}
                         </span>
-                        <span className="text-[#386641] font-black uppercase tracking-wider">
-                          +{Math.round(((line.price_expectation - meta.mandiPrice) / meta.mandiPrice) * 100)}% {t("over mandi", "मंडी से ऊपर", "मंडी ले जादा")}
+                        <span className="text-emerald-800 font-bold">
+                          +{Math.round(((line.price_expectation - meta.mandiPrice) / meta.mandiPrice) * 100)}% {t("over mandi rate", "मंडी दर से अधिक", "मंडी ले जादा")}
                         </span>
                       </div>
 
-                      <div className="rounded-sm border-2 border-[#1E1F1C] bg-[#d7e8db] p-3 shadow-[2px_2px_0_0_#1E1F1C] text-xs">
+                      <div className="rounded-lg border border-emerald-200 bg-emerald-50/50 p-3 text-xs space-y-1">
                         <div className="flex items-center justify-between">
-                          <span className="font-black text-[#112816] uppercase tracking-wider">{t("Profit Projection", "मुनाफा अनुमान", "मुनाफा अनुमान")}</span>
-                          <span className="font-black tabular-nums text-[#1E1F1C] bg-white border border-[#1E1F1C] px-2 py-0.5 rounded-sm shadow-[1px_1px_0_0_#1E1F1C]">
+                          <span className="font-bold text-emerald-900">{t("Projected Commission Saved", "अनुमानित कमीशन बचत", "कमीशन बचत")}</span>
+                          <span className="font-bold tabular-nums text-emerald-900 bg-white border border-emerald-200 px-2 py-0.5 rounded shadow-2xs">
                             +₹{netAdvantage.toLocaleString("en-IN")} {t("Extra", "अतिरिक्त", "अतिरिक्त")}
                           </span>
                         </div>
-                        <div className="mt-2 text-[#112816] font-bold border-t border-[#1E1F1C] pt-2 flex justify-between tabular-nums">
-                          <span>{t("KisanSetu Direct Payout", "KisanSetu सीधा भुगतान", "KisanSetu सीधा भुगतान")}:</span>
-                          <span className="font-black">₹{(line.quantity_kg * line.price_expectation).toLocaleString("en-IN")}</span>
+                        <div className="text-slate-600 font-medium flex justify-between tabular-nums pt-1">
+                          <span>{t("Total Direct Lot Payout", "कुल लॉट भुगतान", "कुल भुगतान")}:</span>
+                          <span className="font-bold text-slate-900">₹{(line.quantity_kg * line.price_expectation).toLocaleString("en-IN")}</span>
                         </div>
                       </div>
                     </div>
@@ -754,20 +744,21 @@ export default function FarmerPage() {
             </div>
           )}
 
+          {/* STEP 2: PICKUP LOCATION */}
           {step === 2 && (
-            <div className="space-y-5">
-              <div className="flex justify-between items-center pb-3 border-b-2 border-[#1E1F1C]">
-                <label className="text-sm font-black uppercase tracking-wider text-[#1E1F1C]">{t("Farm Gate Address", "खेत या लोडिंग का पता", "खेत या लोडिंग के पता")}</label>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center pb-3 border-b border-slate-100">
+                <label className="text-xs font-bold uppercase tracking-wide text-slate-700">{t("Farm Gate Pickup Address", "खेत या लोडिंग का पता", "खेत या लोडिंग के पता")}</label>
                 <button
                   type="button"
                   onClick={handleGeolocate}
                   disabled={geocoding}
-                  className="text-[10px] font-black uppercase text-[#1E1F1C] flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-white border-2 border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C] hover:bg-[#E2E4DE] transition-colors cursor-pointer"
+                  className="text-xs font-bold text-emerald-800 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-colors cursor-pointer min-h-[36px]"
                 >
-                  <LocateFixed className="h-3 w-3" />
+                  <LocateFixed className="h-3.5 w-3.5" />
                   {geocoding
                     ? t("Detecting GPS...", "GPS खोज रहे हैं...", "GPS खोजत हन...")
-                    : t("Detect Current GPS", "वर्तमान GPS खोजें", "अपन GPS पता खोजव")}
+                    : t("Detect Farm Gate GPS", "खेत का GPS पिन लगाएं", "खेत के GPS पिन लगाव")}
                 </button>
               </div>
 
@@ -778,7 +769,7 @@ export default function FarmerPage() {
                   setLocation((prev) => ({ ...prev, address: e.target.value }));
                 }}
                 rows={2}
-                className="w-full rounded-sm border-2 border-[#1E1F1C] px-4 py-3 text-sm font-bold text-[#1E1F1C] bg-[#F7F7F6] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#1E1F1C]"
+                className="w-full rounded-lg border border-slate-300 p-3 text-sm font-medium text-slate-900 bg-white focus:outline-none focus:border-emerald-700"
                 placeholder={t(
                   "Village, Block, District (e.g. Village Birgaon, Raipur)",
                   "गाँव, ब्लॉक, ज़िला (उदा: ग्राम बीरगांव, रायपुर)",
@@ -786,7 +777,7 @@ export default function FarmerPage() {
                 )}
               />
 
-              <div className="rounded-sm border-2 border-[#1E1F1C] overflow-hidden h-[260px] relative shadow-[inset_0_3px_6px_rgba(30,31,28,0.1)]">
+              <div className="rounded-xl border border-slate-300 overflow-hidden h-[260px] relative shadow-xs">
                 <LeafletMap
                   isPicker
                   center={location}
@@ -800,24 +791,25 @@ export default function FarmerPage() {
                 />
               </div>
 
-              <div className="p-3 bg-[#1B4965]/10 border-2 border-[#1B4965] rounded-sm flex items-start gap-2.5">
-                <Truck className="h-5 w-5 text-[#1B4965] shrink-0 mt-0.5" />
-                <p className="text-[11px] text-[#082130] font-bold">
+              <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl flex items-start gap-3">
+                <Truck className="h-5 w-5 text-blue-800 shrink-0 mt-0.5" />
+                <p className="text-xs text-blue-900 font-medium">
                   {t(
-                    "Our consolidated 1-truck loop will arrive at this location for direct farm-gate loading.",
-                    "हमारा समेकित 1-ट्रक लूप सीधे खेत से लोडिंग के लिए इस स्थान पर पहुंचेगा।",
-                    "हमार 1-ट्रक लूप सीधा खेत ले माल भरे खातिर ए पता म पहुंचही।"
+                    "Our consolidated 1-truck pickup loop will arrive directly at this farm gate coordinate. No tractor trips needed.",
+                    "हमारा 1-ट्रक पिकअप लूप सीधे आपके खेत के पिन पर पहुंचेगा। मंडी के लिए अलग ट्रैक्टर किराए की आवश्यकता नहीं है।",
+                    "हमार 1-गाड़ी लूप सीधा तुंहर खेत म पहुंचही। मंडी बर अलग ट्रैक्टर नइ लगय।"
                   )}
                 </p>
               </div>
             </div>
           )}
 
+          {/* STEP 3: QUALITY GRADING */}
           {step === 3 && (
             <div className="space-y-6">
-              <div className="pb-3 border-b-2 border-[#1E1F1C]">
-                <h3 className="text-sm font-black uppercase text-[#1E1F1C] tracking-wide">{t("AI-Vision Quality Inspector", "AI फसल गुणवत्ता जांच", "AI फसल गुणवत्ता जांच")}</h3>
-                <p className="text-[11px] font-bold text-[#52544D] mt-1">{t("Upload a photo or short video of each selected crop for instant AI Grade A/B certification.", "त्वरित AI ग्रेड A/B प्रमाणन के लिए चुनी हुई हर फसल की फोटो या छोटा वीडियो अपलोड करें।", "तुरत AI ग्रेड A/B बर चुनी हुई हर फसल के फोटो या वीडियो डालव।")}</p>
+              <div className="pb-3 border-b border-slate-100">
+                <h3 className="text-xs font-bold uppercase tracking-wide text-slate-700">{t("AI Computer Vision Produce Quality Inspection", "AI फसल गुणवत्ता जांच", "AI फसल गुणवत्ता जांच")}</h3>
+                <p className="text-xs text-slate-500 font-medium mt-0.5">{t("Upload produce photo or video for instant Grade A/B certification and defect analysis.", "त्वरित AI ग्रेड A/B प्रमाणन के लिए फसल की फोटो या वीडियो अपलोड करें।", "तुरत AI ग्रेड A/B बर फोटो या वीडियो डालव।")}</p>
               </div>
 
               {cropLines.map((line) => {
@@ -826,26 +818,26 @@ export default function FarmerPage() {
 
                 return (
                   <div key={line.crop_type} className="pt-2">
-                    <div className="flex items-center justify-between mb-3 border-b border-[#E2E4DE] pb-2">
+                    <div className="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
                       <div className="flex items-center gap-2">
-                        <Award className="h-5 w-5 text-[#1E1F1C]" />
-                        <div className="text-sm font-display font-black text-[#1E1F1C]">
-                          {meta.emoji} {meta.labelHi} ({meta.label})
+                        <Award className="h-4 w-4 text-emerald-800" />
+                        <div className="text-sm font-bold text-slate-900 font-display">
+                          {meta.emoji} {meta.label} ({meta.labelHi})
                         </div>
                       </div>
                       {qc?.gradeResult?.grade ? (
-                        <Badge variant="verified">
-                          {t("Grade", "ग्रेड", "ग्रेड")} {qc.gradeResult.grade}
+                        <Badge variant="gradeA">
+                          {t("Certified Grade", "सत्यापित ग्रेड", "सत्यापित ग्रेड")} {qc.gradeResult.grade}
                         </Badge>
                       ) : null}
                     </div>
 
                     <div
-                      className="relative overflow-hidden rounded-sm border-2 border-dashed border-[#1E1F1C] bg-[#F7F7F6] p-4 sm:p-6 text-center cursor-pointer hover:bg-[#EBECE8] transition-all group"
+                      className="relative overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-6 text-center cursor-pointer hover:bg-slate-100/70 transition-all group"
                       onClick={() => fileRefs.current[line.crop_type]?.click()}
                     >
                       {qc.previewUrl ? (
-                        <div className="relative mx-auto rounded-sm border-2 border-[#1E1F1C] overflow-hidden shadow-[2px_2px_0_0_#1E1F1C]">
+                        <div className="relative mx-auto rounded-lg border border-slate-200 overflow-hidden shadow-xs">
                           {qc.previewType === "video" ? (
                             <video
                               src={qc.previewUrl}
@@ -858,13 +850,10 @@ export default function FarmerPage() {
                           )}
 
                           {qc.uploading && (
-                            <div className="absolute inset-0 bg-[#1E1F1C]/40 backdrop-blur-[2px]">
-                              <div className="animate-scan-line absolute left-0 right-0 h-1.5 bg-[#386641] shadow-[0_0_20px_4px_#386641] border-y border-[#EBECE8]" />
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="bg-[#1E1F1C] text-white text-xs font-black uppercase tracking-wider border-2 border-[#EBECE8] px-4 py-2.5 rounded-sm shadow-[4px_4px_0_0_rgba(0,0,0,0.5)] flex items-center gap-2">
-                                  <Sparkles className="h-4 w-4 text-[#EBECE8] animate-spin" />
-                                  {t("AI Vision Analyzing...", "AI विज़न जांच कर रहा है...", "AI विज़न जांचत हे...")}
-                                </div>
+                            <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-xs flex items-center justify-center">
+                              <div className="bg-white text-slate-900 text-xs font-bold uppercase tracking-wide border border-slate-200 px-4 py-2.5 rounded-lg shadow-lg flex items-center gap-2">
+                                <Sparkles className="h-4 w-4 text-emerald-700 animate-spin" />
+                                {t("Gemini Vision Grading...", "AI विज़न जांच कर रहा है...", "AI विज़न जांचत हे...")}
                               </div>
                             </div>
                           )}
@@ -876,20 +865,20 @@ export default function FarmerPage() {
                                 e.stopPropagation();
                                 fileRefs.current[line.crop_type]?.click();
                               }}
-                              className="absolute bottom-2 right-2 bg-white text-[10px] font-black uppercase text-[#1E1F1C] px-2.5 py-1 rounded-sm border-2 border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C] hover:bg-[#EBECE8] transition-colors cursor-pointer"
+                              className="absolute bottom-2 right-2 bg-white text-xs font-bold text-slate-800 px-3 py-1.5 rounded-lg border border-slate-300 shadow-xs hover:bg-slate-50 transition-colors cursor-pointer min-h-[36px]"
                             >
-                              {t("Change", "बदलें", "बदलव")}
+                              {t("Change Photo", "फोटो बदलें", "फोटो बदलव")}
                             </button>
                           )}
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center gap-3 py-4 sm:py-6">
-                          <div className="h-12 w-12 rounded-sm bg-white border-2 border-[#1E1F1C] flex items-center justify-center text-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C] group-hover:-translate-y-1 transition-transform">
-                            <Camera className="h-5 w-5" />
+                        <div className="flex flex-col items-center gap-3 py-6">
+                          <div className="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 shadow-2xs group-hover:scale-105 transition-transform">
+                            <Camera className="h-6 w-6 text-emerald-800" />
                           </div>
                           <div>
-                            <p className="text-[13px] font-bold text-[#1E1F1C] uppercase tracking-wide">{t("Upload crop photo/video", "फसल की फोटो/वीडियो अपलोड करें", "फसल के फोटो/वीडियो डालव")}</p>
-                            <p className="text-[10px] text-[#52544D] font-bold mt-1 uppercase">JPEG, PNG, MP4 • {t("Max 50MB", "अधिकतम 50MB", "ज्यादा से ज्यादा 50MB")}</p>
+                            <p className="text-sm font-bold text-slate-900">{t("Tap to take photo or upload crop video", "फोटो लेने या वीडियो अपलोड करने के लिए टैप करें", "फोटो लेहे या वीडियो डाले बर टैप करव")}</p>
+                            <p className="text-xs text-slate-500 font-medium mt-0.5">JPEG, PNG, MP4 • {t("Max 50MB", "अधिकतम 50MB", "ज्यादा से ज्यादा 50MB")}</p>
                           </div>
                         </div>
                       )}
@@ -906,60 +895,31 @@ export default function FarmerPage() {
                     </div>
 
                     {qc.gradeResult && !qc.uploading ? (
-                      <div className="mt-4 rounded-sm bg-white border-2 border-[#1E1F1C] p-4 sm:p-5 space-y-4 shadow-[4px_4px_0_0_#1E1F1C]">
-                        <div className="flex items-start justify-between pb-3 border-b-2 border-[#1E1F1C]">
-                          <div className="flex items-start gap-2.5">
-                            <div className="h-8 w-8 rounded-sm bg-[#1E1F1C] text-white flex items-center justify-center shrink-0">
-                              <Award className="h-4 w-4" />
-                            </div>
+                      <div className="mt-4 rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-3 shadow-2xs">
+                        <div className="flex items-start justify-between pb-2 border-b border-slate-200/80">
+                          <div className="flex items-center gap-2">
+                            <Award className="h-4 w-4 text-emerald-800" />
                             <div>
-                              <h4 className="text-[13px] font-black uppercase tracking-wide text-[#1E1F1C]">
-                                {t("AI Certificate", "AI प्रमाण पत्र", "AI प्रमाण पत्र")}
+                              <h4 className="text-xs font-bold uppercase tracking-wide text-slate-900">
+                                {t("AI Quality Certificate", "AI गुणवत्ता प्रमाण पत्र", "AI गुणवत्ता प्रमाण पत्र")}
                               </h4>
-                              <p className="text-[10px] text-[#52544D] font-bold uppercase tabular-nums">
-                                {t(
-                                  "Confidence: " + ((qc.gradeResult.confidence || 0.98) * 100).toFixed(1) + "%",
-                                  "सटीकता: " + ((qc.gradeResult.confidence || 0.98) * 100).toFixed(1) + "%",
-                                  "सटीकता: " + ((qc.gradeResult.confidence || 0.98) * 100).toFixed(1) + "%"
-                                )}
+                              <p className="text-[11px] text-slate-500 font-medium tabular-nums">
+                                {t("Confidence: ", "सटीकता: ", "सटीकता: ")}
+                                {((qc.gradeResult.confidence || 0.94) * 100).toFixed(1)}%
                               </p>
                             </div>
                           </div>
-                          <Badge variant="verified">
+                          <Badge variant="gradeA">
                             {t("Grade", "ग्रेड", "ग्रेड")} {qc.gradeResult.grade}
                           </Badge>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 text-[11px] font-black uppercase tracking-wide text-[#1E1F1C]">
-                          <div className="bg-[#F7F7F6] p-2.5 rounded-sm border-2 border-[#1E1F1C] shadow-[1px_1px_0_0_#1E1F1C]">
-                            <span className="block text-[9px] text-[#52544D] mb-0.5">{t("Crop Detected", "पहचानी गई फसल", "पहचानी गई फसल")}</span>
-                            {qc.gradeResult.crop_detected || line.crop_type}
-                          </div>
-                          <div className="bg-[#d7e8db] p-2.5 rounded-sm border-2 border-[#1E1F1C] shadow-[1px_1px_0_0_#1E1F1C]">
-                            <span className="block text-[9px] text-[#112816] mb-0.5">{t("Score", "स्कोर", "स्कोर")}</span>
-                            {((qc.gradeResult.confidence || 0.98) * 100).toFixed(1)}%
-                          </div>
-                        </div>
-
-                        {qc.gradeResult.defects?.length > 0 && (
-                          <div className="pt-3 border-t-2 border-dashed border-[#1E1F1C] space-y-1.5">
-                            <p className="text-[10px] font-black text-[#C04A22] uppercase tracking-wider">{t("Defects Found", "पाई गई खामियां", "पाई गई खामियां")}</p>
-                            <div className="flex flex-wrap gap-1.5">
-                              {qc.gradeResult.defects.map((d: string, idx: number) => (
-                                <span key={idx} className="text-[10px] font-bold text-[#1E1F1C] bg-[#fae8e0] border border-[#1E1F1C] px-2 py-0.5 rounded-sm">
-                                  ✗ {d}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
                         {qc.gradeResult.passed_items?.length > 0 && (
-                          <div className="pt-2.5 space-y-1.5">
-                            <p className="text-[10px] font-black text-[#386641] uppercase tracking-wider">{t("Good Items", "अच्छी आइटम", "अच्छी आइटम")}</p>
+                          <div className="space-y-1">
+                            <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-wide">{t("Passed Quality Rubric Checks", "सत्यापित गुणवत्ता पैरामीटर", "पास क्वालिटी जांच")}</p>
                             <div className="flex flex-wrap gap-1.5">
                               {qc.gradeResult.passed_items.map((d: string, idx: number) => (
-                                <span key={idx} className="text-[10px] font-bold text-[#1E1F1C] bg-[#d7e8db] border border-[#1E1F1C] px-2 py-0.5 rounded-sm">
+                                <span key={idx} className="text-xs font-semibold text-emerald-900 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
                                   ✓ {d}
                                 </span>
                               ))}
@@ -974,10 +934,11 @@ export default function FarmerPage() {
             </div>
           )}
 
-          <div className="pt-6 border-t-2 border-[#1E1F1C] flex items-center justify-between gap-3 font-bold">
+          {/* Navigation Action Buttons */}
+          <div className="pt-6 border-t border-slate-200 flex items-center justify-between gap-3">
             <Button
-              variant="outline"
-              className="flex-1 max-w-[120px]"
+              variant="secondary"
+              className="px-5"
               onClick={() => setStep(step - 1)}
               disabled={step === 0}
             >
@@ -985,13 +946,13 @@ export default function FarmerPage() {
             </Button>
             <Button
               variant="farmer"
-              className="flex-1 capitalize text-sm"
+              className="flex-1 max-w-sm ml-auto"
               onClick={next}
               disabled={!canNext}
               isLoading={submitting}
             >
               {step === 3
-                ? t("Submit & Pool Harvest", "फसल दर्ज और पूल करें", "फसल जमा आ पूल करव")
+                ? t("Submit Harvest to Aggregation Pool", "फसल पूल में जमा करें", "फसल पूल म जमा करव")
                 : t("Continue", "आगे बढ़ें", "आगे बढ़व")}
               {step < 3 && <ArrowRight className="h-4 w-4 ml-1.5" />}
             </Button>

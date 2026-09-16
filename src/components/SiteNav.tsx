@@ -16,10 +16,10 @@ import {
   LogIn,
   LogOut,
   Check,
-  Sparkles,
-  Zap,
   TrendingUp,
-  Globe2,
+  Layers,
+  Scale,
+  Sparkles,
 } from "lucide-react";
 import { Badge, Button } from "@/components/ui";
 
@@ -33,28 +33,28 @@ interface NavItem {
 
 // Links shown when user is NOT logged in
 const PUBLIC_NAV: NavItem[] = [
-  { href: "/#features", label: "Features", labelHi: "सुविधाएं", labelCg: "सुविधा", icon: Sparkles },
-  { href: "/#how-it-works", label: "How It Works", labelHi: "कैसे काम करता है", labelCg: "कसे काम करत हे", icon: Zap },
-  { href: "/#savings", label: "Savings", labelHi: "बचत", labelCg: "बचत", icon: TrendingUp },
-  { href: "/about", label: "About", labelHi: "हमारे बारे में", labelCg: "हमर बारे मं", icon: Globe2 },
+  { href: "/#how-it-works", label: "Mandi Comparison", labelHi: "मंडी तुलना", labelCg: "मंडी तुलना", icon: Scale },
+  { href: "/#features", label: "AI 4-Agent Engine", labelHi: "AI 4-एजेंट प्रणाली", labelCg: "AI 4-एजेंट इंजन", icon: Layers },
+  { href: "/#savings", label: "Profit Calculator", labelHi: "बचत कैलकुलेटर", labelCg: "बचत कैलकुलेटर", icon: TrendingUp },
+  { href: "/buyer", label: "Wholesale Marketplace", labelHi: "थोक बाजार", labelCg: "थोक बाजार", icon: Store },
 ];
 
 // Role-specific navigation items
 const FARMER_NAV: NavItem[] = [
-  { href: "/farmer", label: "Sell Produce", labelHi: "फसल बेचें", labelCg: "फसल बेचंव", icon: Sprout },
-  { href: "/orders", label: "Logistics", labelHi: "लॉजिस्टिक्स", labelCg: "लॉजिस्टिक्स", icon: LayoutDashboard },
-  { href: "/earnings", label: "Earnings", labelHi: "कमाई और भुगतान", labelCg: "कमाई आ भुगतान", icon: Wallet },
+  { href: "/farmer", label: "Sell Produce", labelHi: "फसल दर्ज करें", labelCg: "फसल बेचंव", icon: Sprout },
+  { href: "/orders", label: "Pickup & Logistics", labelHi: "पिकअप और वाहन", labelCg: "पिकअप आ गाड़ी", icon: LayoutDashboard },
+  { href: "/earnings", label: "Earnings & UPI", labelHi: "कमाई और UPI", labelCg: "कमाई आ पइसा", icon: Wallet },
 ];
 
 const BUYER_NAV: NavItem[] = [
-  { href: "/buyer", label: "Marketplace", labelHi: "मंडी बाजार", labelCg: "बाजार", icon: Store },
-  { href: "/orders", label: "My Orders", labelHi: "मेरे ऑर्डर", labelCg: "मोर ऑर्डर", icon: LayoutDashboard },
+  { href: "/buyer", label: "Wholesale Lots", labelHi: "थोक लॉट बाजार", labelCg: "थोक लॉट बाजार", icon: Store },
+  { href: "/orders", label: "Orders & Escrow", labelHi: "ऑर्डर और एस्क्रो", labelCg: "ऑर्डर आ एस्क्रो", icon: LayoutDashboard },
 ];
 
 const LANGUAGES = [
-  { code: "en", label: "English" },
-  { code: "hi", label: "हिन्दी (Hindi)" },
-  { code: "cg", label: "छत्तीसगढ़ी (Chhattisgarhi)" },
+  { code: "en", label: "English", sub: "Default" },
+  { code: "hi", label: "हिन्दी", sub: "Hindi" },
+  { code: "cg", label: "छत्तीसगढ़ी", sub: "Chhattisgarhi" },
 ];
 
 export default function SiteNav() {
@@ -69,9 +69,11 @@ export default function SiteNav() {
       const stored = localStorage.getItem("kisansetu_user");
       if (stored) {
         setUser(JSON.parse(stored));
+      } else {
+        setUser(null);
       }
     } catch (e) {
-      // Ignore
+      setUser(null);
     }
   }, [pathname]);
 
@@ -120,25 +122,27 @@ export default function SiteNav() {
   const isBuyer = user?.role === "buyer";
 
   return (
-    <nav aria-label="Primary" className="flex flex-1 items-center justify-end gap-2 sm:gap-4">
+    <nav aria-label="Primary Navigation" className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
       {/* Desktop navigation links */}
-      <div className="hidden md:flex items-center gap-1.5 lg:gap-2">
+      <div className="hidden md:flex items-center gap-1">
         {activeNavItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+          const Icon = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
               aria-current={isActive ? "page" : undefined}
-              className={`text-xs lg:text-sm font-bold px-3 py-1.5 rounded-sm border-2 transition-all ${
+              className={`text-xs lg:text-sm font-semibold px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 ${
                 isActive
                   ? isBuyer
-                    ? "bg-[#1B4965] text-white border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]"
-                    : "bg-[#C04A22] text-white border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]"
-                  : "border-transparent text-[#1E1F1C] hover:border-[#1E1F1C] hover:bg-[#E2E4DE]"
+                    ? "bg-blue-50 text-blue-900 font-bold border border-blue-200 shadow-2xs"
+                    : "bg-emerald-50 text-emerald-900 font-bold border border-emerald-200 shadow-2xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 border border-transparent"
               }`}
             >
-              {getLabel(item)}
+              {Icon && <Icon className="h-4 w-4 shrink-0 text-slate-500" />}
+              <span>{getLabel(item)}</span>
             </Link>
           );
         })}
@@ -148,8 +152,8 @@ export default function SiteNav() {
         {/* Role badge if logged in */}
         {user && (
           <span
-            className={`hidden sm:inline-flex text-[10px] font-black uppercase px-2 py-0.5 rounded-sm border-2 border-[#1E1F1C] ${
-              isBuyer ? "bg-[#d9e9f2] text-[#1B4965]" : "bg-[#fae8e0] text-[#C04A22]"
+            className={`hidden sm:inline-flex text-[11px] font-bold uppercase tracking-tight px-2.5 py-1 rounded-md border ${
+              isBuyer ? "bg-blue-50 text-blue-900 border-blue-200" : "bg-emerald-50 text-emerald-900 border-emerald-200"
             }`}
           >
             {isBuyer ? "Buyer Mode" : "Farmer Mode"}
@@ -161,19 +165,19 @@ export default function SiteNav() {
           <button
             type="button"
             aria-label="Language selector"
-            onClick={() => {
-              setShowLangMenu(!showLangMenu);
-            }}
-            className="flex items-center gap-1.5 h-9 px-2.5 rounded-sm text-[#1E1F1C] bg-white text-xs font-bold border-2 border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C] transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none cursor-pointer"
+            onClick={() => setShowLangMenu(!showLangMenu)}
+            className="flex items-center gap-1.5 h-9 px-3 rounded-lg text-slate-800 bg-white text-xs font-semibold border border-slate-300 hover:bg-slate-50 hover:border-slate-400 transition-colors shadow-2xs cursor-pointer"
           >
-            <Globe className="h-3.5 w-3.5 text-[#1E1F1C]" />
-            <span className="text-[11px] uppercase font-black">{language}</span>
-            <ChevronDown className="h-3 w-3 opacity-80" />
+            <Globe className="h-3.5 w-3.5 text-slate-600" />
+            <span className="text-[11px] uppercase font-bold tracking-wide">
+              {language === "hi" ? "हिन्दी" : language === "cg" ? "छ.ग." : "EN"}
+            </span>
+            <ChevronDown className="h-3 w-3 text-slate-400 ml-0.5" />
           </button>
 
           {showLangMenu && (
-            <div className="absolute right-0 mt-2 w-52 rounded-sm border-2 border-[#1E1F1C] bg-white p-2 shadow-[4px_4px_0_0_#1E1F1C] z-50 animate-in fade-in zoom-in-95 duration-100">
-              <p className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-[#52544D] border-b-2 border-[#E2E4DE]">
+            <div className="absolute right-0 mt-2 w-56 rounded-xl border border-slate-200 bg-white p-2 shadow-lg z-50 animate-in fade-in zoom-in-95 duration-100">
+              <p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
                 {t("Select Language", "भाषा चुनें", "भाषा चुनव")}
               </p>
               <div className="mt-1 space-y-1">
@@ -181,14 +185,17 @@ export default function SiteNav() {
                   <button
                     key={lang.code}
                     onClick={() => handleLanguageChange(lang.code)}
-                    className={`flex w-full items-center justify-between px-3 py-1.5 text-xs font-bold rounded-sm border transition-colors cursor-pointer ${
+                    className={`flex w-full items-center justify-between px-3 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
                       language === lang.code
-                        ? "bg-[#EBECE8] text-[#1E1F1C] border-[#1E1F1C]"
-                        : "border-transparent text-[#1E1F1C] hover:bg-[#EBECE8]"
+                        ? "bg-emerald-50 text-emerald-900 font-bold border border-emerald-200"
+                        : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                     }`}
                   >
-                    <span>{lang.label}</span>
-                    {language === lang.code && <Check className="h-3.5 w-3.5 text-[#1E1F1C]" />}
+                    <div className="flex flex-col text-left">
+                      <span className="text-xs">{lang.label}</span>
+                      <span className="text-[10px] text-slate-400 font-normal">{lang.sub}</span>
+                    </div>
+                    {language === lang.code && <Check className="h-4 w-4 text-emerald-700 shrink-0" />}
                   </button>
                 ))}
               </div>
@@ -198,13 +205,13 @@ export default function SiteNav() {
 
         {/* Login / Profile button */}
         {user ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <Link
               href="/profile"
-              className="flex items-center gap-1.5 h-9 px-3 rounded-sm border-2 border-[#1E1F1C] bg-white text-[#1E1F1C] hover:bg-[#EBECE8] text-xs font-bold shadow-[2px_2px_0_0_#1E1F1C] transition-all"
+              className="flex items-center gap-1.5 h-9 px-3 rounded-lg border border-slate-300 bg-white text-slate-800 hover:bg-slate-50 text-xs font-semibold shadow-2xs transition-colors"
             >
-              <CircleUser className="h-4 w-4 text-[#1E1F1C]" />
-              <span className="hidden sm:inline max-w-[100px] truncate">{user.name || t("My Account", "मेरा खाता", "मोर खाता")}</span>
+              <CircleUser className="h-4 w-4 text-slate-600" />
+              <span className="hidden sm:inline max-w-[110px] truncate">{user.name || t("Account", "खाता", "खाता")}</span>
             </Link>
             <button
               onClick={() => {
@@ -213,17 +220,17 @@ export default function SiteNav() {
                 document.cookie = "kisansetu_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                 window.location.href = "/login";
               }}
-              className="flex items-center gap-1.5 h-9 px-2.5 rounded-sm border-2 border-[#1E1F1C] bg-[#fae8e0] text-[#C04A22] hover:bg-[#f7d6c8] text-xs font-bold shadow-[2px_2px_0_0_#1E1F1C] transition-all cursor-pointer"
+              className="flex items-center gap-1.5 h-9 px-2.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-800 hover:bg-rose-100 text-xs font-semibold transition-colors cursor-pointer"
               title={t("Logout", "लॉग आउट", "लॉग आउट")}
             >
-              <LogOut className="h-3.5 w-3.5 text-[#C04A22]" />
+              <LogOut className="h-3.5 w-3.5 text-rose-700" />
               <span className="hidden sm:inline">{t("Logout", "लॉग आउट", "लॉग आउट")}</span>
             </button>
           </div>
         ) : (
           <Link href="/login">
-            <Button size="sm" variant="primary" className="h-9 px-3.5 text-xs font-bold">
-              <LogIn className="h-3.5 w-3.5 mr-1" /> {t("Sign In", "साइन इन", "साइन इन")}
+            <Button size="sm" variant="primary" className="h-9 px-3.5 text-xs font-bold bg-emerald-800 hover:bg-emerald-900 text-white rounded-lg">
+              <LogIn className="h-3.5 w-3.5 mr-1" /> {t("Sign In / Register", "साइन इन / रजिस्टर", "साइन इन / रजिस्टर")}
             </Button>
           </Link>
         )}
@@ -233,7 +240,7 @@ export default function SiteNav() {
           type="button"
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="flex md:hidden h-9 w-9 items-center justify-center rounded-sm border-2 border-[#1E1F1C] bg-white text-[#1E1F1C] transition-colors hover:bg-[#EBECE8] shadow-[2px_2px_0_0_#1E1F1C]"
+          className="flex md:hidden h-9 w-9 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-800 transition-colors hover:bg-slate-50 shadow-2xs"
         >
           {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -243,32 +250,41 @@ export default function SiteNav() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-[200] md:hidden">
           <div
-            className="fixed inset-0 bg-[#1E1F1C]/60 transition-opacity"
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="fixed inset-y-0 right-0 z-[210] w-72 bg-[#EBECE8] border-l-2 border-[#1E1F1C] p-6 flex flex-col justify-between shadow-2xl">
-            <div>
-              <div className="flex items-center justify-between mb-6 pb-3 border-b-2 border-[#1E1F1C]">
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-sm bg-[#C04A22] border-2 border-[#1E1F1C] flex items-center justify-center text-white font-bold">
-                    🌾
+          <div className="fixed inset-y-0 right-0 z-[210] w-80 bg-white border-l border-slate-200 p-6 flex flex-col justify-between shadow-2xl overflow-y-auto">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-800 text-white flex items-center justify-center font-bold">
+                    <Sprout className="h-4 w-4" />
                   </div>
-                  <span className="font-display font-black text-[#1E1F1C] text-lg">KisanSetu</span>
+                  <div className="flex flex-col">
+                    <span className="font-display font-black text-slate-900 text-lg">KisanSetu</span>
+                    <span className="text-[10px] text-slate-500 font-medium">Direct Agri Marketplace</span>
+                  </div>
                 </div>
-                <button onClick={() => setMobileMenuOpen(false)} className="p-1 rounded-sm border-2 border-[#1E1F1C] bg-white text-[#1E1F1C]">
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-100"
+                >
                   <X className="h-4 w-4" />
                 </button>
               </div>
 
               {user && (
-                <div className="mb-4">
-                  <Badge variant={isBuyer ? "buyer" : "farmer"} size="sm" className="w-full justify-center">
+                <div>
+                  <Badge variant={isBuyer ? "buyer" : "farmer"} size="md" className="w-full justify-center py-1.5">
                     {isBuyer ? "Buyer Mode Active" : "Farmer Mode Active"}
                   </Badge>
                 </div>
               )}
 
-              <div className="space-y-2 mb-6">
+              <div className="space-y-1.5">
+                <p className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  {t("Navigation", "नेविगेशन", "नेविगेशन")}
+                </p>
                 {activeNavItems.map((item) => {
                   const isActive = pathname === item.href;
                   const Icon = item.icon || Store;
@@ -276,15 +292,15 @@ export default function SiteNav() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`flex items-center gap-3 px-3.5 py-2.5 rounded-sm border-2 text-sm font-bold transition-all ${
+                      className={`flex items-center gap-3 px-3.5 py-3 rounded-lg text-sm font-semibold transition-colors min-h-[44px] ${
                         isActive
                           ? isBuyer
-                            ? "bg-[#1B4965] text-white border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]"
-                            : "bg-[#C04A22] text-white border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]"
-                          : "border-transparent text-[#1E1F1C] hover:bg-white hover:border-[#1E1F1C]"
+                            ? "bg-blue-50 text-blue-900 font-bold border border-blue-200"
+                            : "bg-emerald-50 text-emerald-900 font-bold border border-emerald-200"
+                          : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                       }`}
                     >
-                      <Icon className="h-4 w-4" />
+                      <Icon className={`h-4 w-4 ${isActive ? "text-emerald-800" : "text-slate-400"}`} />
                       <span>{getLabel(item)}</span>
                     </Link>
                   );
@@ -292,28 +308,29 @@ export default function SiteNav() {
               </div>
             </div>
 
-            <div className="border-t-2 border-[#1E1F1C] pt-4 space-y-3">
+            <div className="border-t border-slate-200 pt-5 space-y-4">
               <div className="space-y-2">
-                <span className="px-2 text-[10px] font-black uppercase tracking-wider text-[#52544D]">
-                  {t("Language:", "भाषा:", "भाषा:")}
+                <span className="px-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  {t("Language Selection:", "भाषा चयन:", "भाषा चुनव:")}
                 </span>
                 <div className="grid grid-cols-3 gap-2">
                   {LANGUAGES.map((lang) => (
                     <button
                       key={lang.code}
                       onClick={() => handleLanguageChange(lang.code)}
-                      className={`flex flex-col items-center justify-center rounded-sm border-2 py-2 text-[10px] font-bold transition-all cursor-pointer ${
+                      className={`flex flex-col items-center justify-center rounded-lg border py-2 text-xs font-semibold transition-colors cursor-pointer min-h-[44px] ${
                         language === lang.code
-                          ? "bg-[#1E1F1C] text-white border-[#1E1F1C] shadow-none"
-                          : "bg-white text-[#1E1F1C] border-[#1E1F1C] hover:bg-[#EBECE8]"
+                          ? "bg-emerald-800 text-white border-emerald-900"
+                          : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
                       }`}
                     >
-                      <span className="font-black uppercase">{lang.code}</span>
-                      <span className="mt-0.5 leading-none opacity-80">{lang.label.split(" ")[0]}</span>
+                      <span className="font-bold">{lang.label}</span>
+                      <span className="text-[9px] opacity-80">{lang.code.toUpperCase()}</span>
                     </button>
                   ))}
                 </div>
               </div>
+
               {user ? (
                 <button
                   type="button"
@@ -323,14 +340,14 @@ export default function SiteNav() {
                     document.cookie = "kisansetu_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                     window.location.href = "/login";
                   }}
-                  className="w-full flex items-center justify-center gap-2 rounded-sm border-2 border-[#1E1F1C] bg-[#fae8e0] py-2.5 text-xs font-black text-[#C04A22] shadow-[2px_2px_0_0_#1E1F1C] hover:bg-[#f7d6c8] transition-all cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 rounded-lg border border-rose-200 bg-rose-50 py-3 text-xs font-bold text-rose-800 hover:bg-rose-100 transition-colors min-h-[44px] cursor-pointer"
                 >
                   <LogOut className="h-4 w-4" />
                   {t("Sign Out", "लॉग आउट करें", "लॉग आउट करव")} ({user.name || "User"})
                 </button>
               ) : (
                 <Link href="/login" className="w-full block">
-                  <Button variant="primary" className="w-full justify-center">
+                  <Button variant="primary" className="w-full justify-center bg-emerald-800 hover:bg-emerald-900 text-white min-h-[44px]">
                     <LogIn className="h-4 w-4 mr-2" />
                     {t("Sign In / Register", "साइन इन / रजिस्टर", "साइन इन / रजिस्टर")}
                   </Button>

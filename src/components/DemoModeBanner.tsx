@@ -71,11 +71,11 @@ export default function DemoModeBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed top-10 left-0 right-0 z-[70] flex items-center justify-center gap-2 bg-amber-500 text-white text-xs font-bold py-1.5 px-4 shadow-lg border-b border-amber-600">
+    <div className="fixed top-16 left-0 right-0 z-[60] flex items-center justify-center gap-2 bg-amber-50 text-amber-900 text-[11px] font-bold py-1.5 px-4 shadow-2xs border border-b-2 border-amber-200 border-b-amber-300">
       {reason === "offline" ? (
-        <WifiOff className="w-3.5 h-3.5 shrink-0" />
+        <WifiOff className="w-4 h-4 text-amber-700 shrink-0" />
       ) : (
-        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+        <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
       )}
       <span>
         ⚠️ DEMO MODE — {reason === "offline" ?

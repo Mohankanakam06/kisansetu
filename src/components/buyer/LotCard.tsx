@@ -126,9 +126,9 @@ export default function LotCard({ lot, isFeatured, onOrderClick }: LotCardProps)
   const volumeProgress = Math.min(100, Math.round((lot.total_quantity_kg / 5000) * 100));
 
   return (
-    <div className={`group relative flex flex-col rounded-sm bg-white border-2 border-[#1E1F1C] shadow-[3px_3px_0_0_#1E1F1C] p-0 transition-all duration-150`}>
+    <div className={`group relative flex flex-col rounded-xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-150 overflow-hidden`}>
       {/* Visual Image area */}
-      <div className="relative h-40 bg-[#EBECE8] overflow-hidden border-b-2 border-[#1E1F1C]">
+      <div className="relative h-44 bg-slate-100 overflow-hidden border-b border-slate-200">
         <CropPhoto
           crop={lot.crop_type}
           fallbackEmoji={cropEmoji}
@@ -138,29 +138,29 @@ export default function LotCard({ lot, isFeatured, onOrderClick }: LotCardProps)
         {/* Featured ribbon */}
         {isFeatured && (
           <div className="absolute top-0 right-0">
-            <div className="bg-[#F4A261] text-[#1E1F1C] text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-bl-sm border-l-2 border-b-2 border-[#1E1F1C]">
+            <div className="bg-amber-500 text-amber-950 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-bl-xl shadow-xs">
               ⭐ {t("Featured", "खास", "खास")}
             </div>
           </div>
         )}
 
         {/* Certified Quality Grade Pill */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1.5">
-          <Badge variant={isGradeA ? "gradeA" : "gradeB"} size="sm">
+        <div className="absolute top-3 left-3 flex flex-col gap-2">
+          <Badge variant={isGradeA ? "gradeA" : "gradeB"} size="sm" className="shadow-xs backdrop-blur-sm bg-white/90">
             {isGradeA ? <Leaf className="h-3 w-3" /> : <Check className="h-3 w-3" />}
             {isGradeA ? t("Grade A", "ग्रेड A", "ग्रेड A") : t("Grade B", "ग्रेड B", "ग्रेड B")}
           </Badge>
 
           {typeof freshnessHoursLeft === "number" && freshnessHoursLeft > 0 && (
-            <Badge variant="neutral" size="sm">
+            <Badge variant="neutral" size="sm" className="shadow-xs backdrop-blur-sm bg-white/90">
               ⏳ {freshnessHoursLeft}h {t("Fresh", "ताज़ा", "ताजा")}
             </Badge>
           )}
         </div>
 
         {/* Trading window — live countdown when trade_start/trade_end present, otherwise static fallback */}
-        <div className="absolute bottom-2 right-2">
-          <span className="bg-[#EBECE8] border-2 border-[#1E1F1C] rounded-sm px-2 py-0.5 text-[10px] font-black text-[#1E1F1C]">
+        <div className="absolute bottom-3 right-3">
+          <span className="bg-white/95 backdrop-blur-md border border-slate-200 shadow-sm rounded-lg px-2.5 py-1 text-[10px] font-bold text-slate-900 border-b-2 border-b-slate-300">
             {tradeWindowLabel || "⏳ 06:00 - 10:00 AM"}
           </span>
         </div>
@@ -171,37 +171,37 @@ export default function LotCard({ lot, isFeatured, onOrderClick }: LotCardProps)
         <div className="flex items-start justify-between gap-2 mb-3">
           <div>
             <div className="flex items-center gap-1.5">
-              <h3 className="font-display text-base font-bold text-[#1E1F1C]">
+              <h3 className="font-display text-lg font-bold text-slate-900">
                 {lot.crop_type}
               </h3>
             </div>
-            <div className="mt-1 flex items-center gap-1 text-[11px] font-bold text-[#52544D]">
-              <MapPin className="h-3.5 w-3.5 text-[#C04A22] shrink-0" />
+            <div className="mt-1 flex items-center gap-1 text-[11px] font-medium text-slate-500">
+              <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
               <span>{lot.centroid?.district || t("Raipur Hub", "रायपुर हब", "रायपुर हब")}</span>
-              <span className="text-[#C2C5BC]">|</span>
-              <span>2.4 km</span>
+              <span className="text-slate-300 mx-1">•</span>
+              <span className="font-semibold text-slate-600">2.4 km</span>
             </div>
           </div>
         </div>
 
         {/* Price & Quantity Grid */}
-        <div className="mt-auto grid grid-cols-2 gap-2 mb-4">
-          <div className="bg-[#EBECE8] border-2 border-[#1E1F1C] p-2 rounded-sm">
-            <span className="text-[10px] font-black uppercase text-[#52544D]">{t("Volume", "मात्रा", "मात्रा")}</span>
-            <p className="text-sm font-black text-[#1E1F1C] leading-none tabular-nums mt-1">{lot.total_quantity_kg.toLocaleString()} {t("kg", "किग्रा", "किलो")}</p>
+        <div className="mt-auto grid grid-cols-2 gap-3 mb-4">
+          <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl shadow-2xs">
+            <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider">{t("Volume", "मात्रा", "मात्रा")}</span>
+            <p className="text-sm font-extrabold text-slate-900 leading-none tabular-nums mt-1.5">{lot.total_quantity_kg.toLocaleString()} {t("kg", "किग्रा", "किलो")}</p>
           </div>
-          <div className="bg-[#EBECE8] border-2 border-[#1E1F1C] p-2 rounded-sm">
-            <span className="text-[10px] font-black uppercase text-[#52544D]">{t("Price", "मूल्य", "भाव")}</span>
-            <p className="text-sm font-black text-[#1B4965] leading-none tabular-nums mt-1">₹{lot.price_per_kg}<span className="text-[10px] font-bold text-[#52544D]">/{t("kg", "किग्रा", "किलो")}</span></p>
+          <div className="bg-blue-50/50 border border-blue-100 p-3 rounded-xl shadow-2xs">
+            <span className="text-[10px] font-bold uppercase text-blue-700 tracking-wider flex items-center gap-1">₹ {t("Price", "मूल्य", "भाव")}</span>
+            <p className="text-sm font-extrabold text-blue-950 leading-none tabular-nums mt-1.5">₹{lot.price_per_kg}<span className="text-[10px] font-semibold text-blue-700 font-sans ml-0.5">/{t("kg", "किग्रा", "किलो")}</span></p>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mt-1">
           <Button
-            size="sm"
+            size="md"
             variant="buyer"
-            className="flex-1 w-full"
+            className="flex-1 w-full font-bold shadow-xs h-11"
             onClick={() => onOrderClick(lot)}
           >
             {t("Order Lot", "ऑर्डर करें", "ऑर्डर करव")}

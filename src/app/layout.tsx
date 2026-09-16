@@ -8,6 +8,7 @@ import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import HydrationGuard from "@/components/HydrationGuard";
 import DemoModeBanner from "@/components/DemoModeBanner";
 import { LanguageProvider } from "@/lib/language";
+import { Sprout, ShieldCheck, PhoneCall } from "lucide-react";
 import "./globals.css";
 
 const barlow = Barlow({
@@ -21,7 +22,7 @@ const zillaSlab = Zilla_Slab({
   variable: "--font-zilla-slab",
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -41,16 +42,18 @@ export const metadata: Metadata = {
   },
   other: {
     "color-scheme": "light",
-    "theme-color": "#047857",
+    "theme-color": "#145937",
   },
 };
 
 const footerLinks = [
-  { label: "About Us", href: "/" },
-  { label: "Terms of Service", href: "/legal/terms" },
+  { label: "Mandi Rates", href: "/#how-it-works" },
+  { label: "AI Grading", href: "/farmer" },
+  { label: "Wholesale Lots", href: "/buyer" },
+  { label: "Logistics Tracking", href: "/orders" },
+  { label: "Terms of Trade", href: "/legal/terms" },
   { label: "Privacy Policy", href: "/legal/privacy" },
-  { label: "Help Center", href: "/support" },
-  { label: "Contact", href: "/support" },
+  { label: "Kisan Support", href: "/support" },
 ];
 
 export default function RootLayout({
@@ -60,100 +63,98 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${barlow.variable} ${zillaSlab.variable} h-full antialiased`}>
-      <body className="min-h-dvh flex flex-col bg-surface text-on-background" suppressHydrationWarning>
+      <body className="min-h-dvh flex flex-col bg-[#F8FAFC] text-slate-900" suppressHydrationWarning>
         <HydrationGuard />
         <LanguageProvider>
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[1000] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-body-sm focus:font-semibold focus:text-on-primary"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[1000] focus:rounded-md focus:bg-emerald-800 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white shadow-md"
           >
             Skip to main content
           </a>
 
           {/* Top APMC Mandi Live Rate Ticker */}
-          <div className="fixed top-0 left-0 right-0 z-[60] bg-[#1E1F1C] text-[#EBECE8] text-[11px] font-semibold tracking-wide border-b-2 border-[#1E1F1C] h-8 flex items-center overflow-hidden">
-            <div className="flex items-center gap-1.5 px-2 sm:px-3 bg-[#F4A261] text-[#1E1F1C] font-black shrink-0 z-10 text-[10px] uppercase tracking-wider py-1 border-r-2 border-[#1E1F1C]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C04A22] animate-ping inline-block" />
-              <span className="hidden sm:inline">Live Mandi Rates</span>
-              <span className="sm:hidden">Rates</span>
+          <div className="fixed top-0 left-0 right-0 z-[60] bg-slate-950 text-slate-200 text-[11px] font-medium tracking-wide border-b border-slate-850 h-8 flex items-center overflow-hidden select-none">
+            <div className="flex items-center gap-1.5 px-3 bg-emerald-900 text-emerald-100 font-bold shrink-0 z-10 text-[10px] uppercase tracking-wider py-1 border-r border-emerald-800/60">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
+              <span>Live Mandi Benchmark</span>
             </div>
             <div className="overflow-hidden flex-1 relative flex items-center">
               <div className="animate-marquee whitespace-nowrap flex items-center gap-8 py-1">
                 <span className="flex items-center gap-1.5">
-                  <span>🍅 Tomato (Raipur Mandi):</span>
-                  <span className="font-black text-white">₹24/kg</span>
-                  <span className="text-[#386641] font-black text-[10px]">▲ +₹2.50 (+11.6%)</span>
+                  <span className="font-semibold text-slate-300">Tomato (Raipur APMC):</span>
+                  <span className="font-bold text-white tabular-nums">₹24.00/kg</span>
+                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹2.50 (+11.6%)</span>
                 </span>
-                <span className="text-[#52544D] font-black">•</span>
+                <span className="text-slate-600 font-black">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🧅 Onion (Lasalgaon APMC):</span>
-                  <span className="font-black text-white">₹28/kg</span>
-                  <span className="text-[#386641] font-black text-[10px]">▲ +₹1.00 (+3.7%)</span>
+                  <span className="font-semibold text-slate-300">Nasik Onion (Lasalgaon Yard):</span>
+                  <span className="font-bold text-white tabular-nums">₹28.00/kg</span>
+                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹1.00 (+3.7%)</span>
                 </span>
-                <span className="text-[#52544D] font-black">•</span>
+                <span className="text-slate-600 font-black">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🥔 Potato (Bhilai Rural):</span>
-                  <span className="font-black text-white">₹18/kg</span>
-                  <span className="text-[#C04A22] font-black text-[10px]">▼ -₹0.50 (-2.7%)</span>
+                  <span className="font-semibold text-slate-300">Potato (Bhilai Rural Center):</span>
+                  <span className="font-bold text-white tabular-nums">₹18.00/kg</span>
+                  <span className="text-rose-400 font-bold text-[10px]">▼ -₹0.50 (-2.7%)</span>
                 </span>
-                <span className="text-[#52544D] font-black">•</span>
+                <span className="text-slate-600 font-black">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🌶️ Chilli (Tilda APMC):</span>
-                  <span className="font-black text-white">₹65/kg</span>
-                  <span className="text-[#386641] font-black text-[10px]">▲ +₹4.00 (+6.5%)</span>
+                  <span className="font-semibold text-slate-300">G4 Chilli (Tilda Yard):</span>
+                  <span className="font-bold text-white tabular-nums">₹65.00/kg</span>
+                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹4.00 (+6.5%)</span>
                 </span>
-                <span className="text-[#52544D] font-black">•</span>
+                <span className="text-slate-600 font-black">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🌾 Wheat (Durg Center):</span>
-                  <span className="font-black text-white">₹24.50/kg</span>
-                  <span className="text-[#386641] font-black text-[10px]">▲ +₹0.80 (+3.3%)</span>
+                  <span className="font-semibold text-slate-300">Sharbati Wheat (Durg Hub):</span>
+                  <span className="font-bold text-white tabular-nums">₹24.50/kg</span>
+                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹0.80 (+3.3%)</span>
                 </span>
-                <span className="text-[#52544D] font-black">•</span>
+                <span className="text-slate-600 font-black">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🫘 Soybean (Nagpur Hub):</span>
-                  <span className="font-black text-white">₹44/kg</span>
-                  <span className="text-[#386641] font-black text-[10px]">▲ +₹1.50 (+3.5%)</span>
+                  <span className="font-semibold text-slate-300">JS 335 Soybean (Nagpur APMC):</span>
+                  <span className="font-bold text-white tabular-nums">₹44.00/kg</span>
+                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹1.50 (+3.5%)</span>
                 </span>
                 {/* Duplicate for seamless infinite loop */}
-                <span className="text-[#52544D] font-black">•</span>
+                <span className="text-slate-600 font-black">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🍅 Tomato (Raipur Mandi):</span>
-                  <span className="font-black text-white">₹24/kg</span>
-                  <span className="text-[#386641] font-black text-[10px]">▲ +₹2.50 (+11.6%)</span>
+                  <span className="font-semibold text-slate-300">Tomato (Raipur APMC):</span>
+                  <span className="font-bold text-white tabular-nums">₹24.00/kg</span>
+                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹2.50 (+11.6%)</span>
                 </span>
-                <span className="text-[#52544D] font-black">•</span>
+                <span className="text-slate-600 font-black">•</span>
                 <span className="flex items-center gap-1.5">
-                  <span>🧅 Onion (Lasalgaon APMC):</span>
-                  <span className="font-black text-white">₹28/kg</span>
-                  <span className="text-[#386641] font-black text-[10px]">▲ +₹1.00 (+3.7%)</span>
-                </span>
-                <span className="text-[#52544D] font-black">•</span>
-                <span className="flex items-center gap-1.5">
-                  <span>🥔 Potato (Bhilai Rural):</span>
-                  <span className="font-black text-white">₹18/kg</span>
-                  <span className="text-[#C04A22] font-black text-[10px]">▼ -₹0.50 (-2.7%)</span>
+                  <span className="font-semibold text-slate-300">Nasik Onion (Lasalgaon Yard):</span>
+                  <span className="font-bold text-white tabular-nums">₹28.00/kg</span>
+                  <span className="text-emerald-400 font-bold text-[10px]">▲ +₹1.00 (+3.7%)</span>
                 </span>
               </div>
             </div>
           </div>
 
           {/* Fixed top navigation */}
-          <header className="fixed top-8 left-0 z-50 w-full border-b-2 border-[#1E1F1C] bg-[#EBECE8]/95 backdrop-blur-md shadow-none transition-all">
+          <header className="fixed top-8 left-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md transition-all shadow-xs">
             <div className="mx-auto h-full w-full max-w-7xl px-3 sm:px-6 lg:px-8">
               <div className="flex h-16 items-center justify-between gap-2 sm:gap-6">
                 <Link
                   href="/"
-                  className="flex items-center gap-2 sm:gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C04A22] rounded-lg"
+                  className="flex items-center gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 rounded-lg"
                 >
-                  <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-sm bg-[#C04A22] text-white font-black text-lg sm:text-xl border-2 border-[#1E1F1C] shadow-[2px_2px_0_0_#1E1F1C]">
-                    🌾
+                  <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-emerald-800 text-white font-black shadow-xs group-hover:bg-emerald-900 transition-colors">
+                    <Sprout className="h-5 w-5 text-emerald-100" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-extrabold text-xl tracking-tight text-[#1E1F1C] font-display group-hover:text-[#C04A22] transition-colors">
-                      KisanSetu
-                    </span>
-                    <span className="hidden sm:block text-[9px] font-bold text-[#52544D] tracking-widest uppercase -mt-0.5">
-                      Direct Market
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-black text-xl tracking-tight text-slate-900 font-display">
+                        KisanSetu
+                      </span>
+                      <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        DIRECT
+                      </span>
+                    </div>
+                    <span className="hidden sm:block text-[10px] font-medium text-slate-500 tracking-normal -mt-0.5">
+                      Direct-to-Buyer Agri Marketplace
                     </span>
                   </div>
                 </Link>
@@ -164,7 +165,7 @@ export default function RootLayout({
 
           {/* Main Content Area */}
           <DemoModeBanner />
-          <main id="main-content" className="flex-1 flex flex-col pt-[5.75rem] pb-24 md:pb-0">
+          <main id="main-content" className="flex-1 flex flex-col pt-[5.75rem] pb-20 md:pb-0">
             {children}
             <RegisterSW />
             <PWAInstallPrompt />
@@ -173,33 +174,51 @@ export default function RootLayout({
           {/* Mobile Fixed Bottom Action Bar & Navigation */}
           <MobileBottomBar />
 
-          {/* Footer */}
-          <footer className="bg-surface-container-lowest border-t border-outline-variant/60 py-10 px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-              <div>
-                <Link href="/" className="flex items-center gap-2">
-                  <img
-                    src="/logo.png"
-                    alt="KisanSetu logo"
-                    className="h-10 w-auto rounded-lg object-contain"
-                  />
-                  <span className="font-extrabold text-lg text-primary font-display">KisanSetu</span>
-                </Link>
-                <p className="mt-2 text-caption text-on-surface-variant">
-                  © {new Date().getFullYear()} KisanSetu Agricultural Marketplace. SIH 26033. All rights reserved.
-                </p>
+          {/* Institutional Trust Footer */}
+          <footer className="bg-slate-900 border-t border-slate-800 text-slate-300 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl space-y-8">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-slate-800">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald-700 text-white">
+                      <Sprout className="h-4 w-4" />
+                    </div>
+                    <span className="font-bold text-lg text-white font-display">KisanSetu</span>
+                    <span className="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                      Smart India Hackathon 2026 · PS 26033
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 max-w-lg leading-relaxed">
+                    Decentralized agricultural direct-to-buyer platform eliminating commission layers via DBSCAN geo-clustering, Gemini CV photo grading, and 2-stage milestone UPI escrow.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 text-xs">
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-850 border border-slate-800 text-slate-300">
+                    <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                    <span>256-bit Bank Escrow Guarantee</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-850 border border-slate-800 text-slate-300">
+                    <PhoneCall className="h-4 w-4 text-emerald-400" />
+                    <span>Toll-Free Helpline: 1800-180-1551</span>
+                  </div>
+                </div>
               </div>
-              <nav className="flex flex-wrap gap-6 font-label-bold text-label-bold">
-                {footerLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className="text-on-surface-variant transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
+
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <p>© {new Date().getFullYear()} KisanSetu Agri-Technologies. Designed for Indian Mandis & Farmer Producer Organizations.</p>
+                <nav className="flex flex-wrap gap-4 text-slate-400">
+                  {footerLinks.map((link) => (
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      className="hover:text-emerald-400 transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </nav>
+              </div>
             </div>
           </footer>
         </LanguageProvider>
