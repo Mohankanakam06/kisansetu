@@ -64,12 +64,23 @@ kisansetu/
 │   ├── debug_ors.py       # ORS API debugging tool
 │   └── demo_cache/        # Cached demo order data
 │
-├── docs/                  # Documentation
-│   ├── BUG_AUDIT.md       # Full bug audit report (9 issues fixed)
-│   ├── FREE_DEPLOYMENT.md # Deployment guide (Supabase + Render + Vercel)
-│   ├── PRD.md             # Product Requirements Document
-│   ├── PERSON_C_COMPLETION_REPORT.md
-│   └── roadmap_status.html
+├── docs/                  # Structured Documentation
+│   ├── prd/               # Product Requirements Documents
+│   │   └── PRD.md
+│   ├── architecture/      # Architecture & System Design
+│   │   ├── FREE_DEPLOYMENT.md
+│   │   ├── KISANSETU_PLATFORM_OVERVIEW.md
+│   │   ├── NOTEBOOKLM_CODEBASE_BUNDLE.md
+│   │   ├── PROJECT_SUMMARY_AND_BUG_AUDIT.md
+│   │   └── TECHNICAL_PRESENTATION_OVERVIEW.md
+│   └── logs/              # Status reports, audits, changelogs
+│       ├── BUG_AUDIT.md
+│       ├── CHANGELOG.md
+│       ├── IMPLEMENTATION_REPORT_TICKET_1_AND_PRICING.md
+│       ├── PERSON_C_COMPLETION_REPORT.md
+│       ├── PROGRESS_LOG.md
+│       ├── ui-ux-audit-report.md
+│       └── VERCEL_MULTI_ACCOUNT.md
 │
 ├── config/                # Environment configuration templates
 │   └── (copy .env files here for reference)
@@ -169,7 +180,7 @@ py -m pytest tests/ -v
 
 ## Deployment
 
-See [`docs/FREE_DEPLOYMENT.md`](docs/FREE_DEPLOYMENT.md) for a complete free-tier deployment guide using:
+See [`docs/architecture/FREE_DEPLOYMENT.md`](docs/architecture/FREE_DEPLOYMENT.md) for a complete free-tier deployment guide using:
 - **Supabase** (PostgreSQL + PostGIS)
 - **Render** (FastAPI backend)
 - **Vercel** (Next.js frontend + PWA)

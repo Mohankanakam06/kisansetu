@@ -2,6 +2,7 @@ services:
   - type: web
     name: kisansetu-api
     runtime: python
+    rootDir: frontend
     buildCommand: pip install -r backend/requirements.txt
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     envVars:

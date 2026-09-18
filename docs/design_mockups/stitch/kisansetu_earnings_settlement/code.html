@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Earnings &amp; Settlement - KisanSetu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary-container": "#a6ffc8",
+                        "surface-container": "#e5eeff",
+                        "secondary-container": "#6bff8f",
+                        "primary-fixed-dim": "#7cd9a3",
+                        "surface-container-high": "#dce9ff",
+                        "primary-fixed": "#98f6bd",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#7cd9a3",
+                        "surface": "#f8f9ff",
+                        "primary-container": "#0f7a4c",
+                        "inverse-surface": "#213145",
+                        "on-secondary-fixed": "#002109",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-primary-fixed": "#002111",
+                        "primary": "#005f39",
+                        "on-secondary-fixed-variant": "#005321",
+                        "on-surface-variant": "#3f4941",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#4ae176",
+                        "outline": "#6f7a71",
+                        "on-tertiary-container": "#ffe8d1",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface-container-low": "#eff4ff",
+                        "on-surface": "#0b1c30",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#becabf",
+                        "secondary-fixed": "#6bff8f",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "tertiary-container": "#965e00",
+                        "on-primary-fixed-variant": "#005230",
+                        "background": "#f8f9ff",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#007432",
+                        "secondary": "#006e2f",
+                        "tertiary": "#754900",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#d3e4fe",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-background": "#0b1c30",
+                        "surface-tint": "#006d42"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "margin-desktop": "48px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "caption": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "price-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-bold": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "price-xl": ["28px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col pt-16">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none">
+<div class="flex items-center gap-lg">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">KisanSetu</span>
+<div class="hidden md:flex gap-md">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-bold text-label-bold hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Marketplace</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-bold text-label-bold hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Sell</a>
+<a class="text-primary dark:text-primary-fixed border-b-2 border-primary dark:border-primary-fixed pb-1 font-label-bold text-label-bold hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-80" href="#">Dashboard</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop py-xl flex flex-col gap-xl">
+<!-- Header -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">Farmer Earnings &amp; Settlement</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm">Track your agricultural sales, pending payouts, and transaction history.</p>
+</div>
+<button class="bg-primary text-on-primary font-label-bold text-label-bold px-lg py-sm rounded-full hover:bg-surface-tint transition-colors flex items-center gap-sm shadow-md">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+                Download Report
+            </button>
+</header>
+<!-- Overview Cards -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant flex flex-col gap-md hover:shadow-[0px_10px_15px_rgba(0,0,0,0.1)] transition-shadow">
+<div class="flex justify-between items-center">
+<span class="font-label-bold text-label-bold text-on-surface-variant">Total Earnings (YTD)</span>
+<span class="material-symbols-outlined text-primary" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<div class="font-display-lg text-display-lg text-primary">₹12,45,000</div>
+<div class="font-caption text-caption text-secondary flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span>
+                    +15% from last year
+                </div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant flex flex-col gap-md hover:shadow-[0px_10px_15px_rgba(0,0,0,0.1)] transition-shadow">
+<div class="flex justify-between items-center">
+<span class="font-label-bold text-label-bold text-on-surface-variant">Pending Payouts</span>
+<span class="material-symbols-outlined text-[#d97706]" data-icon="pending_actions">pending_actions</span>
+</div>
+<div class="font-display-lg text-display-lg text-on-surface">₹3,20,000</div>
+<div class="font-caption text-caption text-on-surface-variant">2 settlements in progress</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant flex flex-col gap-md hover:shadow-[0px_10px_15px_rgba(0,0,0,0.1)] transition-shadow">
+<div class="flex justify-between items-center">
+<span class="font-label-bold text-label-bold text-on-surface-variant">Active Listings</span>
+<span class="material-symbols-outlined text-secondary" data-icon="inventory_2">inventory_2</span>
+</div>
+<div class="font-display-lg text-display-lg text-on-surface">4 Lots</div>
+<div class="font-caption text-caption text-on-surface-variant">Est. value ₹5,50,000</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-xl">
+<!-- Payout Timeline -->
+<section class="lg:col-span-1 bg-surface-container-lowest rounded-xl p-lg shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-lg">Active Payout Timeline</h2>
+<div class="font-label-bold text-label-bold text-on-surface-variant mb-md">Lot #4920 - Premium Wheat</div>
+<div class="flex flex-col gap-0 relative">
+<!-- Step 1: Completed -->
+<div class="flex gap-md relative pb-lg">
+<div class="absolute left-3 top-6 bottom-0 w-0.5 bg-primary"></div>
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center z-10 shrink-0">
+<span class="material-symbols-outlined text-on-primary text-[14px]" data-icon="check">check</span>
+</div>
+<div>
+<div class="font-label-bold text-label-bold text-on-surface">Contract Signed</div>
+<div class="font-caption text-caption text-on-surface-variant">Oct 12, 2024</div>
+</div>
+</div>
+<!-- Step 2: Completed -->
+<div class="flex gap-md relative pb-lg">
+<div class="absolute left-3 top-6 bottom-0 w-0.5 bg-outline-variant"></div>
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center z-10 shrink-0">
+<span class="material-symbols-outlined text-on-primary text-[14px]" data-icon="check">check</span>
+</div>
+<div>
+<div class="font-label-bold text-label-bold text-on-surface">Pickup &amp; QC Completed</div>
+<div class="font-caption text-caption text-on-surface-variant">Oct 15, 2024</div>
+</div>
+</div>
+<!-- Step 3: Advance Payment (Completed) -->
+<div class="flex gap-md relative pb-lg">
+<div class="absolute left-3 top-6 bottom-0 w-0.5 bg-outline-variant"></div>
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center z-10 shrink-0">
+<span class="material-symbols-outlined text-on-primary text-[14px]" data-icon="check">check</span>
+</div>
+<div>
+<div class="font-label-bold text-label-bold text-on-surface flex justify-between w-full">
+<span>40% Advance Payment</span>
+<span class="text-primary">₹1,20,000</span>
+</div>
+<div class="font-caption text-caption text-on-surface-variant">Settled to Bank Acc ending in 3492</div>
+</div>
+</div>
+<!-- Step 4: Pending -->
+<div class="flex gap-md relative pb-lg">
+<div class="absolute left-3 top-6 bottom-0 w-0.5 bg-outline-variant"></div>
+<div class="w-6 h-6 rounded-full border-2 border-[#d97706] bg-surface-container-lowest flex items-center justify-center z-10 shrink-0">
+<div class="w-2 h-2 rounded-full bg-[#d97706]"></div>
+</div>
+<div>
+<div class="font-label-bold text-label-bold text-[#d97706]">Delivery at Buyer Facility</div>
+<div class="font-caption text-caption text-on-surface-variant">Expected Oct 18, 2024</div>
+</div>
+</div>
+<!-- Step 5: Upcoming -->
+<div class="flex gap-md relative">
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant bg-surface-container-lowest flex items-center justify-center z-10 shrink-0"></div>
+<div>
+<div class="font-label-bold text-label-bold text-on-surface-variant flex justify-between w-full">
+<span>60% Final Settlement</span>
+<span>₹1,80,000</span>
+</div>
+<div class="font-caption text-caption text-on-surface-variant">Pending Delivery Confirmation</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Table & History -->
+<div class="lg:col-span-2 flex flex-col gap-xl">
+<!-- Active Listings Table -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant overflow-hidden">
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<h2 class="font-headline-md text-headline-md text-on-surface">Active Listings Status</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-[#f1f5f9]">
+<th class="p-md font-label-bold text-label-bold text-on-surface-variant">Lot / Crop</th>
+<th class="p-md font-label-bold text-label-bold text-on-surface-variant">Quantity</th>
+<th class="p-md font-label-bold text-label-bold text-on-surface-variant">Aggregated Group</th>
+<th class="p-md font-label-bold text-label-bold text-on-surface-variant">Status</th>
+<th class="p-md font-label-bold text-label-bold text-on-surface-variant">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-outline-variant hover:bg-surface-container-lowest transition-colors">
+<td class="p-md">
+<div class="font-label-bold text-label-bold text-on-surface">Lot #4920</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Premium Wheat</div>
+</td>
+<td class="p-md font-body-sm text-body-sm text-on-surface">120 Quintals</td>
+<td class="p-md font-body-sm text-body-sm text-on-surface">North Zone Hub A</td>
+<td class="p-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-caption font-caption bg-[#d97706]/10 text-[#d97706] border border-[#d97706]/20">
+                                            In Transit
+                                        </span>
+</td>
+<td class="p-md">
+<button class="text-primary hover:text-primary-container font-label-bold text-label-bold">View</button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-lowest transition-colors bg-[#f1f5f9]">
+<td class="p-md">
+<div class="font-label-bold text-label-bold text-on-surface">Lot #5102</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Basmati Rice</div>
+</td>
+<td class="p-md font-body-sm text-body-sm text-on-surface">80 Quintals</td>
+<td class="p-md font-body-sm text-body-sm text-on-surface">Pending Matching</td>
+<td class="p-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-caption font-caption bg-secondary/10 text-secondary border border-secondary/20">
+                                            Listed
+                                        </span>
+</td>
+<td class="p-md">
+<button class="text-primary hover:text-primary-container font-label-bold text-label-bold">View</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Transaction History -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant overflow-hidden">
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<h2 class="font-headline-md text-headline-md text-on-surface">Recent Transactions</h2>
+<button class="text-primary hover:text-primary-container font-label-bold text-label-bold">View All</button>
+</div>
+<ul class="flex flex-col">
+<li class="p-md border-b border-outline-variant flex justify-between items-center hover:bg-[#f1f5f9] transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="call_received">call_received</span>
+</div>
+<div>
+<div class="font-label-bold text-label-bold text-on-surface">Lot #4810 Final Settlement</div>
+<div class="font-caption text-caption text-on-surface-variant">Oct 10, 2024 • Bank Transfer</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-label-bold text-label-bold text-secondary">+₹2,40,000</span>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="receipt">receipt</span>
+</button>
+</div>
+</li>
+<li class="p-md flex justify-between items-center hover:bg-[#f1f5f9] transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="call_received">call_received</span>
+</div>
+<div>
+<div class="font-label-bold text-label-bold text-on-surface">Lot #4920 Advance</div>
+<div class="font-caption text-caption text-on-surface-variant">Oct 15, 2024 • Bank Transfer</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-label-bold text-label-bold text-secondary">+₹1,20,000</span>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="receipt">receipt</span>
+</button>
+</div>
+</li>
+</ul>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-start gap-lg bg-surface-container-lowest dark:bg-surface-dim border-t border-outline-variant mt-auto">
+<div>
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed mb-sm">KisanSetu</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">© 2024 KisanSetu Agricultural Marketplace. All rights reserved.</div>
+</div>
+<div class="flex flex-wrap gap-md font-label-bold text-label-bold">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">About Us</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Help Center</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Contact</a>
+</div>
+</footer>
+</body></html>

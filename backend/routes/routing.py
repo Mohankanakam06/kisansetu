@@ -1,8 +1,9 @@
 import logging
 from typing import Optional
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from ai.agents.routing import optimize_route, compare_individual_vs_consolidated
+from backend.routes.auth import require_auth
 
 logger = logging.getLogger("kisansetu.routing")
 router = APIRouter()
@@ -13,7 +14,7 @@ class OptimizeRequest(BaseModel):
 
 
 @router.post("/api/routing/optimize")
-def optimize(body: OptimizeRequest):
+def optimize(body: OptimizeRequest, auth_payload: dict = Depends(require_auth)):
     """Optimize delivery route for an order."""
     try:
         return optimize_route(body.order_id or "order-01")
@@ -37,7 +38,7 @@ def optimize(body: OptimizeRequest):
 
 
 @router.post("/api/routing/compare")
-def compare(body: OptimizeRequest):
+def compare(body: OptimizeRequest, auth_payload: dict = Depends(require_auth)):
     """Compare individual vs consolidated routing for demo."""
     try:
         return compare_individual_vs_consolidated(body.order_id or "order-01")

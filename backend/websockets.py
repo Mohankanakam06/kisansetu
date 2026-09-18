@@ -1,6 +1,5 @@
 import asyncio
 import json
-import random
 import logging
 from typing import Dict, List, Set, Any
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
@@ -93,42 +92,30 @@ manager = ConnectionManager()
 _ticker_task = None
 
 async def broadcast_apmc_ticker():
-    # Simulated Mandel/APMC prices
-    commodities = [
-        {"crop": "Tomato", "mandi": "Raipur APMC", "base_price": 22.0, "vol": 1200, "vol_unit": "qtl"},
-        {"crop": "Onion", "mandi": "Lasalgaon", "base_price": 28.0, "vol": 4500, "vol_unit": "qtl"},
-        {"crop": "Potato", "mandi": "Bhilai-Durg", "base_price": 18.0, "vol": 3200, "vol_unit": "qtl"},
-        {"crop": "Chilli", "mandi": "Tilda Mandi", "base_price": 65.0, "vol": 300, "vol_unit": "qtl"},
-        {"crop": "Paddy", "mandi": "Dhamtari", "base_price": 21.0, "vol": 8600, "vol_unit": "qtl"},
-        {"crop": "Wheat", "mandi": "Sehore APMC", "base_price": 24.5, "vol": 5200, "vol_unit": "qtl"},
-    ]
+    from backend.services.pricing_engine import get_dynamic_ticker_stream
 
     while True:
         try:
-            updates = []
-            for item in commodities:
-                # Add random volatility (-3% to +3%)
-                fluctuation = random.uniform(-0.03, 0.03)
-                new_price = round(item["base_price"] * (1 + fluctuation), 2)
-
-                # Add random volume change
-                vol_change = int(random.uniform(-10, 50))
-                new_vol = max(10, item["vol"] + vol_change)
-                item["vol"] = new_vol
-
-                updates.append({
-                    "crop_type": item["crop"],
-                    "mandi_name": item["mandi"],
-                    "price_per_kg": new_price,
-                    "price_change_pct": round(fluctuation * 100, 2),
-                    "arrival_volume": new_vol,
-                    "volume_unit": item["vol_unit"],
-                    "timestamp": asyncio.get_event_loop().time()
-                })
-
+            updates = get_dynamic_ticker_stream()
             payload = {
                 "type": "apmc_ticker",
-                "data": updates
+                "data": [
+                    {
+                        "crop_type": item["crop_type"],
+                        "mandi_name": item["mandi"],
+                        "state": item["state"],
+                        "variety": item["variety"],
+                        "price_per_kg": item["price_per_kg"],
+                        "min_price_kg": item["min_price_kg"],
+                        "max_price_kg": item["max_price_kg"],
+                        "price_change_pct": item["change_24h_pct"],
+                        "predicted_price_7d": item["predicted_price_7d"],
+                        "predicted_trend_7d": item["predicted_trend_7d"],
+                        "confidence": item["confidence"],
+                        "timestamp": asyncio.get_event_loop().time()
+                    }
+                    for item in updates
+                ]
             }
             await manager.broadcast(payload)
         except asyncio.CancelledError:

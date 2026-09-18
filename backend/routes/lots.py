@@ -1,19 +1,20 @@
 # app/routes/lots.py
 import logging
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ai.agents.aggregations import run_aggregation
+from backend.routes.auth import require_auth
 
 logger = logging.getLogger("kisansetu.lots")
 router = APIRouter()
 
 @router.post("/api/internal/aggregate")
-def aggregate():
+def aggregate(auth_payload: dict = Depends(require_auth)):
     try:
         lot_ids = run_aggregation()
         return {"lots_created": lot_ids}
     except Exception as e:
-        logger.warning(f"Internal aggregation trigger failed: {e}")
-        return {"lots_created": [], "error": str(e), "demo_mode": True}
+        logger.warning(f"Internal aggregation trigger failed: {e}", exc_info=True)
+        return {"lots_created": [], "error": "Aggregation failed. See backend logs.", "demo_mode": True}
 
 @router.get("/api/lots")
 def list_lots(crop: str = None, grade: str = None,
@@ -39,7 +40,7 @@ def list_lots(crop: str = None, grade: str = None,
             LEFT JOIN LATERAL (
                 SELECT photo_url, defects FROM quality_grades WHERE lot_id = l.id ORDER BY graded_at DESC LIMIT 1
             ) q ON true
-            WHERE 1=1 AND l.status = 'open' AND l.created_at >= NOW() - INTERVAL '24 hours'
+            WHERE 1=1 AND l.status = 'open'
         """
         params = []
 

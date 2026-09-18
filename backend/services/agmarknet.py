@@ -171,14 +171,32 @@ def fetch_agmarknet_mandi_prices(
         logger.error("Agmarknet API request failed: %s", str(e))
 
     # 3. Fallback Handling
-    # If the user asked for a specific commodity and zero records came back from the API
     fallback_records: List[Dict[str, Any]] = []
-    if clean_commodity:
+    if clean_commodity and clean_commodity.lower() != "all":
         crop_key = clean_commodity.lower()
-        if crop_key in DEFAULT_REFERENCE_BENCHMARKS:
-            bench = DEFAULT_REFERENCE_BENCHMARKS[crop_key]
+        matched_key = next((k for k in DEFAULT_REFERENCE_BENCHMARKS if k in crop_key or crop_key in k), None)
+        if matched_key:
+            bench = DEFAULT_REFERENCE_BENCHMARKS[matched_key]
             fallback_records.append({
                 "commodity": clean_commodity.capitalize(),
+                "state": clean_state or bench["state"],
+                "district": clean_district or "Benchmark Hub",
+                "market": clean_market or bench["market"],
+                "variety": bench["variety"],
+                "grade": "FAQ",
+                "min_price": bench["min_price_kg"] * 100.0,
+                "max_price": bench["max_price_kg"] * 100.0,
+                "modal_price": bench["modal_price_kg"] * 100.0,
+                "min_price_kg": bench["min_price_kg"],
+                "max_price_kg": bench["max_price_kg"],
+                "modal_price_kg": bench["modal_price_kg"],
+                "price_date": datetime.now().strftime("%d/%m/%Y"),
+            })
+    else:
+        # Return all default reference benchmarks so general mandi queries always have rich data
+        for crop_name, bench in DEFAULT_REFERENCE_BENCHMARKS.items():
+            fallback_records.append({
+                "commodity": crop_name.capitalize(),
                 "state": clean_state or bench["state"],
                 "district": clean_district or "Benchmark Hub",
                 "market": clean_market or bench["market"],

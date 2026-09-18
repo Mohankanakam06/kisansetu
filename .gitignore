@@ -1,10 +1,44 @@
+# Environment variables & secrets (CRITICAL)
 .env
 .env.local
-.next/
+.env.*.local
+*.env
+
+# Dependencies
 node_modules/
+frontend/node_modules/
+venv/
+.venv/
+frontend/venv/
+
+# Build outputs & caches
+.next/
+frontend/.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Python bytecode & cache
 __pycache__/
-*.pyc
-tsconfig.tsbuildinfo
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local backup / migration dirs
+.git_old/
+.superpowers/
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Graphify volatile files
 .graphify/branch.json
 .graphify/worktree.json
 .graphify/needs_update
@@ -15,6 +49,3 @@ tsconfig.tsbuildinfo
 .graphify/scope.json
 .graphify/transcripts/
 .graphify/converted/
-venv/
-codebase_summary.txt
-*.md

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lot Detail - KisanSetu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary-container": "#a6ffc8",
+                        "surface-container": "#e5eeff",
+                        "secondary-container": "#6bff8f",
+                        "primary-fixed-dim": "#7cd9a3",
+                        "surface-container-high": "#dce9ff",
+                        "primary-fixed": "#98f6bd",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#7cd9a3",
+                        "surface": "#f8f9ff",
+                        "primary-container": "#0f7a4c",
+                        "inverse-surface": "#213145",
+                        "on-secondary-fixed": "#002109",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-primary-fixed": "#002111",
+                        "primary": "#005f39",
+                        "on-secondary-fixed-variant": "#005321",
+                        "on-surface-variant": "#3f4941",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#4ae176",
+                        "outline": "#6f7a71",
+                        "on-tertiary-container": "#ffe8d1",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface-container-low": "#eff4ff",
+                        "on-surface": "#0b1c30",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#becabf",
+                        "secondary-fixed": "#6bff8f",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "tertiary-container": "#965e00",
+                        "on-primary-fixed-variant": "#005230",
+                        "background": "#f8f9ff",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#007432",
+                        "secondary": "#006e2f",
+                        "tertiary": "#754900",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#d3e4fe",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-background": "#0b1c30",
+                        "surface-tint": "#006d42"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "margin-desktop": "48px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "caption": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "price-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-bold": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "price-xl": ["28px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none transition-all duration-300">
+<div class="flex items-center gap-xl">
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed" href="#">KisanSetu</a>
+<div class="hidden md:flex gap-lg h-full items-center">
+<a class="text-primary dark:text-primary-fixed border-b-2 border-primary dark:border-primary-fixed pb-1 font-label-bold text-label-bold" href="#">Marketplace</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-bold text-label-bold hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Sell</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-bold text-label-bold hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Dashboard</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center h-10 w-10 rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center h-10 w-10 rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow pt-[80px] pb-[100px] px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto w-full">
+<!-- Breadcrumb & Back -->
+<div class="mb-lg flex items-center gap-sm">
+<a class="text-on-surface-variant hover:text-primary flex items-center gap-xs font-body-sm text-body-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                Back to Marketplace
+            </a>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<!-- Left Column: Details & Visuals -->
+<div class="lg:col-span-8 flex flex-col gap-xl">
+<!-- Header Info -->
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="bg-secondary-container text-on-secondary-container px-sm py-[2px] rounded-sm font-caption text-caption">Grade A</span>
+<span class="text-on-surface-variant font-caption text-caption">Lot #KS-9942</span>
+</div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-sm">Premium Nashik Red Onions</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Sourced directly from certified farmers in the Nashik region. Sorted and graded using AI visual inspection.</p>
+</div>
+<!-- Hero Image -->
+<div class="relative w-full h-[300px] md:h-[450px] rounded-xl overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A high-resolution, professional photograph of a large, perfectly organized bulk lot of premium red onions. The onions are plump, uniformly sized, and vibrant in color, presented in clean, well-lit conditions typical of a modern agricultural sorting facility. The lighting is bright and even, highlighting the fresh, dry skins and emphasizing agricultural quality and reliability. Modern, clean aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcvkW4kRw-v1gU5oxJIcSkRMtp3SFLD0_mAbNWZcgAtykwY18vo8HYPCe923JJciNNATIqs9aFTW9otiPawYwYJzL69ZiDpl6KmWXL38PV3bIW6U1r-COXQmYZ7Yck8NAOmx-yDB_KkA-xz6YRfq4lJhklKcU1P77Ia37oVehQPCfDV6hKUvMEe5THswskEQ5nCcBK-hO73Q9k_jCxDKVGllwUaWOo2d4Go1i_Qxz3Gdi8GpksKTnq"/>
+<div class="absolute top-md right-md bg-surface-container-lowest px-md py-sm rounded-full flex items-center gap-xs shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[18px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-bold text-label-bold text-secondary">Verified Lot</span>
+</div>
+</div>
+<!-- Bento Grid for Details -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Logistics Map -->
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">location_on</span>
+                            Current Location
+                        </h3>
+<div class="flex-grow rounded-lg overflow-hidden relative min-h-[150px]">
+<img class="w-full h-full object-cover" data-location="Mandi Gate #4, Azadpur" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVJXAavd-5Ec2W914_nT74aJjqM3zu_mQvY248tpkH4_Tj8pKE9xDUp0NQcLj5OufufZSoL3lmy0zdE5ObH5A-BbBubwVUAXITLJZRJmCPbyzPSAyqTt4janSHoLj7aPTKS8nMZ960Q8eMF7TQwAxsv95ZShBYguJjI39sux7EtN2UEFs0RxhV117_dykrJjnHvrJR3w7IgnyGTUcOVTbzAXuZBi2EE0Dpgrpp0ISFygXMU0pRNXmO"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 to-transparent flex items-end p-sm">
+<span class="font-label-bold text-label-bold text-on-surface">Mandi Gate #4, Azadpur</span>
+</div>
+</div>
+</div>
+<!-- Quality Report & Log -->
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant/30">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">fact_check</span>
+                            Quality Verification Log
+                        </h3>
+<div class="space-y-sm">
+<div class="flex justify-between items-center py-xs border-b border-outline-variant/20 last:border-0">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-xs"><span class="material-symbols-outlined text-[16px]">psychology</span> AI-graded</span>
+<span class="font-label-bold text-label-bold text-on-surface">10:15 AM today</span>
+</div>
+<div class="flex justify-between items-center py-xs border-b border-outline-variant/20 last:border-0">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-xs"><span class="material-symbols-outlined text-[16px]">water_drop</span> Moisture test</span>
+<span class="font-label-bold text-label-bold text-on-surface">9.5%</span>
+</div>
+<div class="flex justify-between items-center py-xs border-b border-outline-variant/20 last:border-0">
+<span class="font-body-sm text-body-sm text-on-surface-variant">AI Verified Grade</span>
+<span class="font-label-bold text-label-bold text-on-surface">Grade A</span>
+</div>
+<div class="flex justify-between items-center py-xs border-b border-outline-variant/20 last:border-0">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Size Uniformity</span>
+<span class="font-label-bold text-label-bold text-on-surface">Excellent (45-55mm)</span>
+</div>
+</div>
+<p class="mt-md font-body-sm text-body-sm text-on-surface-variant italic">"Uniform size, dry skins, zero signs of fungal infection or sprouting."</p>
+</div>
+</div>
+<!-- Farmer Breakdown -->
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant/30">
+<div class="flex justify-between items-center mb-md cursor-pointer" onclick="document.getElementById('farmer-list').classList.toggle('hidden')">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">groups</span>
+                            Contributing Farmers (3)
+                        </h3>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-200" id="farmer-toggle-icon">expand_more</span>
+</div>
+<div class="space-y-md" id="farmer-list">
+<!-- Farmer Item -->
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-low rounded-lg transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-label-bold">
+                                    SD
+                                </div>
+<div>
+<p class="font-label-bold text-label-bold text-on-surface">Sanjay Deshmukh</p>
+<p class="font-caption text-caption text-on-surface-variant">Verified Producer</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-bold text-label-bold text-on-surface">560 kg</p>
+<p class="font-caption text-caption text-on-surface-variant">56% of lot</p>
+</div>
+</div>
+<!-- Farmer Item -->
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-low rounded-lg transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-label-bold">
+                                    VR
+                                </div>
+<div>
+<p class="font-label-bold text-label-bold text-on-surface">Vithal Rao</p>
+<p class="font-caption text-caption text-on-surface-variant">Verified Producer</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-bold text-label-bold text-on-surface">310 kg</p>
+<p class="font-caption text-caption text-on-surface-variant">31% of lot</p>
+</div>
+</div>
+<!-- Farmer Item -->
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-low rounded-lg transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-label-bold">
+                                    RP
+                                </div>
+<div>
+<p class="font-label-bold text-label-bold text-on-surface">Ramesh Pawar</p>
+<p class="font-caption text-caption text-on-surface-variant">Verified Producer</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-bold text-label-bold text-on-surface">130 kg</p>
+<p class="font-caption text-caption text-on-surface-variant">13% of lot</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Summary & Actions -->
+<div class="lg:col-span-4">
+<div class="sticky top-[100px] bg-surface-container-lowest rounded-xl p-lg shadow-[0px_10px_15px_rgba(0,0,0,0.1)] border border-outline-variant/30 flex flex-col gap-lg">
+<div class="pb-md border-b border-outline-variant/30">
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-xs">Price</p>
+<div class="flex items-baseline gap-xs">
+<span class="font-price-xl text-price-xl text-on-surface">₹24.50</span>
+<span class="font-body-md text-body-md text-on-surface-variant">/ kg</span>
+</div>
+<div class="flex items-center gap-xs mt-sm text-secondary">
+<span class="material-symbols-outlined text-[18px]">gpp_good</span>
+<span class="font-caption text-caption font-medium">Verified by 3 local aggregators this month.</span>
+</div>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Available Quantity</span>
+<span class="font-label-bold text-label-bold text-on-surface">1,000 kg</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Minimum Order</span>
+<span class="font-label-bold text-label-bold text-on-surface">100 kg</span>
+</div>
+<div class="pt-xs">
+<p class="font-caption text-caption text-on-surface-variant italic">Lot weight adjusted -2kg for moisture loss during transit.</p>
+</div>
+<div class="flex justify-between items-center pt-sm border-t border-outline-variant/30">
+<span class="font-label-bold text-label-bold text-on-surface">Total Lot Value</span>
+<span class="font-headline-md text-headline-md text-primary">₹24,500</span>
+</div>
+</div>
+<div class="pt-sm">
+<button class="w-full bg-primary text-on-primary font-label-bold text-label-bold py-md rounded-lg shadow-sm hover:shadow-[0px_4px_8px_rgba(0,95,57,0.3)] transition-all duration-200 flex justify-center items-center gap-sm mb-sm">
+<span class="material-symbols-outlined">shopping_cart</span>
+                            Place Order for Full Lot
+                        </button>
+<button class="w-full bg-transparent border border-outline text-primary font-label-bold text-label-bold py-[14px] rounded-lg hover:bg-surface-container transition-colors duration-200">
+                            Request Partial Order
+                        </button>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant bg-surface-container-low p-sm rounded-lg">
+<span class="material-symbols-outlined text-[20px] text-primary">local_shipping</span>
+<p class="font-caption text-caption">Estimated delivery: 2-3 days within state.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-start gap-lg bg-surface-container-lowest dark:bg-surface-dim border-t border-outline-variant mt-auto">
+<div class="flex flex-col gap-sm">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">KisanSetu</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">© 2024 KisanSetu Agricultural Marketplace. All rights reserved.</span>
+</div>
+<div class="flex flex-wrap gap-md">
+<a class="font-label-bold text-label-bold text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">About Us</a>
+<a class="font-label-bold text-label-bold text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Terms of Service</a>
+<a class="font-label-bold text-label-bold text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-bold text-label-bold text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Help Center</a>
+<a class="font-label-bold text-label-bold text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Contact</a>
+</div>
+</footer>
+<script>
+        // Simple toggle logic for the farmer list chevron
+        const toggleIcon = document.getElementById('farmer-toggle-icon');
+        const farmerList = document.getElementById('farmer-list');
+        
+        farmerList.addEventListener('transitionend', () => {
+             // Optional: Handle smooth height transitions if needed
+        });
+    </script>
+</body></html>

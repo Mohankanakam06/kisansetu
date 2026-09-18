@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sell Crop - KisanSetu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "surface-container-highest": "#d3e4fe",
+                            "on-primary-container": "#a6ffc8",
+                            "surface-container": "#e5eeff",
+                            "secondary-container": "#6bff8f",
+                            "primary-fixed-dim": "#7cd9a3",
+                            "surface-container-high": "#dce9ff",
+                            "primary-fixed": "#98f6bd",
+                            "error": "#ba1a1a",
+                            "inverse-primary": "#7cd9a3",
+                            "surface": "#f8f9ff",
+                            "primary-container": "#0f7a4c",
+                            "inverse-surface": "#213145",
+                            "on-secondary-fixed": "#002109",
+                            "error-container": "#ffdad6",
+                            "tertiary-fixed": "#ffddb8",
+                            "on-primary-fixed": "#002111",
+                            "primary": "#005f39",
+                            "on-secondary-fixed-variant": "#005321",
+                            "on-surface-variant": "#3f4941",
+                            "on-primary": "#ffffff",
+                            "surface-container-lowest": "#ffffff",
+                            "secondary-fixed-dim": "#4ae176",
+                            "outline": "#6f7a71",
+                            "on-tertiary-container": "#ffe8d1",
+                            "on-tertiary-fixed": "#2a1700",
+                            "surface-container-low": "#eff4ff",
+                            "on-surface": "#0b1c30",
+                            "inverse-on-surface": "#eaf1ff",
+                            "on-tertiary": "#ffffff",
+                            "surface-dim": "#cbdbf5",
+                            "on-error": "#ffffff",
+                            "outline-variant": "#becabf",
+                            "secondary-fixed": "#6bff8f",
+                            "on-tertiary-fixed-variant": "#653e00",
+                            "tertiary-container": "#965e00",
+                            "on-primary-fixed-variant": "#005230",
+                            "background": "#f8f9ff",
+                            "surface-bright": "#f8f9ff",
+                            "on-secondary-container": "#007432",
+                            "secondary": "#006e2f",
+                            "tertiary": "#754900",
+                            "on-error-container": "#93000a",
+                            "surface-variant": "#d3e4fe",
+                            "on-secondary": "#ffffff",
+                            "tertiary-fixed-dim": "#ffb95f",
+                            "on-background": "#0b1c30",
+                            "surface-tint": "#006d42"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem"
+                    },
+                    "spacing": {
+                            "xl": "32px",
+                            "md": "16px",
+                            "sm": "8px",
+                            "margin-desktop": "48px",
+                            "xs": "4px",
+                            "lg": "24px",
+                            "base": "4px",
+                            "margin-mobile": "16px",
+                            "gutter": "16px"
+                    },
+                    "fontFamily": {
+                            "headline-md": ["Inter"],
+                            "body-md": ["Inter"],
+                            "headline-lg": ["Inter"],
+                            "caption": ["Inter"],
+                            "headline-lg-mobile": ["Inter"],
+                            "display-lg": ["Inter"],
+                            "label-bold": ["Inter"],
+                            "body-sm": ["Inter"],
+                            "body-lg": ["Inter"],
+                            "price-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                            "caption": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "label-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                            "price-xl": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .step-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        .step-hidden {
+            opacity: 0;
+            transform: translateX(20px);
+            pointer-events: none;
+            position: absolute;
+            visibility: hidden;
+        }
+        .step-visible {
+            opacity: 1;
+            transform: translateX(0);
+            position: relative;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 bg-surface border-b border-outline-variant shadow-sm transition-colors duration-300">
+<div class="flex items-center gap-lg">
+<span class="font-headline-md text-headline-md font-bold text-primary">KisanSetu</span>
+<nav class="hidden md:flex items-center gap-lg ml-xl">
+<a class="text-on-surface-variant font-label-bold text-label-bold hover:text-primary transition-colors" href="#">Marketplace</a>
+<a class="text-primary border-b-2 border-primary pb-1 font-label-bold text-label-bold hover:text-primary transition-colors opacity-80" href="#">Sell</a>
+<a class="text-on-surface-variant font-label-bold text-label-bold hover:text-primary transition-colors" href="#">Dashboard</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">language</span>
+</button>
+<button class="p-sm text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</button>
+</div>
+</header>
+<main class="flex-grow pt-[80px] pb-xl px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto w-full">
+<!-- Progress Bar Header -->
+<div class="mb-xl text-center">
+<h1 class="font-headline-lg text-headline-lg mb-sm">List Your Crop</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Provide details to reach verified buyers instantly.</p>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant p-lg md:p-xl relative overflow-hidden">
+<!-- Progress Steps Indicator -->
+<div class="flex items-center justify-between mb-xl relative">
+<!-- Line -->
+<div class="absolute top-1/2 left-0 w-full h-1 bg-surface-variant -z-10 -translate-y-1/2 rounded-full"></div>
+<div class="absolute top-1/2 left-0 w-1/4 h-1 bg-primary -z-10 -translate-y-1/2 rounded-full transition-all duration-500" id="progress-bar-fill"></div>
+<!-- Step 1 -->
+<div class="flex flex-col items-center gap-xs">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-bold text-label-bold shadow-sm transition-colors duration-300" id="step-dot-1">1</div>
+<span class="font-caption text-caption text-primary hidden md:block">Crop</span>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center gap-xs">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-label-bold text-label-bold transition-colors duration-300" id="step-dot-2">2</div>
+<span class="font-caption text-caption text-on-surface-variant hidden md:block">Details</span>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center gap-xs">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-label-bold text-label-bold transition-colors duration-300" id="step-dot-3">3</div>
+<span class="font-caption text-caption text-on-surface-variant hidden md:block">Location</span>
+</div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center gap-xs">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-label-bold text-label-bold transition-colors duration-300" id="step-dot-4">4</div>
+<span class="font-caption text-caption text-on-surface-variant hidden md:block">Quality</span>
+</div>
+</div>
+<div class="relative min-h-[400px]">
+<!-- STEP 1: Crop Selection -->
+<div class="step-transition step-visible w-full" id="step-1">
+<h2 class="font-headline-md text-headline-md mb-lg">What are you selling?</h2>
+<div class="mb-lg relative">
+<label class="sr-only" for="crop-search">Search Crop</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-[48px] pr-md py-md rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow font-body-md text-body-md" id="crop-search" placeholder="Search crops (e.g., 'Onion' or 'Pyaaz')" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+<!-- Card 1 -->
+<button class="flex flex-col items-center p-md rounded-lg border border-outline-variant hover:border-primary hover:bg-surface-container-low transition-all bg-surface text-center focus:ring-2 focus:ring-primary outline-none group" type="button">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-sm group-hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[32px] text-primary" style="font-variation-settings: 'FILL' 0;">eco</span>
+</div>
+<span class="font-label-bold text-label-bold">Onion</span>
+<span class="font-caption text-caption text-on-surface-variant">(Pyaaz)</span>
+</button>
+<!-- Card 2 -->
+<button class="flex flex-col items-center p-md rounded-lg border-2 border-primary bg-surface-container-low transition-all text-center focus:ring-2 focus:ring-primary outline-none group relative" type="button">
+<div class="absolute top-sm right-sm text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center mb-sm transition-colors">
+<span class="material-symbols-outlined text-[32px] text-primary" style="font-variation-settings: 'FILL' 0;">grain</span>
+</div>
+<span class="font-label-bold text-label-bold text-primary">Wheat</span>
+<span class="font-caption text-caption text-primary">(Gehu)</span>
+</button>
+<!-- Card 3 -->
+<button class="flex flex-col items-center p-md rounded-lg border border-outline-variant hover:border-primary hover:bg-surface-container-low transition-all bg-surface text-center focus:ring-2 focus:ring-primary outline-none group" type="button">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-sm group-hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[32px] text-primary" style="font-variation-settings: 'FILL' 0;">grass</span>
+</div>
+<span class="font-label-bold text-label-bold">Rice</span>
+<span class="font-caption text-caption text-on-surface-variant">(Chawal)</span>
+</button>
+<!-- Card 4 -->
+<button class="flex flex-col items-center p-md rounded-lg border border-outline-variant hover:border-primary hover:bg-surface-container-low transition-all bg-surface text-center focus:ring-2 focus:ring-primary outline-none group" type="button">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-sm group-hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[32px] text-primary" style="font-variation-settings: 'FILL' 0;">nutrition</span>
+</div>
+<span class="font-label-bold text-label-bold">Potato</span>
+<span class="font-caption text-caption text-on-surface-variant">(Aloo)</span>
+</button>
+</div>
+<div class="mt-xl flex justify-end">
+<button class="px-xl py-sm bg-primary text-on-primary rounded-lg font-label-bold text-label-bold hover:bg-on-primary-fixed-variant transition-colors shadow-sm flex items-center gap-xs" onclick="nextStep(2)">
+                            Next
+                            <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- STEP 2: Quantity & Price -->
+<div class="step-transition step-hidden w-full" id="step-2">
+<h2 class="font-headline-md text-headline-md mb-lg">Set Quantity &amp; Expected Price</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-on-surface" for="quantity">Total Available Quantity</label>
+<div class="relative flex items-center">
+<input class="w-full p-md rounded-l-lg border border-r-0 border-outline-variant bg-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow font-body-md text-body-md" id="quantity" placeholder="e.g., 500" type="number"/>
+<div class="px-md py-md bg-surface-container border border-outline-variant rounded-r-lg border-l-0 text-on-surface-variant font-label-bold">Quintals (q)</div>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-on-surface" for="price">Expected Price</label>
+<div class="relative flex items-center">
+<div class="pl-md py-md absolute left-0 text-on-surface-variant font-label-bold pointer-events-none">₹</div>
+<input class="w-full pl-[32px] pr-md py-md rounded-l-lg border border-r-0 border-outline-variant bg-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow font-body-md text-body-md" id="price" placeholder="e.g., 2200" type="number"/>
+<div class="px-md py-md bg-surface-container border border-outline-variant rounded-r-lg border-l-0 text-on-surface-variant font-label-bold">/ q</div>
+</div>
+</div>
+</div>
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant flex items-start gap-md mb-xl">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">info</span>
+<div>
+<p class="font-label-bold text-label-bold text-on-surface mb-xs">Market Insight</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Current mandi price for Wheat (Gehu) in your region is approx. <strong>₹2,150 - ₹2,300 per quintal</strong>.</p>
+</div>
+</div>
+<div class="flex justify-between">
+<button class="px-xl py-sm bg-surface text-on-surface-variant border border-outline-variant rounded-lg font-label-bold text-label-bold hover:bg-surface-container transition-colors" onclick="prevStep(1)">Back</button>
+<button class="px-xl py-sm bg-primary text-on-primary rounded-lg font-label-bold text-label-bold hover:bg-on-primary-fixed-variant transition-colors shadow-sm" onclick="nextStep(3)">Next</button>
+</div>
+</div>
+<!-- STEP 3: Location -->
+<div class="step-transition step-hidden w-full" id="step-3">
+<h2 class="font-headline-md text-headline-md mb-lg">Pickup Location</h2>
+<div class="mb-lg">
+<div class="w-full h-48 bg-surface-container border border-outline-variant rounded-xl mb-md overflow-hidden relative flex items-center justify-center bg-cover bg-center" data-alt="A stylized, modern light-mode map interface showing a rural agricultural region. The map uses a minimalist color palette with soft greens for farmland, clean white roads, and subtle blue water bodies. A prominent green map marker pin is placed centrally, indicating a farm location. The overall aesthetic is clean, trustworthy, and high-tech, typical of a professional logistics or agricultural app." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuByVz4DTijr7xnORMLwUoTaT5nxBH0DZF8M3xDnMlB6Jf86wI_DQWWgiDgPV3jgFalBHdMKhkMKUD5l1jFOaEn50zhTIYlvFlBZBpLioP4lQ6_WCdi-05eRXLL7hr1-F5gjyn2VEoLxVjVE-joT_NZu3RnZOb52vAp7bVkFZjef2P8gMxZ-eu0ROkDWoxrtrk-fauSJGf0qOER1pNO7cPnqiTlIDGfaAm6VteBEXffs9CTVjgC-kOdv')">
+<div class="absolute inset-0 bg-surface/20"></div>
+<button class="relative z-10 px-lg py-sm bg-surface text-primary border border-primary rounded-full font-label-bold text-label-bold shadow-sm hover:bg-surface-container transition-colors flex items-center gap-sm">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">my_location</span>
+                                Use Current Location
+                            </button>
+</div>
+</div>
+<div class="flex flex-col gap-xs mb-xl">
+<label class="font-label-bold text-label-bold text-on-surface" for="address">Detailed Address</label>
+<textarea class="w-full p-md rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow font-body-md text-body-md" id="address" placeholder="Enter farm address, landmarks, or specific directions for pickup..." rows="3"></textarea>
+</div>
+<div class="flex justify-between">
+<button class="px-xl py-sm bg-surface text-on-surface-variant border border-outline-variant rounded-lg font-label-bold text-label-bold hover:bg-surface-container transition-colors" onclick="prevStep(2)">Back</button>
+<button class="px-xl py-sm bg-primary text-on-primary rounded-lg font-label-bold text-label-bold hover:bg-on-primary-fixed-variant transition-colors shadow-sm" onclick="nextStep(4)">Next</button>
+</div>
+</div>
+<!-- STEP 4: Quality Grading -->
+<div class="step-transition step-hidden w-full" id="step-4">
+<h2 class="font-headline-md text-headline-md mb-sm">AI Quality Grading</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg">Upload clear photos of your crop for automatic grade assessment.</p>
+<!-- Upload Area -->
+<div class="border-2 border-dashed border-primary bg-surface-container-low rounded-xl p-xl flex flex-col items-center justify-center text-center mb-lg cursor-pointer hover:bg-surface-container transition-colors min-h-[200px]" id="upload-area" onclick="simulateProcessing()">
+<span class="material-symbols-outlined text-[48px] text-primary mb-md" style="font-variation-settings: 'FILL' 0;">cloud_upload</span>
+<p class="font-label-bold text-label-bold text-on-surface mb-xs">Drag &amp; drop photos here</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">or click to browse from device</p>
+<p class="font-caption text-caption text-on-surface-variant mt-sm mt-md px-md py-xs bg-surface border border-outline-variant rounded-full">Supports JPG, PNG (Max 5MB)</p>
+</div>
+<!-- Processing State (Hidden initially) -->
+<div class="hidden flex-col items-center justify-center min-h-[200px] mb-lg bg-surface-container-low rounded-xl border border-outline-variant p-xl" id="processing-state">
+<span class="material-symbols-outlined text-[48px] text-primary animate-spin mb-md">autorenew</span>
+<p class="font-label-bold text-label-bold text-on-surface">Analyzing Crop Quality...</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Our AI is checking for moisture, color, and size.</p>
+<div class="w-full max-w-xs mt-md h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-2/3 animate-[pulse_1s_ease-in-out_infinite]"></div>
+</div>
+</div>
+<!-- Result State (Hidden initially) -->
+<div class="hidden flex-col mb-lg bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-[0px_2px_4px_rgba(0,0,0,0.05)]" id="result-state">
+<div class="bg-primary/10 p-md flex items-center justify-between border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-bold text-label-bold text-primary">AI Quality Prediction</span>
+</div>
+<div class="px-sm py-xs bg-surface rounded text-primary font-label-bold text-caption border border-primary/20">High Confidence</div>
+</div>
+<div class="p-lg flex flex-col md:flex-row items-center gap-xl">
+<div class="flex-shrink-0 text-center">
+<div class="w-24 h-24 rounded-full border-4 border-primary bg-primary/5 flex items-center justify-center mb-sm mx-auto">
+<span class="font-display-lg text-display-lg text-primary">A</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface">Premium Grade</span>
+</div>
+<div class="flex-grow w-full space-y-md">
+<div>
+<div class="flex justify-between font-caption text-caption mb-xs">
+<span class="text-on-surface-variant">Size Consistency</span>
+<span class="text-primary font-label-bold">92%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-variant rounded-full"><div class="h-full bg-primary rounded-full w-[92%]"></div></div>
+</div>
+<div>
+<div class="flex justify-between font-caption text-caption mb-xs">
+<span class="text-on-surface-variant">Color Quality</span>
+<span class="text-primary font-label-bold">88%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-variant rounded-full"><div class="h-full bg-primary rounded-full w-[88%]"></div></div>
+</div>
+<div>
+<div class="flex justify-between font-caption text-caption mb-xs">
+<span class="text-on-surface-variant">Moisture Level (Est.)</span>
+<span class="text-primary font-label-bold">Optimal</span>
+</div>
+<div class="w-full h-1.5 bg-surface-variant rounded-full"><div class="h-full bg-secondary-container rounded-full w-[100%]"></div></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex justify-between mt-auto">
+<button class="px-xl py-sm bg-surface text-on-surface-variant border border-outline-variant rounded-lg font-label-bold text-label-bold hover:bg-surface-container transition-colors" onclick="prevStep(3)">Back</button>
+<button class="px-xl py-sm bg-surface-variant text-on-surface-variant rounded-lg font-label-bold text-label-bold cursor-not-allowed transition-colors" disabled="" id="submit-btn">Publish Listing</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-start gap-lg bg-surface-container-lowest border-t border-outline-variant mt-auto">
+<div class="font-headline-md text-headline-md font-bold text-primary">KisanSetu</div>
+<div class="flex flex-wrap gap-md">
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary transition-colors" href="#">About Us</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary transition-colors" href="#">Help Center</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary transition-colors" href="#">Contact</a>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">© 2024 KisanSetu Agricultural Marketplace. All rights reserved.</div>
+</footer>
+<script>
+        function nextStep(step) {
+            // Hide all steps
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`step-${i}`).classList.remove('step-visible');
+                document.getElementById(`step-${i}`).classList.add('step-hidden');
+            }
+            // Show target step
+            document.getElementById(`step-${step}`).classList.remove('step-hidden');
+            document.getElementById(`step-${step}`).classList.add('step-visible');
+            updateProgress(step);
+        }
+
+        function prevStep(step) {
+            nextStep(step);
+        }
+
+        function updateProgress(step) {
+            const fill = document.getElementById('progress-bar-fill');
+            const percentages = {1: '25%', 2: '50%', 3: '75%', 4: '100%'};
+            fill.style.width = percentages[step];
+
+            for(let i=1; i<=4; i++) {
+                const dot = document.getElementById(`step-dot-${i}`);
+                const text = dot.nextElementSibling;
+                if(i <= step) {
+                    dot.classList.remove('bg-surface-variant', 'text-on-surface-variant');
+                    dot.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+                    if(text) text.classList.replace('text-on-surface-variant', 'text-primary');
+                } else {
+                    dot.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+                    dot.classList.add('bg-surface-variant', 'text-on-surface-variant');
+                    if(text) text.classList.replace('text-primary', 'text-on-surface-variant');
+                }
+            }
+        }
+
+        function simulateProcessing() {
+            document.getElementById('upload-area').classList.add('hidden');
+            document.getElementById('processing-state').classList.remove('hidden');
+            document.getElementById('processing-state').classList.add('flex');
+            
+            setTimeout(() => {
+                document.getElementById('processing-state').classList.remove('flex');
+                document.getElementById('processing-state').classList.add('hidden');
+                
+                document.getElementById('result-state').classList.remove('hidden');
+                document.getElementById('result-state').classList.add('flex');
+
+                const submitBtn = document.getElementById('submit-btn');
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('bg-surface-variant', 'text-on-surface-variant', 'cursor-not-allowed');
+                submitBtn.classList.add('bg-primary', 'text-on-primary', 'shadow-sm', 'hover:bg-on-primary-fixed-variant');
+            }, 2000);
+        }
+    </script>
+</body></html>

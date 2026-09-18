@@ -31,7 +31,14 @@ def get_mandi_prices(
         )
         return result
     except Exception as e:
-        logger.error(f"Error fetching mandi prices: {e}")
-        # The service layer already handles exceptions and returns fallbacks safely,
-        # but just in case of any completely unhandled failure at router level:
-        raise HTTPException(status_code=500, detail="Failed to retrieve mandi prices")
+        logger.error(f"Error fetching mandi prices: {e}", exc_info=True)
+        # The service layer normally absorbs upstream failures and returns
+        # benchmark fallbacks, so reaching here means both the live Agmarknet
+        # feed and the fallback path failed. Give the caller something to act on.
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "Live mandi prices are temporarily unavailable (Agmarknet feed or cache failed). "
+                "Retry in a moment; request cached data by setting force_refresh=false."
+            ),
+        )

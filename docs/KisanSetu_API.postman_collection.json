@@ -1,0 +1,839 @@
+{
+	"info": {
+		"_postman_id": "kisansetu-sih-26033-postman-collection",
+		"name": "KisanSetu - Direct-to-Market Agri Platform API",
+		"description": "Comprehensive Postman API Collection for KisanSetu (SIH 2026 PS 26033).\n\nIncludes 7 API modules:\n1. Authentication (OTP & JWT Session with Redis TTL)\n2. Farmer Interface (Voice/Text Multilingual Listings)\n3. Aggregation & Lots (Geohash Clustering & Pricing)\n4. Orders & Marketplace\n5. Logistics & Routing (Multi-Pickup Optimization & Cost Savings)\n6. Milestone Settlement & Payouts (Escrow release)\n7. AI Orchestrator & Quality Grading (Gemini Multi-turn Session Memory & Vision)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "farmer_id",
+			"value": "f1000000-0000-0000-0000-000000000001",
+			"type": "string"
+		},
+		{
+			"key": "buyer_id",
+			"value": "b1000000-0000-0000-0000-000000000001",
+			"type": "string"
+		},
+		{
+			"key": "lot_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "order_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Authentication",
+			"description": "Endpoints for OTP-based mobile login, verification, user registration, and profile retrieval.",
+			"item": [
+				{
+					"name": "1.1 Send OTP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"OTP sent successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.eql(true);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"9876543210\",\n    \"role\": \"farmer\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/send-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"send-otp"
+							]
+						},
+						"description": "Send a 6-digit OTP code to mobile number. Cached in Redis with 10-minute TTL."
+					},
+					"response": []
+				},
+				{
+					"name": "1.2 Verify OTP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"JWT Token issued and stored\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.token).to.be.a('string');",
+									"    pm.collectionVariables.set(\"auth_token\", jsonData.token);",
+									"    if (jsonData.user && jsonData.user.id) {",
+									"        pm.collectionVariables.set(\"farmer_id\", jsonData.user.id);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"9876543210\",\n    \"otp\": \"123456\",\n    \"role\": \"farmer\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/verify-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"verify-otp"
+							]
+						},
+						"description": "Verify OTP and obtain JWT session token."
+					},
+					"response": []
+				},
+				{
+					"name": "1.3 Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"User registered successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.eql(true);",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set(\"auth_token\", jsonData.token);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Ramesh Patel\",\n    \"phone\": \"9876543210\",\n    \"role\": \"farmer\",\n    \"language\": \"hi\",\n    \"lat\": 22.6939,\n    \"lng\": 72.8618\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new farmer or agro-buyer profile."
+					},
+					"response": []
+				},
+				{
+					"name": "1.4 Get Profile (/me)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Profile matches token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.user).to.have.property('id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						},
+						"description": "Retrieve logged-in user details using JWT Bearer token."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Farmer Interface",
+			"description": "Produce listing generation from multilingual voice transcripts or text.",
+			"item": [
+				{
+					"name": "2.1 Create Produce Listing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Listing created with parsed crop\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('crop_type');",
+									"    pm.expect(jsonData).to.have.property('quantity_kg');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"farmer_id\": \"{{farmer_id}}\",\n    \"transcript\": \"Mere paas 5 quintal Grade A tamatar hai 25 rupaye per kilo\",\n    \"language\": \"hi\",\n    \"lat\": 22.6939,\n    \"lng\": 72.8618\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/farmer/listing",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"farmer",
+								"listing"
+							]
+						},
+						"description": "Creates a produce listing by extracting crop type, quantity, and price expectation from spoken/written text."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Aggregation & Lots",
+			"description": "Geohash clustering and aggregated marketplace lots management.",
+			"item": [
+				{
+					"name": "3.1 Trigger Aggregation Engine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Aggregation returns created lot IDs\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('lots_created');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/internal/aggregate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"internal",
+								"aggregate"
+							]
+						},
+						"description": "Runs the clustering algorithm to aggregate pending farmer listings into commercial lots."
+					},
+					"response": []
+				},
+				{
+					"name": "3.2 List Available Lots",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Lots array returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.lots).to.be.an('array');",
+									"    if (jsonData.lots.length > 0) {",
+									"        pm.collectionVariables.set(\"lot_id\", jsonData.lots[0].id);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/lots?crop=all&grade=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lots"
+							],
+							"query": [
+								{
+									"key": "crop",
+									"value": "all"
+								},
+								{
+									"key": "grade",
+									"value": "all"
+								}
+							]
+						},
+						"description": "Retrieve available aggregated lots with optional crop/grade/distance filters."
+					},
+					"response": []
+				},
+				{
+					"name": "3.3 Get Single Lot Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/lots/{{lot_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lots",
+								"{{lot_id}}"
+							]
+						},
+						"description": "Retrieve comprehensive details and farmer member listings for a specific lot."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Orders & Marketplace",
+			"description": "Buyer purchase ordering, status tracking, and history.",
+			"item": [
+				{
+					"name": "4.1 Create Buyer Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Order placed and order_id stored\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('order_id');",
+									"    pm.collectionVariables.set(\"order_id\", jsonData.order_id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"buyer_id\": \"{{buyer_id}}\",\n    \"lot_id\": \"{{lot_id}}\",\n    \"quantity_kg\": 500\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							]
+						},
+						"description": "Place an order for a lot by an institutional buyer."
+					},
+					"response": []
+				},
+				{
+					"name": "4.2 List All Orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Orders array returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.orders).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							]
+						},
+						"description": "List all placed orders across buyers and lots."
+					},
+					"response": []
+				},
+				{
+					"name": "4.3 Get Single Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/orders/{{order_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"{{order_id}}"
+							]
+						},
+						"description": "Get order details by order ID."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Logistics & Routing",
+			"description": "Multi-pickup route optimization and cost comparison analytics.",
+			"item": [
+				{
+					"name": "5.1 Optimize Multi-Pickup Route",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Optimal route calculated\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('total_distance_km');",
+									"    pm.expect(jsonData).to.have.property('waypoints');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": \"{{order_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/routing/optimize",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"routing",
+								"optimize"
+							]
+						},
+						"description": "Calculates the shortest multi-stop pickup sequence and delivery path using Nearest Neighbor / 2-opt."
+					},
+					"response": []
+				},
+				{
+					"name": "5.2 Compare Single vs Consolidated Routing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Cost savings metrics returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('distance_saved_km');",
+									"    pm.expect(jsonData).to.have.property('cost_saved_inr');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": \"{{order_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/routing/compare",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"routing",
+								"compare"
+							]
+						},
+						"description": "Compares individual unaggregated farm trips vs consolidated vehicle routing to highlight logistics cost savings."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Settlement & Milestone Payouts",
+			"description": "Two-stage escrow milestone payout settlement.",
+			"item": [
+				{
+					"name": "6.1 Stage 1: Pickup Escrow Release (40%)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Pickup settlement processed\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('payouts');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": \"{{order_id}}\",\n    \"stage\": \"pickup\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/settlement/payout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"settlement",
+								"payout"
+							]
+						},
+						"description": "Releases 40% escrow payment to farmers upon successful produce verification at farmgate."
+					},
+					"response": []
+				},
+				{
+					"name": "6.2 Stage 2: Delivery Final Settlement (60%)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Final settlement processed\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('payouts');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": \"{{order_id}}\",\n    \"stage\": \"delivery\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/settlement/payout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"settlement",
+								"payout"
+							]
+						},
+						"description": "Releases remaining 60% settlement upon buyer delivery acceptance."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "7. AI Orchestrator & Quality Grading",
+			"description": "Multi-turn Gemini AI agent with Redis session history and Computer Vision crop grading.",
+			"item": [
+				{
+					"name": "7.1 Multi-Turn Conversational Query (Redis Session)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Orchestrator returned response\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('intent');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"{{farmer_id}}\",\n    \"message\": \"Mere pichle order ka payout status kya hai?\",\n    \"message_type\": \"text\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/orchestrator/query",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orchestrator",
+								"query"
+							]
+						},
+						"description": "Sends user query to Gemini multi-turn orchestrator with session history backed by Redis."
+					},
+					"response": []
+				},
+				{
+					"name": "7.2 Grade Crop Quality (Computer Vision)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"lot_id\": \"{{lot_id}}\",\n    \"photo_url\": \"https://images.unsplash.com/photo-1592924357228-91a4daadcfea\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/quality/grade",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"quality",
+								"grade"
+							]
+						},
+						"description": "Grades crop quality and assigns Grade A/B/C using image inspection."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,5 +1,5 @@
 import logging
-from backend.db import get_conn, release_conn
+from backend.db import get_conn, release_conn, exec_geo_fallback
 
 logger = logging.getLogger("kisansetu.aggregations")
 
@@ -43,11 +43,17 @@ def run_aggregation(eps_km: float = 3.0, min_points: int = 2):
             avg_lng = sum(l["lng"] for l in listings if l.get("lng") is not None) / len(listings)
             avg_lat = sum(l["lat"] for l in listings if l.get("lat") is not None) / len(listings)
 
-            cur.execute("""
+            geo_sql = """
                 INSERT INTO lots (crop_type, total_quantity_kg, centroid, status)
                 VALUES (%s, %s, ST_MakePoint(%s, %s)::geography, 'open')
                 RETURNING id
-            """, (crop, total_qty, avg_lng, avg_lat))
+            """
+            plain_sql = """
+                INSERT INTO lots (crop_type, total_quantity_kg, status)
+                VALUES (%s, %s, 'open')
+                RETURNING id
+            """
+            exec_geo_fallback(conn, cur, geo_sql, (crop, total_qty, avg_lng, avg_lat), plain_sql, (crop, total_qty))
             lot_row = cur.fetchone()
             lot_id = lot_row["id"] if lot_row else f"lot-{abs(hash(crop + str(total_qty))) % 1000}"
 
@@ -66,7 +72,10 @@ def run_aggregation(eps_km: float = 3.0, min_points: int = 2):
         return created
     except Exception as e:
         logger.warning(f"Aggregation clustering failed ({e}). Rolling back transaction.")
-        conn.rollback()
+        try:
+            conn.rollback()
+        except Exception:
+            pass
         raise
     finally:
         release_conn(conn)

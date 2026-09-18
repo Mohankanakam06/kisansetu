@@ -1,20 +1,97 @@
 import os
 import uuid
 import time
+import logging
+import random
 import jwt
 import hashlib
 import secrets
 import re
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Depends, Header
+from fastapi import APIRouter, HTTPException, Depends, Header, Security, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
-from backend.db import get_conn, release_conn
+from backend import config
+from backend.db import get_conn, release_conn, exec_geo_fallback
 from backend.redis_client import set_otp, get_otp, delete_otp
 
+logger = logging.getLogger("kisansetu.auth")
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
-SECRET_KEY = os.getenv("JWT_SECRET", "kisansetu-sih-26033-supersecret-jwt-key")
+SECRET_KEY = os.getenv("JWT_SECRET", "").strip()
+if not SECRET_KEY:
+    if config.require_auth_enforced():
+        raise RuntimeError(
+            "JWT_SECRET is not set. Tokens signed with a guessable key let anyone "
+            "impersonate any user. Set JWT_SECRET before enabling REQUIRE_AUTH."
+        )
+    SECRET_KEY = "kisansetu-sih-26033-dev-only-jwt-key"
+    logger.warning(
+        "JWT_SECRET is not set; using an insecure development fallback. "
+        "Set JWT_SECRET and REQUIRE_AUTH=true before production."
+    )
 ALGORITHM = "HS256"
+
+# auto_error=False lets the demo run without a token. When REQUIRE_AUTH is on,
+# require_auth raises 401 itself so the failure is explicit and consistent.
+security = HTTPBearer(auto_error=False)
+
+DEMO_USER_ID = os.getenv("DEMO_USER_ID", "farmer-01")
+
+
+def require_auth(credentials: Optional[HTTPAuthorizationCredentials] = Security(security)):
+    """Resolve the caller's identity, enforcing JWT auth when REQUIRE_AUTH is on.
+
+    With REQUIRE_AUTH disabled (default for the demo) a missing/invalid token
+    resolves to a demo identity instead of failing, so the prototype and its
+    tests keep working. With REQUIRE_AUTH enabled, missing or invalid tokens
+    are rejected with 401.
+    """
+    token = credentials.credentials if credentials else None
+    if token:
+        try:
+            return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        except Exception:
+            if config.require_auth_enforced():
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Invalid or expired token",
+                )
+            logger.warning("Invalid or expired token supplied; continuing as demo identity.")
+
+    if config.require_auth_enforced():
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing authentication token",
+        )
+
+    logger.debug("No auth token supplied; using demo identity (REQUIRE_AUTH is off).")
+    return {
+        "sub": DEMO_USER_ID,
+        "name": "Demo Farmer",
+        "phone": "9876543210",
+        "role": "farmer",
+        "demo": True,
+    }
+
+
+def require_role(*roles: str):
+    """Dependency factory that additionally checks the caller's role.
+
+    Roles are only enforced when REQUIRE_AUTH is on; in demo mode the identity
+    is synthetic so a role mismatch would wrongly block the prototype.
+    """
+
+    def _dep(payload: dict = Depends(require_auth)) -> dict:
+        if config.require_auth_enforced() and roles and payload.get("role") not in roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"This action is restricted to {', '.join(roles)} accounts.",
+            )
+        return payload
+
+    return _dep
+
 
 # In-memory registered users store for local demo / DB fallback mode
 REGISTERED_USERS_STORE = {}
@@ -65,10 +142,6 @@ class RegisterRequest(BaseModel):
     aadhaar: Optional[str] = None
 
 
-import logging
-logger = logging.getLogger("kisansetu.auth")
-
-
 def _normalize_user(row, fallback_name="Farmer User", fallback_role="farmer", phone="", email=None):
     """Tolerate minimal/mock DB rows that may lack name/phone/role/language_pref keys."""
     if not row:
@@ -90,19 +163,30 @@ def send_otp(req: SendOtpRequest):
     if len(clean_phone) != 10 or not clean_phone.isdigit():
         raise HTTPException(status_code=400, detail="Invalid 10-digit mobile number")
 
-    # DEMO MODE: Using hardcoded OTP '123456' because no real SMS gateway is configured.
-    # In production, integrate with Twilio, MSG91, Fast2SMS, or similar provider.
-    otp_code = "123456"
-    logger.warning(f"DEMO MODE: Hardcoded OTP '123456' used for phone +91{clean_phone}. No real SMS sent.")
-    # Store OTP in Redis (or in-memory fallback) with 10-minute (600s) TTL
+    if config.is_demo_mode():
+        # No SMS gateway is configured in the demo, so the OTP is fixed and
+        # echoed back in the response for the UI to auto-fill.
+        otp_code = "123456"
+        logger.warning(
+            "DEMO MODE: fixed OTP used for +91%s. No SMS sent. Set DEMO_MODE=false for real OTPs.",
+            clean_phone,
+        )
+    else:
+        otp_code = f"{random.randint(0, 999999):06d}"
+        # Replace this log with the real SMS provider call (Twilio/MSG91/Fast2SMS).
+        logger.info("OTP generated for +91%s. Wire an SMS provider to deliver it.", clean_phone)
+
     set_otp(clean_phone, otp_code, ttl_seconds=600)
 
-    return {
+    response = {
         "success": True,
-        "message": f"OTP sent successfully to +91 {clean_phone} [DEMO MODE]",
+        "message": f"OTP sent successfully to +91 {clean_phone}",
         "phone": clean_phone,
-        "otp_debug": otp_code
     }
+    if config.is_demo_mode():
+        response["message"] = f"OTP sent successfully to +91 {clean_phone} [DEMO MODE]"
+        response["otp_debug"] = otp_code
+    return response
 
 
 @router.post("/verify-otp")
@@ -111,8 +195,15 @@ def verify_otp(req: VerifyOtpRequest):
     clean_phone = req.phone.strip().replace(" ", "").replace("+91", "")
     stored_otp = get_otp(clean_phone)
 
-    # Validate OTP (accept stored OTP or standard demo OTP '123456')
-    if req.otp != "123456" and req.otp != stored_otp:
+    submitted = str(req.otp or "").strip()
+    if config.is_demo_mode():
+        # The demo accepts the fixed code or whatever was stored for this phone.
+        is_valid = submitted == "123456" or (bool(stored_otp) and submitted == str(stored_otp))
+    else:
+        # A stored OTP is mandatory; constant-time compare avoids leaking the code via timing.
+        is_valid = bool(stored_otp) and secrets.compare_digest(submitted, str(stored_otp))
+
+    if not is_valid:
         raise HTTPException(status_code=400, detail="Invalid or expired OTP code")
 
     # Clean up OTP after verification
@@ -133,22 +224,24 @@ def verify_otp(req: VerifyOtpRequest):
                 user_id = str(uuid.uuid4())
                 role = req.role or "farmer"
                 default_name = "Farmer User" if role == "farmer" else "Agro Buyer"
-                try:
-                    cur.execute("""
+                exec_geo_fallback(
+                    conn,
+                    cur,
+                    """
                         INSERT INTO users (id, name, phone, role, language_pref, location)
                         VALUES (%s, %s, %s, %s, 'hi', ST_SetSRID(ST_MakePoint(81.6296, 21.2514), 4326))
                         RETURNING id, name, phone, role, language_pref
-                    """, (user_id, default_name, clean_phone, role))
-                    raw_user = cur.fetchone()
-                except Exception:
-                    conn.rollback()
-                    # Fallback without PostGIS function if extension not enabled
-                    cur.execute("""
+                    """,
+                    (user_id, default_name, clean_phone, role),
+                    # Fallback without PostGIS if the extension is not installed
+                    """
                         INSERT INTO users (id, name, phone, role, language_pref)
                         VALUES (%s, %s, %s, %s, 'hi')
                         RETURNING id, name, phone, role, language_pref
-                    """, (user_id, default_name, clean_phone, role))
-                    raw_user = cur.fetchone()
+                    """,
+                    (user_id, default_name, clean_phone, role),
+                )
+                raw_user = cur.fetchone()
                 conn.commit()
         finally:
             release_conn(conn)
@@ -386,42 +479,46 @@ def register_user(req: RegisterRequest):
             existing = cur.fetchone()
             if existing:
                 # Update existing user details
-                try:
-                    cur.execute("""
+                exec_geo_fallback(
+                    conn,
+                    cur,
+                    """
                         UPDATE users
                         SET name = %s, email = %s, password_hash = COALESCE(%s, password_hash),
                             role = %s, language_pref = %s, location = ST_SetSRID(ST_MakePoint(%s, %s), 4326)
                         WHERE phone = %s
                         RETURNING id, name, phone, email, role, language_pref
-                    """, (req.name, clean_email, pwd_hash, req.role, req.language or "hi", lng, lat, clean_phone))
-                    raw_user = cur.fetchone()
-                except Exception:
-                    conn.rollback()
-                    cur.execute("""
+                    """,
+                    (req.name, clean_email, pwd_hash, req.role, req.language or "hi", lng, lat, clean_phone),
+                    """
                         UPDATE users
                         SET name = %s, email = %s, password_hash = COALESCE(%s, password_hash),
                             role = %s, language_pref = %s
                         WHERE phone = %s
                         RETURNING id, name, phone, email, role, language_pref
-                    """, (req.name, clean_email, pwd_hash, req.role, req.language or "hi", clean_phone))
-                    raw_user = cur.fetchone()
+                    """,
+                    (req.name, clean_email, pwd_hash, req.role, req.language or "hi", clean_phone),
+                )
+                raw_user = cur.fetchone()
             else:
                 user_id = str(uuid.uuid4())
-                try:
-                    cur.execute("""
+                exec_geo_fallback(
+                    conn,
+                    cur,
+                    """
                         INSERT INTO users (id, name, phone, email, password_hash, role, language_pref, location)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326))
                         RETURNING id, name, phone, email, role, language_pref
-                    """, (user_id, req.name, clean_phone, clean_email, pwd_hash, req.role, req.language or "hi", lng, lat))
-                    raw_user = cur.fetchone()
-                except Exception:
-                    conn.rollback()
-                    cur.execute("""
+                    """,
+                    (user_id, req.name, clean_phone, clean_email, pwd_hash, req.role, req.language or "hi", lng, lat),
+                    """
                         INSERT INTO users (id, name, phone, email, password_hash, role, language_pref)
                         VALUES (%s, %s, %s, %s, %s, %s, %s)
                         RETURNING id, name, phone, email, role, language_pref
-                    """, (user_id, req.name, clean_phone, clean_email, pwd_hash, req.role, req.language or "hi"))
-                    raw_user = cur.fetchone()
+                    """,
+                    (user_id, req.name, clean_phone, clean_email, pwd_hash, req.role, req.language or "hi"),
+                )
+                raw_user = cur.fetchone()
 
             conn.commit()
         finally:

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Buyer Marketplace - KisanSetu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-highest": "#d3e4fe",
+                      "on-primary-container": "#a6ffc8",
+                      "surface-container": "#e5eeff",
+                      "secondary-container": "#6bff8f",
+                      "primary-fixed-dim": "#7cd9a3",
+                      "surface-container-high": "#dce9ff",
+                      "primary-fixed": "#98f6bd",
+                      "error": "#ba1a1a",
+                      "inverse-primary": "#7cd9a3",
+                      "surface": "#f8f9ff",
+                      "primary-container": "#0f7a4c",
+                      "inverse-surface": "#213145",
+                      "on-secondary-fixed": "#002109",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#ffddb8",
+                      "on-primary-fixed": "#002111",
+                      "primary": "#005f39",
+                      "on-secondary-fixed-variant": "#005321",
+                      "on-surface-variant": "#3f4941",
+                      "on-primary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed-dim": "#4ae176",
+                      "outline": "#6f7a71",
+                      "on-tertiary-container": "#ffe8d1",
+                      "on-tertiary-fixed": "#2a1700",
+                      "surface-container-low": "#eff4ff",
+                      "on-surface": "#0b1c30",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-tertiary": "#ffffff",
+                      "surface-dim": "#cbdbf5",
+                      "on-error": "#ffffff",
+                      "outline-variant": "#becabf",
+                      "secondary-fixed": "#6bff8f",
+                      "on-tertiary-fixed-variant": "#653e00",
+                      "tertiary-container": "#965e00",
+                      "on-primary-fixed-variant": "#005230",
+                      "background": "#f8f9ff",
+                      "surface-bright": "#f8f9ff",
+                      "on-secondary-container": "#007432",
+                      "secondary": "#006e2f",
+                      "tertiary": "#754900",
+                      "on-error-container": "#93000a",
+                      "surface-variant": "#d3e4fe",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed-dim": "#ffb95f",
+                      "on-background": "#0b1c30",
+                      "surface-tint": "#006d42"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "margin-desktop": "48px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "base": "4px",
+                      "margin-mobile": "16px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "caption": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "label-bold": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "price-xl": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "caption": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-bold": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "price-xl": [
+                              "28px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen pt-16 flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 bg-surface border-b border-outline-variant shadow-sm">
+<div class="flex items-center gap-xl">
+<div class="font-headline-md text-headline-md font-bold text-primary">KisanSetu</div>
+<nav class="hidden md:flex gap-lg items-center h-full pt-4">
+<a class="text-primary border-b-2 border-primary pb-1 font-label-bold text-label-bold hover:text-primary transition-colors opacity-80 transition-opacity" href="#">Marketplace</a>
+<a class="text-on-surface-variant font-label-bold text-label-bold hover:text-primary transition-colors" href="#">Sell</a>
+<a class="text-on-surface-variant font-label-bold text-label-bold hover:text-primary transition-colors" href="#">Dashboard</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-highest border border-outline-variant rounded-full text-body-sm font-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-64 text-on-surface" placeholder="Search crops, locations..." type="text"/>
+</div>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex w-full max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-lg gap-lg">
+<!-- Sidebar Filters -->
+<aside class="w-64 hidden lg:block flex-shrink-0 space-y-lg h-[calc(100vh-8rem)] overflow-y-auto pr-4 sticky top-24">
+<div class="space-y-4">
+<h3 class="font-headline-md text-body-lg font-bold text-on-surface">Crop Type</h3>
+<div class="flex flex-wrap gap-sm">
+<button class="px-3 py-1 bg-primary text-on-primary rounded-full font-label-bold text-caption transition-colors">Onion</button>
+<button class="px-3 py-1 bg-surface-container-highest border border-outline-variant text-on-surface-variant rounded-full font-label-bold text-caption hover:border-primary hover:text-primary transition-colors">Potato</button>
+<button class="px-3 py-1 bg-surface-container-highest border border-outline-variant text-on-surface-variant rounded-full font-label-bold text-caption hover:border-primary hover:text-primary transition-colors">Tomato</button>
+<button class="px-3 py-1 bg-surface-container-highest border border-outline-variant text-on-surface-variant rounded-full font-label-bold text-caption hover:border-primary hover:text-primary transition-colors">Garlic</button>
+<button class="px-3 py-1 bg-surface-container-highest border border-outline-variant text-on-surface-variant rounded-full font-label-bold text-caption hover:border-primary hover:text-primary transition-colors">Ginger</button>
+</div>
+</div>
+<div class="space-y-4 pt-4 border-t border-outline-variant">
+<h3 class="font-headline-md text-body-lg font-bold text-on-surface">Quality Grade</h3>
+<div class="space-y-2">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">A+ (Export Quality)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">A (Premium)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">B (Standard)</span>
+</label>
+</div>
+</div>
+<div class="space-y-4 pt-4 border-t border-outline-variant">
+<h3 class="font-headline-md text-body-lg font-bold text-on-surface">Price Range (₹/kg)</h3>
+<div class="flex items-center gap-2">
+<input class="w-full px-2 py-1 bg-surface-container-highest border border-outline-variant rounded text-body-sm font-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Min" type="number"/>
+<span class="text-on-surface-variant">-</span>
+<input class="w-full px-2 py-1 bg-surface-container-highest border border-outline-variant rounded text-body-sm font-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Max" type="number"/>
+</div>
+</div>
+<div class="space-y-4 pt-4 border-t border-outline-variant">
+<button class="w-full py-2 bg-surface-container border border-outline-variant text-primary font-label-bold text-label-bold rounded hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">filter_alt_off</span>
+                    Clear Filters
+                </button>
+</div>
+</aside>
+<!-- Main Grid Area -->
+<div class="flex-grow flex flex-col w-full">
+<!-- Grid Header / Tools -->
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h1 class="font-headline-lg text-headline-lg font-bold text-on-surface">Available Lots</h1>
+<p class="text-on-surface-variant font-body-sm text-sm mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+                        Last updated 4 minutes ago
+                    </p>
+</div>
+<div class="flex items-center gap-4 bg-surface-container-highest p-1 rounded-lg border border-outline-variant">
+<button class="p-2 bg-surface shadow-sm rounded text-primary flex items-center gap-2 font-label-bold text-caption">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="hidden sm:inline">Grid</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary rounded flex items-center gap-2 font-label-bold text-caption transition-colors">
+<span class="material-symbols-outlined">map</span>
+<span class="hidden sm:inline">Map</span>
+</button>
+</div>
+</div>
+<!-- Product Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-min">
+<!-- Card 1 (Featured / Wider) -->
+<div class="md:col-span-2 xl:col-span-2 bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden hover:shadow-md transition-shadow duration-300 group flex flex-col md:flex-row">
+<div class="relative h-48 md:h-auto md:w-2/5 overflow-hidden bg-surface-container">
+<div class="bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-500" data-alt="A vibrant, high-quality, professional photograph of freshly harvested red onions piled high in woven sacks within a well-lit, modern agricultural warehouse. The lighting is crisp, clean, and bright, emphasizing the rich purple and red hues of the onions against the neutral background. The aesthetic is professional, corporate, and highly trustworthy, conveying modern agricultural efficiency." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOejKiXxVC0CBbq3k_jyIOhcawd-RjazBm3no6QVqIqwaPxJM5xisCziy9x_aPC5v5nh2_o4x5og1jpL89pLYqZnEzKVHHN1VJsGzmk_w5d9XhxlnaAGea7U-bW8PTxW6NrPDeAEXuXglyFCBvwmDxFg0KODGHI0lNTMWoUdw4lWm8dRBaq6rCFKm5e0atvwBlVxRys0ErMqP9i4mKHFLoLhbhAX9KvQ3B2A1upLwOsD0vrSoyUfhU')"></div>
+<div class="absolute top-3 right-3 bg-secondary-container text-on-secondary-container px-2 py-1 rounded font-label-bold text-caption flex items-center gap-1 shadow-sm border border-secondary-fixed">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                            AI-Verified A+
+                        </div>
+</div>
+<div class="p-lg md:w-3/5 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-2">
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface leading-tight">प्याज / Nashik Red Onions</h2>
+<div class="flex items-center gap-1 text-on-surface-variant font-body-sm text-sm mt-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                        Lasalgaon, Nashik
+                                    </div>
+</div>
+<div class="text-right">
+<div class="font-price-xl text-[32px] leading-[40px] font-bold text-primary">₹18<span class="text-body-sm font-body-sm text-on-surface-variant">/kg</span></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 my-6 py-4 border-y border-outline-variant border-dashed">
+<div>
+<div class="font-body-sm text-caption text-on-surface-variant mb-1 uppercase tracking-wider">Total Quantity</div>
+<div class="font-label-bold text-headline-md text-on-surface">5,000 kg</div>
+</div>
+<div>
+<div class="font-body-sm text-caption text-on-surface-variant mb-1 uppercase tracking-wider">Lot Value</div>
+<div class="font-label-bold text-headline-md text-on-surface">₹90,000</div>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-center mt-auto pt-2">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-sm bg-surface-container px-3 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-[16px]">groups</span>
+                                14 Farmers pooled
+                            </div>
+<button class="px-6 py-2.5 bg-primary text-on-primary rounded font-label-bold text-body-md hover:bg-surface-tint transition-colors shadow-sm">View Details</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden hover:shadow-md transition-shadow duration-300 group flex flex-col">
+<div class="relative h-48 w-full overflow-hidden bg-surface-container flex-shrink-0">
+<div class="bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-500" data-alt="A detailed, professional shot of sturdy wooden crates filled with bright, uniform, ripe red tomatoes in a modern packing facility. The lighting is bright and evenly distributed, highlighting the fresh, flawless skin of the produce. The background is slightly blurred, focusing entirely on the quality and volume of the tomatoes. The aesthetic is clean, industrial, and high-trust." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDHcqiU41SbgxAs7h9bUpI9Cl244CCJo7X-PZwWCEHT6isD1QhbF7Um_xNFWtVhUC94l2Mb79bnY6GKFhL7861TGgG2N0vIz5GQ1M8RPRvVwf1iF7Yj4tD2g7-tyL87yA1CSV-YLUplUaVrpWbFPM5gcNH9Hrz6wctZAN3HNQlD3QM7AXPC0B6TwgOc_x68Hlb7WwLC0sdBLd4dFF0Gy-jUr6_s6oUsALxFCTXNQF5mk_jGG4TusTAy')"></div>
+<div class="absolute top-3 right-3 bg-secondary-container text-on-secondary-container px-2 py-1 rounded font-label-bold text-caption flex items-center gap-1 shadow-sm border border-secondary-fixed">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                            AI-Verified A
+                        </div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface leading-tight">टमाटर / Hybrid Tomatoes</h2>
+<div class="flex items-center gap-1 text-on-surface-variant font-body-sm text-sm mt-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                    Narayangaon, Pune
+                                </div>
+</div>
+<div class="text-right">
+<div class="font-price-xl text-[32px] leading-[40px] font-bold text-primary">₹24<span class="text-body-sm font-body-sm text-on-surface-variant">/kg</span></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 my-4 py-3 border-y border-outline-variant border-dashed">
+<div>
+<div class="font-body-sm text-caption text-on-surface-variant mb-1 uppercase tracking-wider">Total Quantity</div>
+<div class="font-label-bold text-headline-md text-on-surface">2,500 kg</div>
+</div>
+<div>
+<div class="font-body-sm text-caption text-on-surface-variant mb-1 uppercase tracking-wider">Lot Value</div>
+<div class="font-label-bold text-headline-md text-on-surface">₹60,000</div>
+</div>
+</div>
+<div class="mb-4 text-error font-body-sm text-sm flex items-start gap-1 bg-error-container/30 p-2 rounded">
+<span class="material-symbols-outlined text-[16px] mt-0.5">info</span>
+                            Slight skin scarring on 5% of lot
+                        </div>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-sm">
+<span class="material-symbols-outlined text-[16px]">groups</span>
+                                4 Farmers
+                            </div>
+<button class="px-4 py-2 bg-primary text-on-primary rounded font-label-bold text-body-sm hover:bg-surface-tint transition-colors shadow-sm">View Details</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden hover:shadow-md transition-shadow duration-300 group flex flex-col">
+<div class="relative h-48 w-full overflow-hidden bg-surface-container flex-shrink-0">
+<div class="bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-500" data-alt="A clean, sharp, high-resolution image showing a massive grid of white sacks filled with freshly harvested potatoes, neatly stacked on pallets in an expansive, modern, well-lit agricultural storage warehouse. The overall lighting is cool and bright, emphasizing scale, reliability, and modern logistics. The color palette features neutral tones with the earthy brown of the potatoes peeking through." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCSwwwN1iXKu3z0dbEOtIS6nA-BvNnf6W_R1SQp297XY5GBlpyWKC64qPA8RYJmN20HQU8w8E2fe88_Ywsld1AidDue2R9MDHM223RCNwdqKcbHMxX59YNsVADLUVNnkLr-3gy5mjMHQ3vBE4DFu-UI0Te2Q7x_-ZuerNH9niWSbInw94hbBa2HHtyIEGjSPa_4ZNqpvPzHTdi1AYC6H1--WF26WzVZ5cHLxkjbgWrzLlx6FQ40cldd')"></div>
+<div class="absolute top-3 right-3 bg-surface-container-high text-on-surface-variant px-2 py-1 rounded font-label-bold text-caption flex items-center gap-1 shadow-sm border border-outline-variant">
+<span class="material-symbols-outlined text-[14px]">pending_actions</span>
+                            Verification Pending
+                        </div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface leading-tight">आलू / Agra Potatoes</h2>
+<div class="flex items-center gap-1 text-on-surface-variant font-body-sm text-sm mt-1">
+<span class="material-symbols-outlined text-[16px]">ac_unit</span>
+                                    Cold Storage, Agra
+                                </div>
+</div>
+<div class="text-right">
+<div class="font-price-xl text-[32px] leading-[40px] font-bold text-primary">₹12<span class="text-body-sm font-body-sm text-on-surface-variant">/kg</span></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 my-4 py-3 border-y border-outline-variant border-dashed">
+<div>
+<div class="font-body-sm text-caption text-on-surface-variant mb-1 uppercase tracking-wider">Total Quantity</div>
+<div class="font-label-bold text-headline-md text-on-surface">15,000 kg</div>
+</div>
+<div>
+<div class="font-body-sm text-caption text-on-surface-variant mb-1 uppercase tracking-wider">Lot Value</div>
+<div class="font-label-bold text-headline-md text-on-surface">₹1,80,000</div>
+</div>
+</div>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-sm bg-surface-container px-2.5 py-1 rounded-full">
+<span class="material-symbols-outlined text-[16px]">groups</span>
+                                25 Farmers
+                            </div>
+<button class="px-4 py-2 bg-primary text-on-primary rounded font-label-bold text-body-sm hover:bg-surface-tint transition-colors shadow-sm">View Details</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination (Simple placeholder) -->
+<div class="mt-lg flex justify-center pb-xl">
+<div class="flex items-center gap-2">
+<button class="p-2 border border-outline-variant rounded bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center bg-primary text-on-primary rounded font-label-bold text-body-sm">1</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:border-primary hover:text-primary rounded font-label-bold text-body-sm transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:border-primary hover:text-primary rounded font-label-bold text-body-sm transition-colors">3</button>
+<span class="text-on-surface-variant mx-1">...</span>
+<button class="p-2 border border-outline-variant rounded bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-start gap-lg bg-surface-container-lowest border-t border-outline-variant mt-auto">
+<div>
+<div class="font-headline-md text-headline-md font-bold text-primary mb-2">KisanSetu</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 KisanSetu Agricultural Marketplace. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap gap-md md:gap-lg">
+<a class="font-label-bold text-label-bold text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">About Us</a>
+<a class="font-label-bold text-label-bold text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Terms of Service</a>
+<a class="font-label-bold text-label-bold text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="font-label-bold text-label-bold text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Help Center</a>
+<a class="font-label-bold text-label-bold text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Contact</a>
+</div>
+</footer>
+</body></html>
