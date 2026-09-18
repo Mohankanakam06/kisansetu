@@ -5,11 +5,17 @@ import { Lot } from "@/types";
 import { apiService } from "@/services/api";
 import LotCard from "@/components/buyer/LotCard";
 import LotDetailModal from "@/components/buyer/LotDetailModal";
+import { FarmerListing } from "@/types";
+import { BuyerMetricsHeader } from "@/components/buyer/BuyerMetricsHeader";
+import { FarmerListingCard } from "@/components/buyer/FarmerListingCard";
+import { NoListingsFound } from "@/components/buyer/NoListingsFound";
+import { DemoPaymentModal } from "@/components/buyer/DemoPaymentModal";
 import ProfitImpactSimulator from "@/components/simulator/ProfitImpactSimulator";
 import { Button, Card, Badge, cn } from "@/components/ui";
 import { useLanguage } from "@/lib/language";
 import { useRoleGuard } from "@/hooks/useRoleGuard";
 import { useWebSocket } from "@/hooks/useWebSocket";
+import { useFavorites } from "@/hooks/useFavorites";
 import {
   Search,
   ShoppingCart,
@@ -33,6 +39,7 @@ import {
   Calculator,
   X,
   CheckCircle,
+  Heart,
 } from "lucide-react";
 
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
@@ -84,6 +91,14 @@ interface TickerItem {
 export default function BuyerPage() {
   const { t } = useLanguage();
   const { isAuthorized, isLoading: isAuthLoading, user: currentUser } = useRoleGuard("buyer");
+  const { favorites, isFavorite, favoritesCount } = useFavorites();
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+
+    const [activeTab, setActiveTab] = useState<"farmer_listings" | "wholesale_pools">("farmer_listings");
+  const [farmerListings, setFarmerListings] = useState<FarmerListing[]>([]);
+  const [isLoadingFarmerListings, setIsLoadingFarmerListings] = useState(true);
+  const [demoPaymentItem, setDemoPaymentItem] = useState<FarmerListing | Lot | null>(null);
+  const [isDemoPaymentOpen, setIsDemoPaymentOpen] = useState(false);
 
   const [lots, setLots] = useState<Lot[]>([]);
   const [selectedLot, setSelectedLot] = useState<Lot | null>(null);
@@ -98,6 +113,7 @@ export default function BuyerPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"price_asc" | "price_desc" | "volume_desc" | "grade">("volume_desc");
   const [isLoadingLots, setIsLoadingLots] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "table" | "map">("grid");
 
   const [nearbyEnabled, setNearbyEnabled] = useState(false);
@@ -158,12 +174,64 @@ export default function BuyerPage() {
 
   const { isConnected: isTickerConnected } = useWebSocket("ws/ticker", handleTickerMessage);
 
+    const fetchFarmerListings = useCallback(async () => {
+    setIsLoadingFarmerListings(true);
+    try {
+      const res = await apiService.getFarmerListings({
+        crop: cropFilter === "All" ? undefined : cropFilter,
+        search: searchQuery || undefined,
+        minPrice: priceMin ? Number(priceMin) : undefined,
+        maxPrice: priceMax ? Number(priceMax) : undefined,
+        sort: sortBy !== "grade" ? sortBy : undefined
+      });
+      if (res.success && res.listings) {
+        setFarmerListings(res.listings);
+      }
+    } catch (e) {
+      console.warn("Failed to fetch farmer listings", e);
+    } finally {
+      setIsLoadingFarmerListings(false);
+    }
+  }, [cropFilter, searchQuery, priceMin, priceMax, sortBy]);
+
+  useEffect(() => {
+    fetchFarmerListings();
+  }, [fetchFarmerListings]);
+
+  const fetchLots = useCallback(async () => {
+    setIsLoadingLots(true);
+    setFetchError(null);
+    try {
+      const res = await apiService.getLots({
+        crop: cropFilter === "All" ? undefined : cropFilter,
+        grade: gradeFilter === "All" ? undefined : gradeFilter,
+        search: searchQuery || undefined,
+        minPrice: priceMin ? Number(priceMin) : undefined,
+        maxPrice: priceMax ? Number(priceMax) : undefined,
+        lat: nearbyEnabled && userLocation ? userLocation.lat : undefined,
+        lng: nearbyEnabled && userLocation ? userLocation.lng : undefined,
+        radiusKm: nearbyEnabled && userLocation ? nearbyRadiusKm : undefined,
+      });
+      setLots(res.lots || []);
+    } catch (err: any) {
+      console.error(err);
+      setFetchError(err?.message || "Failed to load wholesale lots. Please check your connection.");
+    } finally {
+      setIsLoadingLots(false);
+    }
+  }, [cropFilter, gradeFilter, searchQuery, priceMin, priceMax, nearbyEnabled, userLocation, nearbyRadiusKm]);
+
+  useEffect(() => {
+    fetchLots();
+  }, [fetchLots]);
+
   // WebSocket for Live Orders & Pool updates
   const handleOrderWSMessage = useCallback((msg: any) => {
     if (msg?.type === "order_placed" || msg?.type === "pool_updated") {
       fetchLots();
+      fetchFarmerListings();
     }
-  }, []);
+  }, [fetchLots]);
 
   useWebSocket("ws/orders", handleOrderWSMessage, currentUser?.id || "buyer-01");
 
@@ -183,31 +251,6 @@ export default function BuyerPage() {
     );
   };
 
-  const fetchLots = async () => {
-    setIsLoadingLots(true);
-    try {
-      const res = await apiService.getLots({
-        crop: cropFilter === "All" ? undefined : cropFilter,
-        grade: gradeFilter === "All" ? undefined : gradeFilter,
-        search: searchQuery || undefined,
-        minPrice: priceMin ? Number(priceMin) : undefined,
-        maxPrice: priceMax ? Number(priceMax) : undefined,
-        lat: nearbyEnabled && userLocation ? userLocation.lat : undefined,
-        lng: nearbyEnabled && userLocation ? userLocation.lng : undefined,
-        radiusKm: nearbyEnabled && userLocation ? nearbyRadiusKm : undefined,
-      });
-      setLots(res.lots || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoadingLots(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchLots();
-  }, [cropFilter, gradeFilter, priceMin, priceMax, searchQuery, nearbyEnabled, nearbyRadiusKm, userLocation]);
-
   const handleOrderConfirmed = async (lot: Lot, qty: number) => {
     try {
       await apiService.createOrder({
@@ -216,7 +259,7 @@ export default function BuyerPage() {
         quantity_kg: qty,
       });
       setSelectedLot(null);
-      setOrderSuccessNotice(`Order placed successfully for ${qty}kg ${lot.crop_type}! Dispatched to 2-stage escrow.`);
+      setOrderSuccessNotice(`Order placed successfully for ${qty}kg ${lot.crop_type}! Secured with payment protection.`);
       fetchLots();
       setTimeout(() => setOrderSuccessNotice(null), 8000);
     } catch (e) {
@@ -226,7 +269,10 @@ export default function BuyerPage() {
 
   // Sorted and Processed Lots
   const processedLots = useMemo(() => {
-    const list = [...lots];
+    let list = [...lots];
+    if (showOnlyFavorites) {
+      list = list.filter((l) => favorites.includes(l.id));
+    }
     return list.sort((a, b) => {
       if (sortBy === "price_asc") return a.price_per_kg - b.price_per_kg;
       if (sortBy === "price_desc") return b.price_per_kg - a.price_per_kg;
@@ -234,7 +280,7 @@ export default function BuyerPage() {
       if (sortBy === "grade") return a.grade.localeCompare(b.grade);
       return 0;
     });
-  }, [lots, sortBy]);
+  }, [lots, sortBy, showOnlyFavorites, favorites]);
 
   if (isAuthLoading) {
     return (
@@ -329,6 +375,15 @@ export default function BuyerPage() {
           </div>
         )}
 
+        {/* Top Buyer Metrics Header */}
+        <BuyerMetricsHeader 
+          totalListings={farmerListings.length + processedLots.length}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          farmerCount={farmerListings.length}
+          poolCount={processedLots.length}
+        />
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200">
           <div className="space-y-1">
@@ -339,7 +394,7 @@ export default function BuyerPage() {
               </Badge>
               <Badge variant="success" className="gap-1 font-mono text-[10px]">
                 <ShieldCheck className="h-3 w-3" />
-                {t("100% 2-Stage Escrow Protected", "100% 2-चरणीय एस्क्रो सुरक्षित", "एस्क्रो सुरक्षित")}
+                {t("100% Payment Protection", "100% सुरक्षित भुगतान सुरक्षा", "सुरक्षित भुगतान")}
               </Badge>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 font-display tracking-tight">
@@ -354,6 +409,7 @@ export default function BuyerPage() {
             </p>
           </div>
 
+          {activeTab === "wholesale_pools" && (
           <div className="flex items-center gap-2 bg-white rounded-xl p-1.5 border border-slate-300 shadow-xs self-start md:self-auto">
             <Button
               variant={viewMode === "grid" ? "buyer" : "ghost"}
@@ -383,6 +439,58 @@ export default function BuyerPage() {
               <span className="hidden sm:inline">{t("Regional Map", "मैप", "मैप")}</span>
             </Button>
           </div>
+        )}
+        </div>
+
+        {/* Quick Filter Bubbles (Zepto / Blinkit style) */}
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
+          <button
+            onClick={() => {
+              setShowOnlyFavorites(false);
+              setCropFilter("All");
+            }}
+            className={`shrink-0 h-9 px-4 rounded-full text-xs font-bold border transition-colors ${
+              !showOnlyFavorites && cropFilter === "All"
+                ? "bg-slate-900 border-slate-900 text-white"
+                : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+            }`}
+          >
+            {t("All Lots", "सभी लॉट", "सबो लॉट")}
+          </button>
+          <button
+            onClick={() => setShowOnlyFavorites((prev) => !prev)}
+            className={`shrink-0 h-9 px-4 rounded-full text-xs font-bold border flex items-center gap-1.5 transition-colors ${
+              showOnlyFavorites
+                ? "bg-rose-50 border-rose-200 text-rose-700"
+                : "bg-white border-slate-200 text-slate-700 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100"
+            }`}
+          >
+            <Heart className={`h-3.5 w-3.5 ${showOnlyFavorites ? "fill-rose-500 text-rose-500" : ""}`} />
+            {t("Liked / Saved", "पसंद किए गए", "पसंद करे")} ({favoritesCount})
+          </button>
+
+          <div className="w-px h-5 bg-slate-300 mx-1 shrink-0" />
+
+          {CROPS.filter(c => c !== "All").map((c) => {
+            const isActive = cropFilter === c && !showOnlyFavorites;
+            return (
+              <button
+                key={c}
+                onClick={() => {
+                  setShowOnlyFavorites(false);
+                  setCropFilter(c);
+                }}
+                className={`shrink-0 h-9 px-3 rounded-full text-xs font-bold border flex items-center gap-1.5 transition-colors ${
+                  isActive
+                    ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                    : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                }`}
+              >
+                <span>{CROP_EMOJIS[c] || ""}</span>
+                <span>{c}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Filters and Controls */}
@@ -469,7 +577,7 @@ export default function BuyerPage() {
               {t("clustered wholesale lots ready for pickup.", "एकत्रित लॉट पिकअप हेतु तैयार।", "लॉट पिकअप बर तैयार हे।")}
             </span>
 
-            {(cropFilter !== "All" || gradeFilter !== "All" || searchQuery || nearbyEnabled) && (
+            {(cropFilter !== "All" || gradeFilter !== "All" || searchQuery || nearbyEnabled || showOnlyFavorites) && (
               <button
                 type="button"
                 onClick={() => {
@@ -477,6 +585,7 @@ export default function BuyerPage() {
                   setGradeFilter("All");
                   setSearchQuery("");
                   setNearbyEnabled(false);
+                  setShowOnlyFavorites(false);
                 }}
                 className="text-xs font-bold text-blue-700 hover:text-blue-900 underline cursor-pointer"
               >
@@ -486,10 +595,64 @@ export default function BuyerPage() {
           </div>
         </Card>
 
+        {fetchError && (
+          <div className="bg-rose-50 border border-rose-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-rose-900">
+            <div className="flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
+              <p className="text-xs font-semibold">{fetchError}</p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fetchLots()}
+              className="border-rose-300 text-rose-800 hover:bg-rose-100 shrink-0"
+            >
+              {t("Retry Connection", "पुनः प्रयास करें", "फिर से देखव")}
+            </Button>
+          </div>
+        )}
+
         {/* CONTENT AREA BASED ON VIEW MODE */}
 
+        {/* 0. DIRECT FARMER LISTINGS */}
+        {activeTab === "farmer_listings" && (
+          <div>
+            {isLoadingFarmerListings ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                  <div key={i} className="h-80 bg-white rounded-2xl border border-slate-200 p-4 animate-pulse space-y-4">
+                    <div className="h-40 bg-slate-200 rounded-xl"></div>
+                    <div className="h-5 bg-slate-200 rounded w-3/4"></div>
+                    <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+                    <div className="h-10 bg-slate-200 rounded mt-auto"></div>
+                  </div>
+                ))}
+              </div>
+            ) : farmerListings.length === 0 ? (
+              <NoListingsFound 
+                onClearFilters={() => {
+                  setCropFilter("All");
+                  setSearchQuery("");
+                }}
+                hasActiveFilters={cropFilter !== "All" || searchQuery.length > 0}
+                onSwitchToPools={() => setActiveTab("wholesale_pools")}
+              />
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {farmerListings.map((listing) => (
+                  <FarmerListingCard
+                    key={listing.id}
+                    listing={listing}
+                    onPayClick={(l) => { setDemoPaymentItem(l); setIsDemoPaymentOpen(true); }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* 1. GRID CARDS VIEW */}
-        {viewMode === "grid" && (
+        {activeTab === "wholesale_pools" && viewMode === "grid" && (
           <div>
             {isLoadingLots ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -529,7 +692,7 @@ export default function BuyerPage() {
         )}
 
         {/* 2. DENSE COMPARATIVE TABLE VIEW */}
-        {viewMode === "table" && (
+        {activeTab === "wholesale_pools" && viewMode === "table" && (
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
@@ -673,7 +836,7 @@ export default function BuyerPage() {
         )}
 
         {/* 3. REGIONAL GEOGRAPHIC MAP VIEW */}
-        {viewMode === "map" && (
+        {activeTab === "wholesale_pools" && viewMode === "map" && (
           <div className="space-y-3">
             <div className="rounded-xl border border-slate-300 overflow-hidden h-[500px] relative shadow-xs">
               <LeafletMap
@@ -692,9 +855,9 @@ export default function BuyerPage() {
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between text-xs text-blue-950 font-semibold">
               <div className="flex items-center gap-2">
                 <Truck className="h-4 w-4 text-blue-800" />
-                <span>{t("Showing geographic centroids for all aggregated regional wholesale lots.", "सभी एकत्रित क्षेत्रीय लॉट के भौगोलिक केंद्र प्रदर्शित हैं।", "सबो क्षेत्रीय लॉट के नक्शा दिखत हे।")}</span>
+                <span>{t("Showing collection hub locations for all aggregated regional wholesale lots.", "सभी एकत्रित क्षेत्रीय लॉट के संग्रह केंद्र प्रदर्शित हैं।", "सबो क्षेत्रीय लॉट के संग्रह केंद्र दिखत हे।")}</span>
               </div>
-              <span className="font-mono text-blue-900">{processedLots.length} {t("Centroids Active", "केंद्र सक्रिय", "केंद्र सक्रिय")}</span>
+              <span className="font-mono text-blue-900">{processedLots.length} {t("Hubs Active", "केंद्र सक्रिय", "केंद्र सक्रिय")}</span>
             </div>
           </div>
         )}
@@ -741,6 +904,17 @@ export default function BuyerPage() {
             onOrderConfirm={(lot, qty) => handleOrderConfirmed(lot, qty)}
           />
         )}
+
+        <DemoPaymentModal 
+          isOpen={isDemoPaymentOpen}
+          onClose={() => { setIsDemoPaymentOpen(false); setDemoPaymentItem(null); }}
+          item={demoPaymentItem}
+          onSuccess={(res) => {
+            fetchFarmerListings();
+            fetchLots();
+            setOrderSuccessNotice(`Demo Escrow Authorized! Transaction: ${res.transaction_id}`);
+          }}
+        />
       </div>
     </div>
   );
