@@ -8,6 +8,8 @@ import { Button } from "@/components/ui";
 import { useLanguage } from "@/lib/language";
 import CropPhoto from "@/components/buyer/CropPhoto";
 import QualityInspectionModal from "@/components/buyer/QualityInspectionModal";
+import { DynamicPricingCard } from "@/components/pricing/DynamicPricingCard";
+import { useFavorites } from "@/hooks/useFavorites";
 import {
   ArrowLeft,
   MapPin,
@@ -23,6 +25,8 @@ import {
   AlertTriangle,
   Gavel,
   ScanSearch,
+  Heart,
+  TrendingDown,
 } from "lucide-react";
 
 const cropEmojis: Record<string, string> = {
@@ -38,14 +42,29 @@ const cropEmojis: Record<string, string> = {
   Cotton: "🌼",
 };
 
+const BENCHMARK_MANDI: Record<string, number> = {
+  Tomato: 26.5,
+  Onion: 32.0,
+  Potato: 22.0,
+  Wheat: 27.5,
+  Rice: 36.0,
+  Soybean: 46.5,
+  Chilli: 72.0,
+  Ginger: 88.0,
+  Garlic: 95.0,
+  Cotton: 62.0,
+};
+
 export default function LotDetailPage() {
   const { lotId } = useParams<{ lotId: string }>();
-    const { t } = useLanguage();
+  const { t } = useLanguage();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [lot, setLot] = useState<Lot | null>(null);
   const [loading, setLoading] = useState(true);
   const [qtyRaw, setQtyRaw] = useState<string>("0");
   const [ordering, setOrdering] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState<string | null>(null);
+  const [orderError, setOrderError] = useState<string | null>(null);
   const [showInspection, setShowInspection] = useState(false);
   const [bidPrice, setBidPrice] = useState<string>("");
   const [bidPlaced, setBidPlaced] = useState(false);
@@ -123,6 +142,7 @@ export default function LotDetailPage() {
   const handleOrder = async (fullLot: boolean) => {
     const q = fullLot ? lot.total_quantity_kg : Math.min(Math.max(qty, minOrder), lot.total_quantity_kg);
     setOrdering(true);
+    setOrderError(null);
     try {
       const res = await apiService.createOrder({
         buyer_id: "buyer-001",
@@ -130,8 +150,9 @@ export default function LotDetailPage() {
         quantity_kg: q,
       });
       setOrderSuccess(res.order_id);
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      setOrderError(e?.message || "Failed to place order. Please check your network and try again.");
     } finally {
       setOrdering(false);
     }
@@ -195,7 +216,7 @@ export default function LotDetailPage() {
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
                   <MapPin className="w-4 h-4 text-emerald-600" />
-                  {t("Cluster Origin & Centroid", "क्लस्टर उत्पत्ति और केंद्र", "क्लस्टर उत्पत्ति आ केंद्र")}
+                  {t("Collection Hub & Origin", "संग्रह केंद्र एवं उत्पत्ति", "संग्रह केंद्र आ उत्पत्ति")}
                 </p>
                 <p className="mt-2 text-base font-bold text-slate-900">{lot.centroid.district} {t("Hub", "हब", "हब")}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{lot.centroid.address || t("Raipur Agricultural Basin", "रायपुर कृषि क्षेत्र", "रायपुर कृषि क्षेत्र")}</p>
@@ -243,6 +264,14 @@ export default function LotDetailPage() {
                 </div>
               </div>
             </div>
+
+            {/* NeuroMargin Dynamic Pricing & XAI Breakdown */}
+            <DynamicPricingCard
+              crop={lot.crop_type}
+              quantity={lot.total_quantity_kg}
+              grade={lot.grade}
+              basePrice={lot.price_per_kg}
+            />
 
             {/* Contributing Farmers */}
             {lot.listings && lot.listings.length > 0 && (
@@ -421,6 +450,13 @@ export default function LotDetailPage() {
                       </div>
                     )}
                   </div>
+
+                  {orderError && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs font-semibold text-red-800 flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-red-600 shrink-0" />
+                      <span>{orderError}</span>
+                    </div>
+                  )}
 
                   <div className="space-y-2 pt-2">
                     <Link
