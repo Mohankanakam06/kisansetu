@@ -1,17 +1,70 @@
 import os
-from fastapi import FastAPI, HTTPException
+import logging
+from fastapi import FastAPI, HTTPException, Request, Depends
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
-from backend.routes import lots, routing, settlement, farmer, orchestrator, quality, auth, mandi
+from backend import config
+from backend.routes import lots, routing, settlement, farmer, orchestrator, quality, auth, mandi, pricing, anti_fraud, phygital
+from backend.routes.auth import require_auth
 from backend import payments, websockets
 from backend.db import get_conn, release_conn
+
+logger = logging.getLogger("kisansetu.main")
 
 app = FastAPI(
     title="Kisan Setu - Direct-to-Market Agri Platform",
     description="SIH 2026 PS 26033 - Backend API for aggregation, routing, and settlement",
     version="1.0.0"
 )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    """Return FastAPI's crafted ``detail`` and mirror it into the error envelope.
+
+    Keeping ``detail`` preserves the existing client/tests contract while the
+    ``error`` object gives the frontend a stable shape to render.
+    """
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "detail": exc.detail,
+            "error": {
+                "code": f"HTTP_{exc.status_code}",
+                "message": exc.detail,
+            },
+        },
+    )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Catch-all for unexpected errors.
+
+    The traceback is logged server-side; the client gets a stable, actionable
+    message rather than an internal error string that may leak implementation
+    details or database schema.
+    """
+    logger.exception("Unhandled error on %s %s", request.method, request.url.path)
+    message = (
+        f"Something went wrong while handling {request.method} {request.url.path}. "
+        "Please retry; if it keeps failing, report the action you were performing."
+    )
+    return JSONResponse(
+        status_code=500,
+        content={
+            "success": False,
+            "detail": message,
+            "error": {
+                "code": "INTERNAL_SERVER_ERROR",
+                "message": message,
+            },
+        },
+    )
+
 
 # CORS middleware
 cors_env = os.getenv("CORS_ORIGINS", "*")
@@ -38,8 +91,12 @@ app.include_router(farmer.router, tags=["Farmer Interface"])
 app.include_router(orchestrator.router, tags=["Orchestrator"])
 app.include_router(quality.router, tags=["Quality Grading"])
 app.include_router(mandi.router, tags=["Mandi Prices"])
+app.include_router(pricing.router, tags=["Dynamic Pricing Engine"])
 app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
+app.include_router(payments.router, prefix="/api/payment", tags=["Payments"])
 app.include_router(websockets.router, tags=["WebSockets"])
+app.include_router(anti_fraud.router, tags=["Anti-Fraud Controls"])
+app.include_router(phygital.router, tags=["Phygital Grading & Trust"])
 
 
 # Health check
@@ -65,6 +122,10 @@ def health_check():
             "/api/orchestrator/query",
             "/api/quality/grade",
             "/api/mandi/prices",
+            "/api/pricing/predict",
+            "/api/pricing/dynamic-margin",
+            "/api/pricing/historical-trends",
+            "/api/pricing/ticker",
             "/api/payments/create-order",
             "/api/payments/verify"
         ]
@@ -75,12 +136,20 @@ def health_check():
 class OrderCreate(BaseModel):
     buyer_id: str
     lot_id: str
-    quantity_kg: float
+    quantity_kg: float = Field(gt=0, description="Order quantity in kilograms; must be positive")
 
 
 @app.post("/api/orders")
-def create_order(order: OrderCreate):
+def create_order(order: OrderCreate, auth_payload: dict = Depends(require_auth)):
     """Create a new order for a lot."""
+    if config.require_auth_enforced():
+        # Trust the verified token, not the request body, for who is buying.
+        if auth_payload.get("role") != "buyer":
+            raise HTTPException(status_code=403, detail="Only buyer accounts can place orders.")
+        buyer_id = auth_payload["sub"]
+    else:
+        buyer_id = order.buyer_id
+
     conn = get_conn()
     try:
         cur = conn.cursor()
@@ -94,17 +163,17 @@ def create_order(order: OrderCreate):
             raise HTTPException(status_code=400, detail=f"Lot {order.lot_id} is not open for orders")
 
         # Verify buyer exists
-        cur.execute("SELECT id FROM users WHERE id = %s AND role = 'buyer'", (order.buyer_id,))
+        cur.execute("SELECT id FROM users WHERE id = %s AND role = 'buyer'", (buyer_id,))
         buyer = cur.fetchone()
         if not buyer:
-            raise HTTPException(status_code=404, detail=f"Buyer {order.buyer_id} not found")
+            raise HTTPException(status_code=404, detail=f"Buyer {buyer_id} not found")
 
         # Create order
         cur.execute("""
             INSERT INTO orders (buyer_id, lot_id, quantity_kg, status)
             VALUES (%s, %s, %s, 'placed')
             RETURNING id, buyer_id, lot_id, quantity_kg, status, created_at
-        """, (order.buyer_id, order.lot_id, order.quantity_kg))
+        """, (buyer_id, order.lot_id, order.quantity_kg))
 
         new_order = cur.fetchone()
 
@@ -145,20 +214,25 @@ def create_order(order: OrderCreate):
 
 
 @app.get("/api/orders")
-def list_orders():
-    """List all orders."""
+def list_orders(auth_payload: dict = Depends(require_auth)):
+    """List orders. With auth enforced, buyers only see their own orders."""
     conn = get_conn()
     try:
         cur = conn.cursor()
-        cur.execute("""
+        query = """
             SELECT o.id, o.buyer_id, o.lot_id, o.quantity_kg, o.status, o.created_at,
                    l.crop_type, l.total_quantity_kg,
                    u.name AS buyer_name
             FROM orders o
             JOIN lots l ON o.lot_id = l.id
             LEFT JOIN users u ON o.buyer_id = u.id
-            ORDER BY o.created_at DESC
-        """)
+        """
+        params = ()
+        if config.require_auth_enforced() and auth_payload.get("role") == "buyer":
+            query += " WHERE o.buyer_id = %s"
+            params = (auth_payload["sub"],)
+        query += " ORDER BY o.created_at DESC"
+        cur.execute(query, params)
         orders = cur.fetchall()
         return {
             "orders": [
@@ -181,13 +255,13 @@ def list_orders():
 
 
 @app.get("/api/orders/{order_id}")
-def get_order(order_id: str):
-    """Get order details."""
+def get_order(order_id: str, auth_payload: dict = Depends(require_auth)):
+    """Get order details. With auth enforced, buyers can only read their own orders."""
     conn = get_conn()
     try:
         cur = conn.cursor()
 
-        cur.execute("""
+        query = """
             SELECT o.id, o.buyer_id, o.lot_id, o.quantity_kg, o.status, o.created_at,
                    l.crop_type, l.total_quantity_kg,
                    u.name AS buyer_name
@@ -195,11 +269,18 @@ def get_order(order_id: str):
             JOIN lots l ON o.lot_id = l.id
             JOIN users u ON o.buyer_id = u.id
             WHERE o.id = %s
-        """, (order_id,))
+        """
+        params = [order_id]
+        if config.require_auth_enforced() and auth_payload.get("role") == "buyer":
+            query += " AND o.buyer_id = %s"
+            params.append(auth_payload["sub"])
+        cur.execute(query, tuple(params))
 
         order = cur.fetchone()
 
         if not order:
+            # Same message whether the order is missing or belongs to another
+            # buyer, so the endpoint cannot be used to probe order IDs.
             raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
 
         return {
