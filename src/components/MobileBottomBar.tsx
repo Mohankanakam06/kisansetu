@@ -9,6 +9,9 @@ import {
   Wallet,
   Menu,
   CircleUser,
+  Home,
+  TrendingUp,
+  LogIn,
 } from "lucide-react";
 import { useLanguage } from "@/lib/language";
 
@@ -25,7 +28,7 @@ export default function MobileBottomBar() {
       } else {
         setUser(null);
       }
-    } catch (e) {
+    } catch {
       setUser(null);
     }
   }, [pathname]);
@@ -36,15 +39,84 @@ export default function MobileBottomBar() {
     }
   };
 
-  // Hide on public auth pages and when not logged in
-  if (!user || pathname === "/login" || pathname === "/register") {
+  // Hide on standalone login / registration screens
+  if (pathname === "/login" || pathname === "/register") {
     return null;
   }
 
   const role = user?.role as "buyer" | "farmer" | undefined;
 
-  // Bottom-bar links are role-aware.
-  // Important: buyers must not see any link that navigates to /farmer.
+  // Guest navigation when user is not logged in
+  if (!user) {
+    const guestItems = [
+      {
+        href: "/",
+        label: t("Home", "होम", "होम"),
+        icon: Home,
+      },
+      {
+        href: "/buyer",
+        label: t("Market", "मंडी", "मंडी"),
+        icon: Store,
+      },
+      {
+        href: "/pricing",
+        label: t("Fair Value", "भाव", "भाव"),
+        icon: TrendingUp,
+      },
+      {
+        href: "/login",
+        label: t("Sign In", "लॉगिन", "लॉगिन"),
+        icon: LogIn,
+      },
+    ];
+
+    return (
+      <nav
+        aria-label="Mobile Bottom Bar"
+        className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white/95 backdrop-blur-lg border-t border-slate-200/90 shadow-[0_-4px_24px_rgba(0,0,0,0.07)] pb-[env(safe-area-inset-bottom)] animate-in slide-in-from-bottom duration-200"
+      >
+        <div className="flex h-16 items-center justify-around px-2 relative max-w-lg mx-auto">
+          {guestItems.map((item) => {
+            const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-all relative ${
+                  isActive ? "text-emerald-800 font-extrabold" : "text-slate-500 hover:text-slate-900 font-medium"
+                }`}
+              >
+                <div className="relative">
+                  <Icon className={`h-5 w-5 transition-transform ${isActive ? "scale-110 text-emerald-700" : ""}`} />
+                </div>
+                <span className="text-[10px] tracking-tight mt-1 leading-none">{item.label}</span>
+                {isActive && (
+                  <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />
+                )}
+              </Link>
+            );
+          })}
+
+          {/* Options Drawer Trigger */}
+          <button
+            type="button"
+            onClick={handleOpenDrawer}
+            aria-label={t("All Options", "सभी विकल्प", "सब विकल्प")}
+            className="flex flex-col items-center justify-center flex-1 py-1.5 transition-all text-slate-600 hover:text-emerald-800 active:scale-95 cursor-pointer font-medium"
+          >
+            <div className="relative">
+              <Menu className="h-5 w-5" />
+            </div>
+            <span className="text-[10px] tracking-tight mt-1 leading-none font-bold">{t("Menu", "मेन्यू", "मेन्यू")}</span>
+          </button>
+        </div>
+      </nav>
+    );
+  }
+
+  // Authenticated farmer vs buyer navigation items
   const navItems =
     role === "farmer"
       ? [
@@ -64,12 +136,6 @@ export default function MobileBottomBar() {
             href: "/profile",
             label: t("Profile", "प्रोफ़ाइल", "प्रोफ़ाइल"),
             icon: CircleUser,
-            badge: null,
-          },
-          {
-            href: "/earnings",
-            label: t("Earnings", "कमाई", "कमाई"),
-            icon: Wallet,
             badge: null,
           },
         ]
@@ -92,19 +158,12 @@ export default function MobileBottomBar() {
             icon: CircleUser,
             badge: null,
           },
-          {
-            href: "/buyer",
-            label: t("Marketplace", "मंडी बाजार", "बाजार"),
-            icon: Store,
-            badge: null,
-          },
         ];
 
   const centerHref = role === "farmer" ? "/farmer" : "/buyer";
   const CenterIcon = role === "farmer" ? Sprout : Store;
   const centerText = role === "farmer" ? t("List", "दर्ज", "लिखव") : t("Browse", "देखें", "देखव");
   const centerAriaLabel = role === "farmer" ? t("List Produce", "फसल दर्ज", "फसल लिखव") : t("Market", "बाजार", "बाजार");
-
 
   return (
     <nav
@@ -140,7 +199,7 @@ export default function MobileBottomBar() {
           );
         })}
 
-        {/* Center Primary Action: List Produce Button */}
+        {/* Center Primary Action: List Produce / Browse Market Button */}
         <div className="flex flex-col items-center justify-center px-1 -mt-4">
           <Link
             href={centerHref}

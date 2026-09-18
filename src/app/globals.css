@@ -173,6 +173,21 @@ button, input, select, textarea, a {
   background: #94A3B8;
 }
 
+/* Safe area padding utilities */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Fix horizontal overflow bounce on mobile */
+html, body {
+  overflow-x: clip;
+  width: 100%;
+}
+
+
 /* Leaflet container */
 .leaflet-container {
   height: 100%;

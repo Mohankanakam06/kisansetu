@@ -20,6 +20,7 @@ import {
   Layers,
   Scale,
   Sparkles,
+  Award,
 } from "lucide-react";
 import { Badge, Button } from "@/components/ui";
 
@@ -33,21 +34,22 @@ interface NavItem {
 
 // Links shown when user is NOT logged in
 const PUBLIC_NAV: NavItem[] = [
-  { href: "/#how-it-works", label: "Mandi Comparison", labelHi: "मंडी तुलना", labelCg: "मंडी तुलना", icon: Scale },
-  { href: "/#features", label: "AI 4-Agent Engine", labelHi: "AI 4-एजेंट प्रणाली", labelCg: "AI 4-एजेंट इंजन", icon: Layers },
-  { href: "/#savings", label: "Profit Calculator", labelHi: "बचत कैलकुलेटर", labelCg: "बचत कैलकुलेटर", icon: TrendingUp },
+  { href: "/pricing", label: "Dynamic Pricing", labelHi: "डायनामिक मूल्य", labelCg: "भाव इंजन", icon: TrendingUp },
   { href: "/buyer", label: "Wholesale Marketplace", labelHi: "थोक बाजार", labelCg: "थोक बाजार", icon: Store },
+  { href: "/#how-it-works", label: "Mandi Comparison", labelHi: "मंडी तुलना", labelCg: "मंडी तुलना", icon: Scale },
 ];
 
 // Role-specific navigation items
 const FARMER_NAV: NavItem[] = [
   { href: "/farmer", label: "Sell Produce", labelHi: "फसल दर्ज करें", labelCg: "फसल बेचंव", icon: Sprout },
+  { href: "/pricing", label: "Dynamic Pricing", labelHi: "डायनामिक मूल्य", labelCg: "भाव इंजन", icon: TrendingUp },
   { href: "/orders", label: "Pickup & Logistics", labelHi: "पिकअप और वाहन", labelCg: "पिकअप आ गाड़ी", icon: LayoutDashboard },
   { href: "/earnings", label: "Earnings & UPI", labelHi: "कमाई और UPI", labelCg: "कमाई आ पइसा", icon: Wallet },
 ];
 
 const BUYER_NAV: NavItem[] = [
   { href: "/buyer", label: "Wholesale Lots", labelHi: "थोक लॉट बाजार", labelCg: "थोक लॉट बाजार", icon: Store },
+  { href: "/pricing", label: "Dynamic Pricing", labelHi: "डायनामिक मूल्य", labelCg: "भाव इंजन", icon: TrendingUp },
   { href: "/orders", label: "Orders & Escrow", labelHi: "ऑर्डर और एस्क्रो", labelCg: "ऑर्डर आ एस्क्रो", icon: LayoutDashboard },
 ];
 
@@ -253,7 +255,7 @@ export default function SiteNav() {
             className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="fixed inset-y-0 right-0 z-[210] w-80 bg-white border-l border-slate-200 p-6 flex flex-col justify-between shadow-2xl overflow-y-auto">
+          <div className="fixed inset-y-0 right-0 z-[210] w-80 max-w-[85vw] bg-white border-l border-slate-200 p-6 flex flex-col justify-between shadow-2xl overflow-y-auto animate-in slide-in-from-right duration-200">
             <div className="space-y-6">
               <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div className="flex items-center gap-2.5">
