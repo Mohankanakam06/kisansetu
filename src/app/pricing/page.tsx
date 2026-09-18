@@ -167,7 +167,13 @@ function PricingHubContent() {
 
   // Live WebSocket Ticker State
   const [tickerItems, setTickerItems] = useState<TickerItem[]>([]);
-  const [lastTickerUpdate, setLastTickerUpdate] = useState<Date>(new Date());
+  const [lastTickerUpdate, setLastTickerUpdate] = useState<Date | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setLastTickerUpdate(new Date());
+  }, []);
 
   // Margin Engine calculation state
   const [marginData, setMarginData] = useState<DynamicMarginResponse | null>(null);
@@ -290,28 +296,26 @@ function PricingHubContent() {
   const currentScenario = SCENARIOS[activeScenario];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 pb-24 pt-6 font-sans selection:bg-emerald-500 selection:text-black">
-      {/* Ambient Lighting */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-emerald-500/10 via-cyan-500/5 to-transparent blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 pb-24 pt-6 font-sans">
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 space-y-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Page Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-950/80 px-3 py-0.5 text-xs font-bold text-emerald-300 border border-emerald-800/60 uppercase tracking-wider">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-0.5 text-xs font-bold text-emerald-700 border border-emerald-200 uppercase tracking-wider">
                 🌾 {t("KisanSetu Fair Value Discovery™", "KisanSetu उचित मूल्य निर्धारण™", "KisanSetu सही रेट इंजन™")}
               </span>
-              <span className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-400 font-mono">
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-500">
                 Agmarknet APMC Benchmarks • 0% Broker Commission • 2-Stage Milestone Escrow
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white font-display">
+            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 font-display">
               {t("KisanSetu Fair Value Discovery™", "KisanSetu उचित मूल्य खोज केंद्र", "KisanSetu सही भाव खोज केंद्र")}
             </h1>
-            <p className="text-sm text-slate-400 max-w-3xl leading-relaxed">
+            <p className="text-sm text-slate-600 max-w-3xl leading-relaxed">
               {t(
                 "How AI finds fair prices by eliminating the 25% middleman dalali — connecting farmers directly to wholesale buyers with guaranteed Mandi floors, camera quality grading, and shared logistics savings.",
                 "AI द्वारा बिचौलियों के 25% कमीशन को समाप्त कर किसान और थोक खरीदार को सीधे जोड़ने वाला पारदर्शी मूल्य इंजन। न्यूनतम मंडी बेंचमार्क, कैमरा ग्रेडिंग और साझा लॉजिस्टिक्स बचत की गारंटी।",
@@ -321,8 +325,8 @@ function PricingHubContent() {
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-slate-300">
-              <Radio className={`h-3.5 w-3.5 ${wsConnected ? "text-emerald-400 animate-pulse" : "text-amber-400"}`} />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-sm text-xs font-mono text-slate-600">
+              <Radio className={`h-3.5 w-3.5 ${wsConnected ? "text-emerald-500 animate-pulse" : "text-amber-500"}`} />
               <span>{wsConnected ? "Live Mandi Feed" : "Polling Feed"}</span>
             </div>
 
@@ -330,9 +334,9 @@ function PricingHubContent() {
               <Button
                 variant="outline"
                 size="sm"
-                className="bg-emerald-900/60 hover:bg-emerald-800 text-emerald-100 border-emerald-700 text-xs font-semibold gap-1.5"
+                className="bg-emerald-800 hover:bg-emerald-900 text-white border-emerald-800 text-xs font-semibold gap-1.5"
               >
-                <Sprout className="h-3.5 w-3.5 text-emerald-400" />
+                <Sprout className="h-3.5 w-3.5" />
                 {t("List Produce (AI Graded)", "फसल लिस्ट करें (AI ग्रेडिंग)", "फसल लिस्ट करव")}
               </Button>
             </Link>
@@ -341,17 +345,17 @@ function PricingHubContent() {
 
         {/* 3-Column Core Value Pillar Strip */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="rounded-2xl bg-gradient-to-br from-emerald-950/60 via-slate-900 to-slate-900 border border-emerald-500/40 p-4 space-y-1.5 relative overflow-hidden">
-            <div className="flex items-center justify-between text-xs font-bold text-emerald-400 uppercase tracking-wider">
+          <div className="rounded-2xl bg-white border border-emerald-100 p-4 space-y-1.5 shadow-sm">
+            <div className="flex items-center justify-between text-xs font-bold text-emerald-700 uppercase tracking-wider">
               <span>🌾 {t("Farmer Direct Advantage", "किसान का सीधा फायदा", "किसान के सीधा फायदा")}</span>
-              <span className="bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800 font-mono text-[11px] font-bold">
+              <span className="bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-mono text-[11px] font-bold text-emerald-700">
                 +15% to +25%
               </span>
             </div>
-            <div className="text-xl font-black text-white font-mono">
-              ₹24.00 – ₹32.00<span className="text-xs font-normal text-slate-400">/kg net</span>
+            <div className="text-xl font-black text-slate-900 font-mono">
+              ₹24.00 – ₹32.00<span className="text-xs font-normal text-slate-500">/kg net</span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-normal">
+            <p className="text-[11px] text-slate-600 leading-normal">
               {t(
                 "Guaranteed APMC Mandi floor + AI quality bonus + route consolidation dividend. Paid in 48 hrs.",
                 "मंडी फ्लोर रेट + AI क्वालिटी बोनस + परिवहन बचत। 48 घंटे में भुगतान।",
@@ -360,17 +364,17 @@ function PricingHubContent() {
             </p>
           </div>
 
-          <div className="rounded-2xl bg-gradient-to-br from-cyan-950/60 via-slate-900 to-slate-900 border border-cyan-500/40 p-4 space-y-1.5 relative overflow-hidden">
-            <div className="flex items-center justify-between text-xs font-bold text-cyan-400 uppercase tracking-wider">
+          <div className="rounded-2xl bg-white border border-blue-100 p-4 space-y-1.5 shadow-sm">
+            <div className="flex items-center justify-between text-xs font-bold text-blue-700 uppercase tracking-wider">
               <span>🏪 {t("Buyer Direct Savings", "खरीदार की सीधी बचत", "खरीदार के बचत")}</span>
-              <span className="bg-cyan-950 px-2 py-0.5 rounded border border-cyan-800 font-mono text-[11px] font-bold">
+              <span className="bg-blue-50 px-2 py-0.5 rounded border border-blue-200 font-mono text-[11px] font-bold text-blue-700">
                 -10% to -18%
               </span>
             </div>
-            <div className="text-xl font-black text-white font-mono">
-              ₹22.50 – ₹28.00<span className="text-xs font-normal text-slate-400">/kg landed</span>
+            <div className="text-xl font-black text-slate-900 font-mono">
+              ₹22.50 – ₹28.00<span className="text-xs font-normal text-slate-500">/kg landed</span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-normal">
+            <p className="text-[11px] text-slate-600 leading-normal">
               {t(
                 "Farm-gate procurement at wholesale rates below terminal market retail. Zero commission agents.",
                 "टर्मिनल मंडी से सस्ती सीधी फार्म-गेट खरीद। कोई आढ़तिया या दलाली नहीं।",
@@ -379,17 +383,17 @@ function PricingHubContent() {
             </p>
           </div>
 
-          <div className="rounded-2xl bg-gradient-to-br from-purple-950/60 via-slate-900 to-slate-900 border border-purple-500/40 p-4 space-y-1.5 relative overflow-hidden">
-            <div className="flex items-center justify-between text-xs font-bold text-purple-400 uppercase tracking-wider">
+          <div className="rounded-2xl bg-white border border-purple-100 p-4 space-y-1.5 shadow-sm">
+            <div className="flex items-center justify-between text-xs font-bold text-purple-700 uppercase tracking-wider">
               <span>🤝 {t("Shared Logistics Dividend", "साझा परिवहन लाभांश", "साझा गाड़ी बचत")}</span>
-              <span className="bg-purple-950 px-2 py-0.5 rounded border border-purple-800 font-mono text-[11px] font-bold">
+              <span className="bg-purple-50 px-2 py-0.5 rounded border border-purple-200 font-mono text-[11px] font-bold text-purple-700">
                 50:50 Split
               </span>
             </div>
-            <div className="text-xl font-black text-white font-mono">
-              +₹1.20 – ₹2.40<span className="text-xs font-normal text-slate-400">/kg saved</span>
+            <div className="text-xl font-black text-slate-900 font-mono">
+              +₹1.20 – ₹2.40<span className="text-xs font-normal text-slate-500">/kg saved</span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-normal">
+            <p className="text-[11px] text-slate-600 leading-normal">
               {t(
                 "Eliminates empty return truck trips by consolidating village pickups along common transport corridors.",
                 "गाँव के पिकअप को एक साथ जोड़कर खाली लौटने वाले ट्रकों का खर्च खत्म करता है।",
@@ -400,14 +404,14 @@ function PricingHubContent() {
         </div>
 
         {/* REAL-LIFE AGRICULTURAL SCENARIO PRESETS */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 sm:p-6 space-y-4 shadow-xl">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 space-y-4 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 uppercase tracking-wider">
                 <Sparkles className="h-4 w-4" />
                 {t("Real-Life Marketplace Scenarios", "वास्तविक कृषि परिदृश्य", "असली खेती के परिदृश्य")}
               </div>
-              <h2 className="text-lg font-bold text-white mt-0.5">
+              <h2 className="text-lg font-bold text-slate-900 mt-0.5">
                 {t(
                   "Explore How Fair Value Discovery Operates in Real Farming Situations",
                   "देखें वास्तविक खेती में फेयर वैल्यू डिस्कवरी कैसे काम करती है",
@@ -415,7 +419,7 @@ function PricingHubContent() {
                 )}
               </h2>
             </div>
-            <span className="text-xs text-slate-400 font-mono">
+            <span className="text-xs text-slate-500">
               {t("Click a preset to simulate live factors", "लाइव प्रभाव देखने के लिए क्लिक करें", "लाइव देखे बर क्लिक करव")}
             </span>
           </div>
@@ -435,8 +439,8 @@ function PricingHubContent() {
                   onClick={() => handleScenarioSelect(key)}
                   className={`p-4 rounded-xl border text-left transition-all cursor-pointer relative group ${
                     isSelected
-                      ? "bg-emerald-950/50 border-emerald-500 ring-2 ring-emerald-500/60 shadow-lg shadow-emerald-950/50"
-                      : "bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-800/40"
+                      ? "bg-emerald-50 border-emerald-300 ring-2 ring-emerald-200 shadow-sm"
+                      : "bg-white border-slate-200 hover:border-emerald-200 hover:bg-emerald-50/40"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
@@ -444,26 +448,26 @@ function PricingHubContent() {
                     <span
                       className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
                         isSelected
-                          ? "bg-emerald-500 text-slate-950 font-black"
-                          : "bg-slate-800 text-emerald-400 border border-slate-700"
+                          ? "bg-emerald-600 text-white font-black"
+                          : "bg-slate-100 text-emerald-700 border border-slate-200"
                       }`}
                     >
                       {sc.farmerUplift} Farmer Gain
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-bold text-white mb-1 group-hover:text-emerald-300 transition-colors">
+                  <h3 className={`text-sm font-bold mb-1 transition-colors ${isSelected ? "text-emerald-900" : "text-slate-800 group-hover:text-emerald-800"}`}>
                     {label}
                   </h3>
-                  <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">{tagline}</p>
+                  <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">{tagline}</p>
                 </button>
               );
             })}
           </div>
 
           {/* Active Scenario Case Study Callout */}
-          <div className="p-4 rounded-xl bg-slate-900 border border-slate-700/80 text-xs space-y-2">
-            <div className="flex items-center gap-2 text-emerald-400 font-bold uppercase tracking-wider text-[11px]">
+          <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs space-y-2">
+            <div className="flex items-center gap-2 text-emerald-800 font-bold uppercase tracking-wider text-[11px]">
               <CheckCircle2 className="h-4 w-4" />
               <span>
                 {language === "hi"
@@ -473,7 +477,7 @@ function PricingHubContent() {
                   : currentScenario.storyTitle}
               </span>
             </div>
-            <p className="text-slate-300 leading-relaxed">
+            <p className="text-slate-700 leading-relaxed">
               {language === "hi"
                 ? currentScenario.storyTextHi
                 : language === "cg"
@@ -487,15 +491,15 @@ function PricingHubContent() {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 {t("Live Mandi Price Discovery (APMC Benchmarks)", "लाइव मंडी भाव (APMC बेंचमार्क)", "लाइव मंडी भाव")}
               </span>
-              <span className="text-[10px] text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800/60 font-mono">
+              <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-mono">
                 Synced Real-Time
               </span>
             </div>
-            <span className="text-[11px] text-slate-500 font-mono">
-              Updated: {lastTickerUpdate.toLocaleTimeString()}
+            <span className="text-[11px] text-slate-400 font-mono" suppressHydrationWarning>
+              {mounted && lastTickerUpdate ? `Updated: ${lastTickerUpdate.toLocaleTimeString()}` : "Syncing live data..."}
             </span>
           </div>
 
@@ -509,15 +513,15 @@ function PricingHubContent() {
                   onClick={() => setSelectedCrop(item.crop_type)}
                   className={`p-3 rounded-xl border text-left transition-all relative group cursor-pointer ${
                     isSelected
-                      ? "bg-emerald-950/40 border-emerald-500 ring-1 ring-emerald-500/50 shadow-lg shadow-emerald-950/40"
-                      : "bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-800/50"
+                      ? "bg-emerald-50 border-emerald-300 ring-1 ring-emerald-200 shadow-sm"
+                      : "bg-white border-slate-200 hover:border-emerald-200 hover:bg-emerald-50/50"
                   }`}
                 >
-                  <div className="flex items-center justify-between text-[11px] font-bold text-slate-300 mb-1">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-slate-700 mb-1">
                     <span className="truncate">{item.crop_type}</span>
                     <span
                       className={`flex items-center text-[10px] font-mono font-bold ${
-                        isPositive ? "text-emerald-400" : "text-rose-400"
+                        isPositive ? "text-emerald-600" : "text-rose-500"
                       }`}
                     >
                       {isPositive ? "+" : ""}
@@ -525,19 +529,19 @@ function PricingHubContent() {
                     </span>
                   </div>
 
-                  <div className="text-lg font-black text-white font-mono">
+                  <div className="text-lg font-black text-slate-900 font-mono">
                     ₹{item.price_per_kg.toFixed(2)}
-                    <span className="text-[10px] font-normal text-slate-400">/kg</span>
+                    <span className="text-[10px] font-normal text-slate-500">/kg</span>
                   </div>
 
-                  <div className="flex items-center justify-between mt-1 text-[10px] text-slate-400 truncate">
+                  <div className="flex items-center justify-between mt-1 text-[10px] text-slate-500 truncate">
                     <span className="truncate">{item.mandi || item.mandi_name || "APMC Yard"}</span>
                     {item.predicted_trend_7d === "up" ? (
-                      <ArrowUpRight className="h-3 w-3 text-emerald-400 shrink-0" />
+                      <ArrowUpRight className="h-3 w-3 text-emerald-500 shrink-0" />
                     ) : item.predicted_trend_7d === "down" ? (
-                      <ArrowDownRight className="h-3 w-3 text-rose-400 shrink-0" />
+                      <ArrowDownRight className="h-3 w-3 text-rose-500 shrink-0" />
                     ) : (
-                      <span className="text-slate-500">─</span>
+                      <span className="text-slate-400">─</span>
                     )}
                   </div>
                 </button>
@@ -547,40 +551,33 @@ function PricingHubContent() {
         </div>
 
         {/* Price Forecaster & Trend Projection */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 uppercase tracking-wider">
                 <Sparkles className="h-4 w-4" />
                 {t("Mandi Benchmark Forecaster & 7-Day Trend", "मंडी भाव पूर्वानुमान एवं 7-दिवसीय ट्रेंड", "मंडी भाव 7 दिन के पूर्वानुमान")}
               </div>
-              <h2 className="text-xl font-bold text-white mt-1">
+              <h2 className="text-xl font-bold text-slate-900 mt-1">
                 {selectedCrop} — {t("14-Day Past Prices & 7-Day Projected Trend", "14 दिन का पिछला भाव एवं 7 दिन का अनुमान", "14 दिन के पिछिला भाव आ 7 दिन के अनुमान")}
               </h2>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs bg-slate-800 text-slate-300 border border-slate-700 px-3 py-1 rounded-lg font-mono">
+              <span className="text-xs bg-slate-50 text-slate-600 border border-slate-200 px-3 py-1 rounded-lg font-mono">
                 Agmarknet Historicals
               </span>
-              <span className="text-xs bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 px-3 py-1 rounded-lg font-mono">
+              <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-lg font-mono">
                 Multi-Mandi ML Model
               </span>
             </div>
           </div>
 
-          {/* SVG Line Chart */}
+          {/* SVG Line Chart — light-themed */}
           <div className="relative">
             {chartPoints ? (
               <div className="w-full overflow-x-auto">
                 <svg viewBox="0 0 600 180" className="w-full h-44 sm:h-52 select-none overflow-visible">
-                  <defs>
-                    <linearGradient id="forecastGlow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#10B981" stopOpacity="0.3" />
-                      <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
-                    </linearGradient>
-                  </defs>
-
                   {/* Horizontal Grid lines */}
                   {[0.25, 0.5, 0.75].map((pct, i) => (
                     <line
@@ -589,9 +586,8 @@ function PricingHubContent() {
                       y1={180 * pct}
                       x2="580"
                       y2={180 * pct}
-                      stroke="#334155"
+                      stroke="#E2E8F0"
                       strokeDasharray="4 4"
-                      strokeOpacity="0.5"
                     />
                   ))}
 
@@ -604,11 +600,11 @@ function PricingHubContent() {
                     strokeLinecap="round"
                   />
 
-                  {/* Future Forecast Dashed Line with Emerald Glow */}
+                  {/* Future Forecast Dashed Line */}
                   <path
                     d={chartPoints.futPath}
                     fill="none"
-                    stroke="#10B981"
+                    stroke="#059669"
                     strokeWidth="3"
                     strokeDasharray="5 3"
                     strokeLinecap="round"
@@ -624,11 +620,10 @@ function PricingHubContent() {
                           cx={pt.x}
                           cy={pt.y}
                           r={isCurr ? 5 : isFut ? 3.5 : 2.5}
-                          fill={isCurr ? "#10B981" : isFut ? "#34D399" : "#64748B"}
-                          stroke="#0F172A"
+                          fill={isCurr ? "#059669" : isFut ? "#10B981" : "#94A3B8"}
+                          stroke="#ffffff"
                           strokeWidth="2"
                         />
-                        {/* Hover Tooltip in SVG */}
                         <title>{`${pt.date} (${pt.type}): ₹${pt.price.toFixed(2)}/kg`}</title>
                       </g>
                     );
@@ -637,12 +632,12 @@ function PricingHubContent() {
               </div>
             ) : (
               <div className="h-44 flex items-center justify-center text-slate-500 text-xs">
-                <RefreshCw className="h-4 w-4 animate-spin mr-2" /> Loading price forecast...
+                <RefreshCw className="h-4 w-4 animate-spin mr-2 text-emerald-500" /> Loading price forecast...
               </div>
             )}
 
             {/* Chart Legend */}
-            <div className="flex flex-wrap items-center justify-between text-xs pt-3 border-t border-slate-800 text-slate-400 gap-2">
+            <div className="flex flex-wrap items-center justify-between text-xs pt-3 border-t border-slate-100 text-slate-500 gap-2">
               <div className="flex items-center gap-4">
                 <span className="flex items-center gap-1.5">
                   <span className="h-2.5 w-5 bg-slate-400 rounded-sm inline-block" />
@@ -653,7 +648,7 @@ function PricingHubContent() {
                   7-Day Projected Trend
                 </span>
               </div>
-              <div className="font-mono text-emerald-400 font-semibold">
+              <div className="font-mono text-emerald-700 font-semibold">
                 Expected 7-Day Movement: +{trendData?.expected_7d_change_pct ?? 4.8}%
               </div>
             </div>
@@ -663,28 +658,28 @@ function PricingHubContent() {
         {/* Interactive Fair Value Calculator & Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Controls Column (5 cols) */}
-          <div className="lg:col-span-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-6 space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div className="lg:col-span-5 rounded-2xl border border-slate-200 bg-white p-6 space-y-6 shadow-sm">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <Sliders className="h-4 w-4 text-emerald-400" />
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                <Sliders className="h-4 w-4 text-emerald-600" />
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
                   {t("Fair Value Calculator", "उचित मूल्य कैलकुलेटर", "उचित रेट कैलकुलेटर")}
                 </h3>
               </div>
-              <span className="text-[10px] text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800 font-mono">
+              <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-mono">
                 Interactive
               </span>
             </div>
 
             {/* Parameter: Produce Selector */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-slate-700">
                 {t("Commodity Crop", "फसल प्रकार", "फसल चुनव")}
               </label>
               <select
                 value={selectedCrop}
                 onChange={(e) => setSelectedCrop(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-800 p-2.5 text-xs font-bold text-white focus:outline-none focus:border-emerald-500"
+                className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
               >
                 {COMMODITIES.map((c) => (
                   <option key={c.name} value={c.name}>
@@ -697,10 +692,10 @@ function PricingHubContent() {
             {/* Parameter: Lot Quantity Slider */}
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs">
-                <span className="font-semibold text-slate-300">
+                <span className="font-semibold text-slate-700">
                   {t("Consolidated Lot Weight (kg)", "लॉट कुल वजन (किलो)", "लॉट के कुल वजन")}
                 </span>
-                <span className="font-mono font-bold text-emerald-400">
+                <span className="font-mono font-bold text-emerald-700">
                   {lotQuantity.toLocaleString()} kg ({((lotQuantity / 1000).toFixed(1))} MT)
                 </span>
               </div>
@@ -711,9 +706,9 @@ function PricingHubContent() {
                 step="100"
                 value={lotQuantity}
                 onChange={(e) => setLotQuantity(Number(e.target.value))}
-                className="w-full accent-emerald-500 h-2 bg-slate-800 rounded-lg cursor-pointer"
+                className="w-full accent-emerald-600 h-2 bg-slate-100 rounded-lg cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+              <div className="flex justify-between text-[10px] text-slate-400 font-mono">
                 <span>100 kg (Smallholder)</span>
                 <span>5,000 kg (Truckload)</span>
                 <span>10,000 kg (Cluster)</span>
@@ -723,10 +718,10 @@ function PricingHubContent() {
             {/* Parameter: Quality Grade & Score */}
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
-                <span className="font-semibold text-slate-300">
+                <span className="font-semibold text-slate-700">
                   {t("Quality Grade & AI Score", "गुणवत्ता ग्रेड और AI स्कोर", "क्वालिटी ग्रेड आ स्कोर")}
                 </span>
-                <span className="font-mono font-bold text-emerald-400">
+                <span className="font-mono font-bold text-emerald-700">
                   Grade {qualityGrade} ({qualityScore}/100)
                 </span>
               </div>
@@ -743,13 +738,13 @@ function PricingHubContent() {
                     className={`py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                       qualityGrade === grd
                         ? grd === "A"
-                          ? "bg-emerald-950/60 border-emerald-500 text-emerald-300 ring-1 ring-emerald-500"
+                          ? "bg-emerald-50 border-emerald-400 text-emerald-800 ring-1 ring-emerald-300"
                           : grd === "B"
-                          ? "bg-blue-950/60 border-blue-500 text-blue-300 ring-1 ring-blue-500"
+                          ? "bg-blue-50 border-blue-400 text-blue-800 ring-1 ring-blue-300"
                           : grd === "C"
-                          ? "bg-amber-950/60 border-amber-500 text-amber-300 ring-1 ring-amber-500"
-                          : "bg-rose-950/60 border-rose-500 text-rose-300 ring-1 ring-rose-500"
-                        : "bg-slate-800 border-slate-700 text-slate-400 hover:text-white"
+                          ? "bg-amber-50 border-amber-400 text-amber-800 ring-1 ring-amber-300"
+                          : "bg-rose-50 border-rose-400 text-rose-800 ring-1 ring-rose-300"
+                        : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300"
                     }`}
                   >
                     Grade {grd}
@@ -761,10 +756,10 @@ function PricingHubContent() {
             {/* Parameter: Consolidated Logistics Distance */}
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs">
-                <span className="font-semibold text-slate-300">
+                <span className="font-semibold text-slate-700">
                   {t("Consolidated Route Distance", "परिवहन दूरी (किमी)", "गाड़ी के दूरी")}
                 </span>
-                <span className="font-mono font-bold text-emerald-400">{transportDistance} km</span>
+                <span className="font-mono font-bold text-emerald-700">{transportDistance} km</span>
               </div>
               <input
                 type="range"
@@ -773,9 +768,9 @@ function PricingHubContent() {
                 step="5"
                 value={transportDistance}
                 onChange={(e) => setTransportDistance(Number(e.target.value))}
-                className="w-full accent-emerald-500 h-2 bg-slate-800 rounded-lg cursor-pointer"
+                className="w-full accent-emerald-600 h-2 bg-slate-100 rounded-lg cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+              <div className="flex justify-between text-[10px] text-slate-400 font-mono">
                 <span>5 km (Local)</span>
                 <span>50 km (Regional)</span>
                 <span>200 km (Inter-district)</span>
@@ -783,9 +778,9 @@ function PricingHubContent() {
             </div>
 
             {/* Parameter: Base Mandi Price Override */}
-            <div className="space-y-1.5 pt-2 border-t border-slate-800">
+            <div className="space-y-1.5 pt-2 border-t border-slate-100">
               <div className="flex justify-between text-xs">
-                <span className="font-semibold text-slate-300">
+                <span className="font-semibold text-slate-700">
                   {t("Guaranteed Mandi Benchmark (₹/kg)", "मंडी आधार मूल्य (रु/किलो)", "मंडी आधार भाव")}
                 </span>
                 <button
@@ -794,7 +789,7 @@ function PricingHubContent() {
                     const matched = COMMODITIES.find((c) => c.name === selectedCrop);
                     if (matched) setCustomBasePrice(matched.defaultBase);
                   }}
-                  className="text-[10px] text-emerald-400 hover:underline font-mono"
+                  className="text-[10px] text-emerald-600 hover:underline font-mono"
                 >
                   Reset Benchmark
                 </button>
@@ -806,7 +801,7 @@ function PricingHubContent() {
                   step="0.5"
                   value={customBasePrice}
                   onChange={(e) => setCustomBasePrice(Number(e.target.value))}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-800 pl-7 pr-3 py-2 text-xs font-mono font-bold text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full rounded-xl border border-slate-200 bg-white pl-7 pr-3 py-2 text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
                 />
               </div>
             </div>
@@ -819,52 +814,52 @@ function PricingHubContent() {
                 {/* Hero Financial Payout Banner */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Farmer Uplift Card */}
-                  <div className="rounded-2xl border border-emerald-500/60 bg-gradient-to-br from-emerald-950/50 via-slate-900 to-slate-900 p-5 space-y-2 relative overflow-hidden shadow-xl shadow-emerald-950/30">
+                  <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 space-y-2 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
+                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">
                         {t("Direct Farmer Payout", "किसान का सीधा भुगतान", "किसान के सीधा पइसा")}
                       </span>
-                      <span className="text-xs font-bold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800 font-mono">
+                      <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-mono">
                         +{marginData.farmer_uplift_pct.toFixed(1)}% Uplift
                       </span>
                     </div>
 
                     <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-black text-white font-mono">
+                      <span className="text-3xl font-black text-emerald-900 font-mono">
                         ₹{marginData.farmer_payout_kg.toFixed(2)}
                       </span>
-                      <span className="text-xs text-slate-400">/kg</span>
+                      <span className="text-xs text-slate-500">/kg</span>
                     </div>
 
-                    <div className="pt-2 border-t border-slate-800 text-xs text-slate-400 flex justify-between font-mono">
+                    <div className="pt-2 border-t border-emerald-100 text-xs text-slate-600 flex justify-between font-mono">
                       <span>Total Lot Farmer Payout:</span>
-                      <span className="font-bold text-emerald-300">
+                      <span className="font-bold text-emerald-800">
                         ₹{marginData.total_farmer_payout.toLocaleString("en-IN")}
                       </span>
                     </div>
                   </div>
 
                   {/* Buyer Savings Card */}
-                  <div className="rounded-2xl border border-cyan-500/60 bg-gradient-to-br from-cyan-950/50 via-slate-900 to-slate-900 p-5 space-y-2 relative overflow-hidden shadow-xl shadow-cyan-950/30">
+                  <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 space-y-2 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">
+                      <span className="text-xs font-bold uppercase tracking-wider text-blue-800">
                         {t("Wholesale Buyer Landed Rate", "थोक खरीद मूल्य", "थोक खरीद रेट")}
                       </span>
-                      <span className="text-xs font-bold text-cyan-400 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-800 font-mono">
+                      <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 font-mono">
                         -{marginData.buyer_savings_pct.toFixed(1)}% vs Mandi
                       </span>
                     </div>
 
                     <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-black text-white font-mono">
+                      <span className="text-3xl font-black text-blue-900 font-mono">
                         ₹{marginData.recommended_price_kg.toFixed(2)}
                       </span>
-                      <span className="text-xs text-slate-400">/kg</span>
+                      <span className="text-xs text-slate-500">/kg</span>
                     </div>
 
-                    <div className="pt-2 border-t border-slate-800 text-xs text-slate-400 flex justify-between font-mono">
+                    <div className="pt-2 border-t border-blue-100 text-xs text-slate-600 flex justify-between font-mono">
                       <span>Total Lot Procurement:</span>
-                      <span className="font-bold text-cyan-300">
+                      <span className="font-bold text-blue-800">
                         ₹{marginData.total_lot_value.toLocaleString("en-IN")}
                       </span>
                     </div>
@@ -872,55 +867,55 @@ function PricingHubContent() {
                 </div>
 
                 {/* How Your Fair Value Is Calculated */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4 shadow-sm">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
-                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                      <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                         {t("How Your Fair Value Is Calculated", "उचित मूल्य की गणना कैसे होती है", "सही रेट कइसे बनथे")}
                       </h4>
-                      <p className="text-[10px] text-slate-400 mt-0.5">
+                      <p className="text-[10px] text-slate-500 mt-0.5">
                         {t("Transparent AI pricing — every factor explained", "पारदर्शी मूल्य निर्धारण — प्रत्येक घटक स्पष्ट", "पारदर्शी रेट — सब घटक साफ")}
                       </p>
                     </div>
-                    <span className="text-[10px] text-emerald-400 font-mono bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+                    <span className="text-[10px] text-emerald-700 font-mono bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                       0% Hidden Cuts
                     </span>
                   </div>
 
                   <div className="space-y-3">
                     {/* Baseline */}
-                    <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-slate-800/60 border border-slate-700/60">
+                    <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-slate-50 border border-slate-200">
                       <div className="flex items-center gap-2.5">
-                        <Scale className="h-4 w-4 text-slate-400 shrink-0" />
+                        <Scale className="h-4 w-4 text-slate-500 shrink-0" />
                         <div>
-                          <span className="font-semibold text-slate-200">
+                          <span className="font-semibold text-slate-800">
                             {t("Guaranteed Mandi Benchmark", "न्यूनतम मंडी बेंचमार्क", "मंडी आधार भाव")}
                           </span>
-                          <p className="text-[10px] text-slate-400">
+                          <p className="text-[10px] text-slate-500">
                             Official APMC modal price — farmers never sell below this floor
                           </p>
                         </div>
                       </div>
-                      <span className="font-mono font-bold text-white text-sm">₹{customBasePrice.toFixed(2)}/kg</span>
+                      <span className="font-mono font-bold text-slate-900 text-sm">₹{customBasePrice.toFixed(2)}/kg</span>
                     </div>
 
                     {/* Quality Factor */}
                     {f && (
-                      <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-slate-800/60 border border-slate-700/60">
+                      <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-slate-50 border border-slate-200">
                         <div className="flex items-center gap-2.5">
-                          <Award className="h-4 w-4 text-blue-400 shrink-0" />
+                          <Award className="h-4 w-4 text-blue-500 shrink-0" />
                           <div>
-                            <span className="font-semibold text-slate-200">
+                            <span className="font-semibold text-slate-800">
                               {t("AI Camera Quality Reward", "AI कैमरा गुणवत्ता बोनस", "AI कैमरा क्वालिटी इनाम")}
                             </span>
-                            <p className="text-[10px] text-slate-400">
+                            <p className="text-[10px] text-slate-500">
                               Grade {qualityGrade} ({qualityScore}/100) — protects farmers from arbitrary broker downgrading
                             </p>
                           </div>
                         </div>
                         <span
                           className={`font-mono font-bold text-sm ${
-                            f.quality_premium.impact_inr >= 0 ? "text-emerald-400" : "text-rose-400"
+                            f.quality_premium.impact_inr >= 0 ? "text-emerald-600" : "text-rose-500"
                           }`}
                         >
                           {f.quality_premium.impact_inr >= 0 ? "+" : ""}₹{f.quality_premium.impact_inr.toFixed(2)}/kg
@@ -930,19 +925,19 @@ function PricingHubContent() {
 
                     {/* Volume Factor */}
                     {f && (
-                      <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-slate-800/60 border border-slate-700/60">
+                      <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-slate-50 border border-slate-200">
                         <div className="flex items-center gap-2.5">
-                          <Package className="h-4 w-4 text-purple-400 shrink-0" />
+                          <Package className="h-4 w-4 text-purple-500 shrink-0" />
                           <div>
-                            <span className="font-semibold text-slate-200">
+                            <span className="font-semibold text-slate-800">
                               {t("Group Volume Dividend", "समूह मात्रा लाभांश", "समूह वजन फायदा")}
                             </span>
-                            <p className="text-[10px] text-slate-400">
+                            <p className="text-[10px] text-slate-500">
                               Efficiency dividend from {lotQuantity.toLocaleString()} kg consolidated truckload
                             </p>
                           </div>
                         </div>
-                        <span className="font-mono font-bold text-emerald-400 text-sm">
+                        <span className="font-mono font-bold text-emerald-600 text-sm">
                           +₹{f.volume_efficiency.impact_inr.toFixed(2)}/kg
                         </span>
                       </div>
@@ -950,20 +945,20 @@ function PricingHubContent() {
 
                     {/* Logistics Dividend */}
                     {f && (
-                      <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-slate-800/60 border border-slate-700/60">
+                      <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-slate-50 border border-slate-200">
                         <div className="flex items-center gap-2.5">
-                          <Truck className="h-4 w-4 text-amber-400 shrink-0" />
+                          <Truck className="h-4 w-4 text-amber-500 shrink-0" />
                           <div>
-                            <span className="font-semibold text-slate-200">
+                            <span className="font-semibold text-slate-800">
                               {t("Route Consolidation Savings", "रूट एकत्रीकरण बचत", "गाड़ी बचत")}
                             </span>
-                            <p className="text-[10px] text-slate-400">
+                            <p className="text-[10px] text-slate-500">
                               Shared transport saving: Farmer (+₹{f.logistics_saving.farmer_share_inr.toFixed(2)}) / Buyer (-₹
                               {f.logistics_saving.buyer_share_inr.toFixed(2)})
                             </p>
                           </div>
                         </div>
-                        <span className="font-mono font-bold text-emerald-400 text-sm">
+                        <span className="font-mono font-bold text-emerald-600 text-sm">
                           +₹{f.logistics_saving.saving_per_kg.toFixed(2)}/kg
                         </span>
                       </div>
@@ -971,27 +966,27 @@ function PricingHubContent() {
 
                     {/* Perishability Decay */}
                     {f && (
-                      <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-slate-800/60 border border-slate-700/60">
+                      <div className="flex items-center justify-between text-xs p-3 rounded-xl bg-slate-50 border border-slate-200">
                         <div className="flex items-center gap-2.5">
-                          <Snowflake className="h-4 w-4 text-cyan-400 shrink-0" />
+                          <Snowflake className="h-4 w-4 text-cyan-500 shrink-0" />
                           <div>
-                            <span className="font-semibold text-slate-200">
+                            <span className="font-semibold text-slate-800">
                               {t("Transit Risk & Spoilage Allowance", "परिवहन जोखिम व ताजगी भत्ता", "परिवहन जोखिम छूट")}
                             </span>
-                            <p className="text-[10px] text-slate-400">
+                            <p className="text-[10px] text-slate-500">
                               Perishable transit decay factor over {transportDistance} km route
                             </p>
                           </div>
                         </div>
-                        <span className="font-mono font-bold text-rose-400 text-sm">
+                        <span className="font-mono font-bold text-rose-500 text-sm">
                           ₹{f.perishability_penalty.impact_inr.toFixed(2)}/kg
                         </span>
                       </div>
                     )}
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-800/40 text-xs text-emerald-200 flex items-start gap-2.5">
-                    <Info className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-start gap-2.5">
+                    <Info className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
                     <p className="leading-relaxed">
                       {marginData.explainability.summary}
                     </p>
@@ -999,80 +994,80 @@ function PricingHubContent() {
                 </div>
 
                 {/* ₹1,00,000 Harvest Comparison: Traditional Mandi vs KisanSetu */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4 shadow-sm">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                       {t("₹1,00,000 Harvest Comparison: Traditional Mandi vs KisanSetu", "₹1,00,000 की फसल: पारंपरिक मंडी बनाम KisanSetu", "₹1,00,000 के फसल: दलाल बनाम KisanSetu")}
                     </h4>
-                    <span className="text-[10px] text-emerald-400 font-mono">Real-World Case</span>
+                    <span className="text-[10px] text-emerald-700 font-mono">Real-World Case</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                     {/* Traditional Middleman */}
-                    <div className="p-4 rounded-xl bg-rose-950/20 border border-rose-900/40 space-y-3 flex flex-col justify-between">
+                    <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 space-y-3 flex flex-col justify-between">
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <p className="font-bold text-rose-300">Traditional Mandi Brokerage</p>
-                          <span className="text-[10px] bg-rose-950 text-rose-300 px-2 py-0.5 rounded border border-rose-900">
+                          <p className="font-bold text-rose-800">Traditional Mandi Brokerage</p>
+                          <span className="text-[10px] bg-white text-rose-700 px-2 py-0.5 rounded border border-rose-200">
                             -25% Lost
                           </span>
                         </div>
-                        <ul className="space-y-1.5 text-slate-400">
-                          <li className="flex items-center gap-1.5 text-rose-300">
+                        <ul className="space-y-1.5 text-slate-600">
+                          <li className="flex items-center gap-1.5 text-rose-700">
                             <span>✕</span> 25-30% middleman brokerage & dalali
                           </li>
                           <li className="flex items-center gap-1.5">
-                            <span>✕</span> Arbitrary grading (farmer downgraded)
+                            <span className="text-rose-500">✕</span> Arbitrary grading (farmer downgraded)
                           </li>
                           <li className="flex items-center gap-1.5">
-                            <span>✕</span> Delayed credit payouts (30-60 days)
+                            <span className="text-rose-500">✕</span> Delayed credit payouts (30-60 days)
                           </li>
                           <li className="flex items-center gap-1.5">
-                            <span>✕</span> Empty return tractor freight cost
+                            <span className="text-rose-500">✕</span> Empty return tractor freight cost
                           </li>
                         </ul>
                       </div>
 
-                      <div className="pt-3 border-t border-rose-900/40 space-y-0.5">
-                        <span className="text-[10px] text-slate-400">Net Farmer Payout on ₹1,00,000 Harvest:</span>
-                        <div className="text-xl font-black text-rose-400 font-mono">
+                      <div className="pt-3 border-t border-rose-200 space-y-0.5">
+                        <span className="text-[10px] text-slate-500">Net Farmer Payout on ₹1,00,000 Harvest:</span>
+                        <div className="text-xl font-black text-rose-600 font-mono">
                           ₹75,000
                         </div>
-                        <span className="text-[10px] text-rose-400/80">Paid in 30–60 days on credit</span>
+                        <span className="text-[10px] text-rose-500">Paid in 30–60 days on credit</span>
                       </div>
                     </div>
 
                     {/* KisanSetu Platform */}
-                    <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-900/40 space-y-3 flex flex-col justify-between">
+                    <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-3 flex flex-col justify-between">
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <p className="font-bold text-emerald-300">KisanSetu Direct Platform</p>
-                          <span className="text-[10px] bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded border border-emerald-900">
+                          <p className="font-bold text-emerald-800">KisanSetu Direct Platform</p>
+                          <span className="text-[10px] bg-white text-emerald-700 px-2 py-0.5 rounded border border-emerald-200">
                             +₹17,000 Gain
                           </span>
                         </div>
-                        <ul className="space-y-1.5 text-slate-300">
-                          <li className="flex items-center gap-1.5 text-emerald-400">
+                        <ul className="space-y-1.5 text-slate-700">
+                          <li className="flex items-center gap-1.5 text-emerald-700">
                             <Check className="h-3.5 w-3.5" /> 4% transparent platform fee only
                           </li>
                           <li className="flex items-center gap-1.5">
-                            <Check className="h-3.5 w-3.5 text-emerald-400" /> Objective AI camera grading (no cuts)
+                            <Check className="h-3.5 w-3.5 text-emerald-600" /> Objective AI camera grading (no cuts)
                           </li>
                           <li className="flex items-center gap-1.5">
-                            <Check className="h-3.5 w-3.5 text-emerald-400" /> 2-Stage milestone escrow protection
+                            <Check className="h-3.5 w-3.5 text-emerald-600" /> 2-Stage milestone escrow protection
                           </li>
                           <li className="flex items-center gap-1.5">
-                            <Check className="h-3.5 w-3.5 text-emerald-400" /> Multi-pickup route consolidation
+                            <Check className="h-3.5 w-3.5 text-emerald-600" /> Multi-pickup route consolidation
                           </li>
                         </ul>
                       </div>
 
-                      <div className="pt-3 border-t border-emerald-900/40 space-y-0.5">
-                        <span className="text-[10px] text-slate-400">Net Farmer Payout on ₹1,00,000 Harvest:</span>
-                        <div className="text-xl font-black text-emerald-300 font-mono">
-                          ₹92,000 <span className="text-xs text-emerald-400 font-bold">(+22.7% more)</span>
+                      <div className="pt-3 border-t border-emerald-200 space-y-0.5">
+                        <span className="text-[10px] text-slate-500">Net Farmer Payout on ₹1,00,000 Harvest:</span>
+                        <div className="text-xl font-black text-emerald-700 font-mono">
+                          ₹92,000 <span className="text-xs text-emerald-600 font-bold">(+22.7% more)</span>
                         </div>
-                        <span className="text-[10px] text-emerald-400/80">Paid in 48 hours via Milestone Escrow</span>
+                        <span className="text-[10px] text-emerald-600">Paid in 48 hours via Milestone Escrow</span>
                       </div>
                     </div>
                   </div>

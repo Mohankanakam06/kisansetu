@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import {
   Download,
   X,
@@ -21,6 +22,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function PWAInstallPrompt() {
+  const pathname = usePathname();
   const { t } = useLanguage();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isIOS, setIsIOS] = useState(false);
@@ -28,6 +30,16 @@ export default function PWAInstallPrompt() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [installedSuccessfully, setInstalledSuccessfully] = useState(false);
+
+  // Custom manual trigger listener
+  useEffect(() => {
+    const handleManualOpen = () => {
+      setIsOpen(true);
+      setIsMinimized(false);
+    };
+    window.addEventListener("open-pwa-install", handleManualOpen);
+    return () => window.removeEventListener("open-pwa-install", handleManualOpen);
+  }, []);
 
   useEffect(() => {
     // 1. Standalone / installed check
@@ -62,7 +74,7 @@ export default function PWAInstallPrompt() {
       } else {
         // Delay showing banner slightly for better UX
         const timer = setTimeout(() => {
-          setIsOpen(true);
+          if (pathname === "/") setIsOpen(true);
         }, 2000);
         return () => clearTimeout(timer);
       }
@@ -74,8 +86,14 @@ export default function PWAInstallPrompt() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setIsMinimized(false);
-      setIsOpen(true);
+      // Auto-open the popup when prompt drops, ONLY if on the homepage and not recently dismissed
+      const dismissedTime = localStorage.getItem("kisansetu_pwa_dismissed");
+      const isRecentlyDismissed = dismissedTime && Date.now() - parseInt(dismissedTime, 10) < 5 * 24 * 60 * 60 * 1000;
+
+      if (pathname === "/" && !isRecentlyDismissed) {
+        setIsMinimized(false);
+        setIsOpen(true);
+      }
     };
 
     const handleAppInstalled = () => {
@@ -132,8 +150,13 @@ export default function PWAInstallPrompt() {
     return null;
   }
 
-  // If minimized, display a clean floating badge in the bottom-left or bottom-right above mobile bar
+  // Only show auto-popup and minimized badge on the homepage
+  // Other pages can still trigger the prompt via the "open-pwa-install" custom event
+  const isHomePage = pathname === "/";
+
+  // If minimized, only show floating badge on homepage
   if (isMinimized && !isOpen) {
+    if (!isHomePage) return null;
     return (
       <button
         type="button"

@@ -21,6 +21,7 @@ import {
   Scale,
   Sparkles,
   Award,
+  Smartphone,
 } from "lucide-react";
 import { Badge, Button } from "@/components/ui";
 
@@ -307,6 +308,26 @@ export default function SiteNav() {
                     </Link>
                   );
                 })}
+
+                {/* Minimal PWA App Install option */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (typeof window !== "undefined") {
+                      window.dispatchEvent(new CustomEvent("open-pwa-install"));
+                    }
+                  }}
+                  className="w-full flex items-center justify-between px-3.5 py-3 rounded-lg text-sm font-semibold bg-emerald-50 text-emerald-900 hover:bg-emerald-100 border border-emerald-200 transition-colors min-h-[44px] cursor-pointer mt-2"
+                >
+                  <div className="flex items-center gap-3">
+                    <Smartphone className="h-4 w-4 text-emerald-700" />
+                    <span>{t("Install Mobile App", "मोबाइल ऐप इंस्टॉल करें", "मोबाइल ऐप डालव")}</span>
+                  </div>
+                  <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-200/70 text-emerald-900">
+                    PWA
+                  </span>
+                </button>
               </div>
             </div>
 
