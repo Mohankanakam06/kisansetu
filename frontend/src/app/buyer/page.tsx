@@ -184,7 +184,6 @@ export default function BuyerPage() {
         maxPrice: priceMax ? Number(priceMax) : undefined,
         sort: sortBy !== "grade" ? sortBy : undefined
       });
-      console.log("[Buyer Dashboard] Raw farmer listings array returned by API:", res.listings);
       if (res.success && res.listings) {
         setFarmerListings(res.listings);
       }

@@ -39,7 +39,7 @@ export default function PaymentSuccessPage() {
             Settlement Successful
           </h1>
           <p className="mt-2 text-body-sm text-on-surface-variant">
-            The delivery payout has been disbursed to farmers' UPI accounts.
+            The delivery payout has been disbursed to farmers&apos; UPI accounts.
           </p>
         </div>
 
