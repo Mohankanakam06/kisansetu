@@ -1,3 +1,6 @@
+# Logs
+*.log
+
 # Environment variables & secrets (CRITICAL)
 .env
 .env.local

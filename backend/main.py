@@ -1,5 +1,7 @@
 import os
 import logging
+import asyncio
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,13 +12,27 @@ from backend.routes import lots, routing, settlement, farmer, orchestrator, qual
 from backend.routes.auth import require_auth
 from backend import payments, websockets
 from backend.db import get_conn, release_conn
+from backend.keep_alive import keep_alive_worker
 
 logger = logging.getLogger("kisansetu.main")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    keep_alive_task = asyncio.create_task(keep_alive_worker())
+    yield
+    keep_alive_task.cancel()
+    try:
+        await keep_alive_task
+    except asyncio.CancelledError:
+        pass
+
 
 app = FastAPI(
     title="Kisan Setu - Direct-to-Market Agri Platform",
     description="SIH 2026 PS 26033 - Backend API for aggregation, routing, and settlement",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 

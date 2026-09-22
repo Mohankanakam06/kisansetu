@@ -107,7 +107,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800 focus-visible:ring-2 focus-visible:ring-emerald-700/50 cursor-pointer select-none border text-center";
+    "inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:hover:translate-y-0 disabled:hover:shadow-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800 focus-visible:ring-2 focus-visible:ring-emerald-700/50 cursor-pointer select-none border text-center";
 
   const variants = {
     primary:
@@ -250,3 +250,16 @@ export function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivEl
     />
   );
 }
+
+export * from "./pattern-background";
+export * from "./interactive-hover-button";
+export * from "./jade-sky";
+export * from "./separator";
+export * from "./scroll-area";
+export * from "./tabs";
+export * from "./label";
+export * from "./compare-1";
+export * from "./variable-letter-text";
+
+
+

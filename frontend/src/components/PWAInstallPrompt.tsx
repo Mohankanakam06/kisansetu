@@ -8,11 +8,10 @@ import {
   Share2,
   PlusSquare,
   Smartphone,
-  Zap,
-  BellRing,
-  Sparkles,
   ChevronUp,
-  CheckCircle2,
+  Sprout,
+  Wifi,
+  Zap,
 } from "lucide-react";
 import { useLanguage } from "@/lib/language";
 
@@ -68,11 +67,9 @@ export default function PWAInstallPrompt() {
         return;
       }
       if (dismissedTime && Date.now() - parseInt(dismissedTime, 10) < 5 * 24 * 60 * 60 * 1000) {
-        // Show as minimized floating badge if dismissed recently
         setIsMinimized(true);
         setIsOpen(false);
       } else {
-        // Delay showing banner slightly for better UX
         const timer = setTimeout(() => {
           if (pathname === "/") setIsOpen(true);
         }, 2000);
@@ -86,7 +83,6 @@ export default function PWAInstallPrompt() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      // Auto-open the popup when prompt drops, ONLY if on the homepage and not recently dismissed
       const dismissedTime = localStorage.getItem("kisansetu_pwa_dismissed");
       const isRecentlyDismissed = dismissedTime && Date.now() - parseInt(dismissedTime, 10) < 5 * 24 * 60 * 60 * 1000;
 
@@ -116,13 +112,7 @@ export default function PWAInstallPrompt() {
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      if (isIOS) {
-        // Already showing iOS step-by-step drawer
-        return;
-      }
-      return;
-    }
+    if (!deferredPrompt) return;
     try {
       await deferredPrompt.prompt();
       const choice = await deferredPrompt.userChoice;
@@ -146,15 +136,11 @@ export default function PWAInstallPrompt() {
     } catch {}
   };
 
-  if (isStandalone || installedSuccessfully) {
-    return null;
-  }
+  if (isStandalone || installedSuccessfully) return null;
 
-  // Only show auto-popup and minimized badge on the homepage
-  // Other pages can still trigger the prompt via the "open-pwa-install" custom event
   const isHomePage = pathname === "/";
 
-  // If minimized, only show floating badge on homepage
+  // Minimized floating pill — homepage only
   if (isMinimized && !isOpen) {
     if (!isHomePage) return null;
     return (
@@ -165,11 +151,11 @@ export default function PWAInstallPrompt() {
           setIsOpen(true);
         }}
         aria-label={t("Open App Install Guide", "ऐप इंस्टॉल गाइड खोलें", "ऐप इंस्टॉल गाइड खोलव")}
-        className="fixed bottom-20 left-4 z-[140] flex items-center gap-2 rounded-full bg-slate-900/90 text-white px-3.5 py-2 text-xs font-bold shadow-xl backdrop-blur-md border border-slate-700/60 hover:bg-emerald-800 transition-all hover:scale-105 active:scale-95"
+        className="fixed bottom-20 left-4 z-[140] flex items-center gap-2 rounded-full bg-slate-900 text-white px-3.5 py-2 text-xs font-semibold shadow-lg border border-slate-700 hover:bg-slate-800 transition-colors active:scale-95"
       >
-        <Smartphone className="w-4 h-4 text-emerald-400" />
+        <Smartphone className="w-3.5 h-3.5 text-slate-300" />
         <span>{t("Install App", "ऐप इंस्टॉल करें", "ऐप डालव")}</span>
-        <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+        <ChevronUp className="w-3 h-3 text-slate-500" />
       </button>
     );
   }
@@ -177,173 +163,116 @@ export default function PWAInstallPrompt() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[150] pointer-events-none flex flex-col justify-end sm:justify-start sm:items-end p-0 sm:p-6 animate-in fade-in duration-200">
-      {/* Mobile Backdrop blur overlay (transparent touch to dismiss) */}
+    <div className="fixed inset-0 z-[150] pointer-events-none flex flex-col justify-end sm:justify-start sm:items-end p-0 sm:p-6">
+      {/* Backdrop — mobile only */}
       <div
-        className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs pointer-events-auto sm:hidden"
+        className="fixed inset-0 bg-slate-950/30 backdrop-blur-xs pointer-events-auto sm:hidden"
         onClick={handleDismiss}
       />
 
-      {/* Main Drawer / Modal Card */}
+      {/* Drawer card */}
       <aside
-        aria-label={t("Install KisanSetu Mobile App", "KisanSetu मोबाइल ऐप इंस्टॉल करें", "KisanSetu मोबाइल ऐप डालव")}
-        className="pointer-events-auto relative w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-2xl border border-slate-200 shadow-2xl overflow-hidden transition-all duration-300 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:pb-5"
+        aria-label={t("Install KisanSetu App", "KisanSetu ऐप इंस्टॉल करें", "KisanSetu ऐप डालव")}
+        className="pointer-events-auto relative w-full sm:max-w-sm bg-white rounded-t-2xl sm:rounded-xl border border-slate-200 shadow-2xl overflow-hidden pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-0"
       >
-        {/* Top Header Banner */}
-        <div className="bg-gradient-to-r from-emerald-850 via-emerald-800 to-teal-800 text-white p-4 sm:p-5 relative">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-2xl shadow-inner shrink-0">
-                🌾
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-extrabold text-base sm:text-lg text-white font-display tracking-tight">
-                    KisanSetu Direct PWA
-                  </h3>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-400/20 border border-emerald-300/30 text-emerald-200">
-                    v2.4
-                  </span>
-                </div>
-                <p className="text-xs text-emerald-100/90 mt-0.5">
-                  {t(
-                    "High-Speed Mobile App for Mandi Rates & Instant Payouts",
-                    "मंडी भाव और त्वरित भुगतान के लिए हाई-स्पीड मोबाइल ऐप",
-                    "मंडी भाव अउ झटपट पइसा बर तेज मोबाइल ऐप"
-                  )}
-                </p>
-              </div>
+        {/* Header */}
+        <div className="flex items-center justify-between gap-3 px-5 pt-5 pb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-800 flex items-center justify-center shrink-0">
+              <Sprout className="w-5 h-5 text-white" />
             </div>
-
-            <button
-              onClick={handleDismiss}
-              aria-label="Dismiss app install banner"
-              className="p-1.5 rounded-full bg-black/20 text-white/80 hover:text-white hover:bg-black/40 transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
+            <div>
+              <h3 className="font-bold text-sm text-slate-900 font-display">
+                {t("Install KisanSetu", "KisanSetu इंस्टॉल करें", "KisanSetu डालव")}
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {t("Add to your home screen", "होम स्क्रीन में जोड़ें", "होम स्क्रीन म जोड़व")}
+              </p>
+            </div>
           </div>
+          <button
+            onClick={handleDismiss}
+            aria-label="Dismiss"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
-        {/* Value Highlights */}
-        <div className="p-4 sm:p-5 space-y-3.5">
-          <div className="grid grid-cols-3 gap-2">
-            <div className="bg-emerald-50/70 border border-emerald-150 rounded-xl p-2.5 text-center">
-              <Zap className="w-4 h-4 text-emerald-700 mx-auto mb-1" />
-              <div className="text-[11px] font-bold text-slate-900">
-                {t("Zero Lag", "सुपर फास्ट", "सुपर फास्ट")}
-              </div>
-              <div className="text-[9px] text-slate-500">
-                {t("Works Offline", "ऑफ़लाइन मोड", "ऑफलाइन काम")}
-              </div>
-            </div>
+        {/* Benefits — compact list */}
+        <div className="px-5 pb-4">
+          <ul className="space-y-2">
+            <li className="flex items-center gap-2.5 text-xs text-slate-600">
+              <Zap className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+              <span>{t("Faster loads, works offline", "तेज़ लोड, ऑफ़लाइन चलता है", "तेज़ लोड, ऑफ़लाइन चलथे")}</span>
+            </li>
+            <li className="flex items-center gap-2.5 text-xs text-slate-600">
+              <Wifi className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+              <span>{t("Live mandi rate alerts", "लाइव मंडी भाव अलर्ट", "लाइव मंडी भाव अलर्ट")}</span>
+            </li>
+            <li className="flex items-center gap-2.5 text-xs text-slate-600">
+              <Smartphone className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+              <span>{t("No app store needed", "प्ले स्टोर की ज़रूरत नहीं", "प्ले स्टोर नई लगय")}</span>
+            </li>
+          </ul>
+        </div>
 
-            <div className="bg-emerald-50/70 border border-emerald-150 rounded-xl p-2.5 text-center">
-              <BellRing className="w-4 h-4 text-emerald-700 mx-auto mb-1" />
-              <div className="text-[11px] font-bold text-slate-900">
-                {t("Live Alerts", "रेट अलर्ट", "रेट अलर्ट")}
-              </div>
-              <div className="text-[9px] text-slate-500">
-                {t("Direct SMS & Push", "सीधे फोन पर", "सीधे फोन म")}
-              </div>
-            </div>
-
-            <div className="bg-emerald-50/70 border border-emerald-150 rounded-xl p-2.5 text-center">
-              <Sparkles className="w-4 h-4 text-emerald-700 mx-auto mb-1" />
-              <div className="text-[11px] font-bold text-slate-900">
-                {t("AI Cam Scan", "AI कैमरा", "AI कैमरा")}
-              </div>
-              <div className="text-[9px] text-slate-500">
-                {t("Instant Grading", "सटीक ग्रेडिंग", "सटीक ग्रेडिंग")}
-              </div>
-            </div>
-          </div>
-
-          {/* iOS Safari Guided Workflow */}
+        {/* Action */}
+        <div className="px-5 pb-5">
           {isIOS ? (
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2.5 text-xs text-slate-700">
-              <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
-                <Smartphone className="w-4 h-4 text-emerald-700" />
-                <span>
-                  {t(
-                    "Install on iPhone / iPad (Safari):",
-                    "iPhone / iPad (Safari) पर कैसे लगाएं:",
-                    "iPhone / iPad (Safari) म कइसे लगाय:"
-                  )}
-                </span>
-              </div>
-              <ol className="space-y-2 text-[11px] text-slate-600 pl-1">
+            /* iOS Safari step-by-step */
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3.5 space-y-2.5">
+              <p className="text-xs font-semibold text-slate-700">
+                {t("Install via Safari:", "Safari से इंस्टॉल करें:", "Safari ले इंस्टॉल करव:")}
+              </p>
+              <ol className="space-y-2 text-[11px] text-slate-600">
                 <li className="flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-150 text-emerald-800 font-bold text-[10px]">
-                    1
-                  </span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-700 font-bold text-[10px]">1</span>
                   <span>
-                    {t("Tap the", "नीचे", "नीचे")}{" "}
-                    <strong className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-slate-200 rounded text-slate-900">
+                    {t("Tap", "नीचे", "नीचे")}{" "}
+                    <strong className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-slate-200 rounded text-slate-800">
                       <Share2 className="w-3 h-3 inline" /> {t("Share", "शेयर", "शेयर")}
                     </strong>{" "}
-                    {t("icon in Safari's bottom toolbar.", "बटन पर टैप करें।", "बटन म दबावा।")}
+                    {t("in the toolbar", "बटन दबाएं", "बटन दबावा")}
                   </span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-150 text-emerald-800 font-bold text-[10px]">
-                    2
-                  </span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-700 font-bold text-[10px]">2</span>
                   <span>
-                    {t("Scroll down and select", "नीचे स्क्रॉल करें और", "नीचे जाव अउ")}{" "}
-                    <strong className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-slate-200 rounded text-slate-900">
+                    {t("Select", "चुनें", "चुनव")}{" "}
+                    <strong className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-slate-200 rounded text-slate-800">
                       <PlusSquare className="w-3 h-3 inline" /> {t("Add to Home Screen", "होम स्क्रीन पर जोड़ें", "होम स्क्रीन म जोड़व")}
                     </strong>
                   </span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-150 text-emerald-800 font-bold text-[10px]">
-                    3
-                  </span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-700 font-bold text-[10px]">3</span>
                   <span>
-                    {t("Tap", "ऊपर", "ऊपर")}{" "}
-                    <strong className="px-1 py-0.5 bg-emerald-100 text-emerald-900 rounded font-bold">
-                      {t("Add", "जोड़ें (Add)", "जोड़व")}
-                    </strong>{" "}
-                    {t("in the top right corner. Done!", "पर क्लिक करें। काम पूरा!", "म दबावा। काम होगे!")}
+                    {t("Tap", "दबाएं", "दबावा")}{" "}
+                    <strong className="px-1 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">{t("Add", "जोड़ें", "जोड़व")}</strong>
                   </span>
                 </li>
               </ol>
             </div>
           ) : (
-            /* Android / Chrome One-Tap Install Action */
-            <div className="space-y-2">
-              <button
-                type="button"
-                onClick={handleInstallClick}
-                className="w-full flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-700 hover:from-emerald-800 hover:to-emerald-600 text-white py-3 px-4 font-bold text-sm shadow-md shadow-emerald-950/20 active:scale-[0.98] transition-all cursor-pointer"
-              >
-                <Download className="w-4 h-4 text-emerald-200" />
-                <span>
-                  {t(
-                    "Install Free App (1-Tap)",
-                    "फ्री ऐप इंस्टॉल करें (1-टैप)",
-                    "फ्री ऐप डालव (1-टैप)"
-                  )}
-                </span>
-              </button>
-            </div>
-          )}
-
-          {/* Secondary Actions */}
-          <div className="flex items-center justify-between pt-1 text-[11px] text-slate-500">
-            <span className="flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              <span>{t("No App Store required · 1.2 MB", "प्ले स्टोर की जरूरत नहीं · 1.2 MB", "प्ले स्टोर नई लगय · 1.2 MB")}</span>
-            </span>
+            /* Android / Chrome / Edge one-tap install */
             <button
               type="button"
-              onClick={handleDismiss}
-              className="text-slate-500 hover:text-slate-800 font-medium underline underline-offset-2"
+              onClick={handleInstallClick}
+              className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white py-2.5 px-4 font-semibold text-sm transition-colors active:scale-[0.98] cursor-pointer"
             >
-              {t("Maybe later", "बाद में", "पाछू")}
+              <Download className="w-4 h-4" />
+              <span>{t("Install App", "ऐप इंस्टॉल करें", "ऐप डालव")}</span>
             </button>
-          </div>
+          )}
+
+          <button
+            type="button"
+            onClick={handleDismiss}
+            className="w-full mt-2 text-center text-xs text-slate-400 hover:text-slate-600 font-medium py-1.5 transition-colors"
+          >
+            {t("Not now", "अभी नहीं", "अभी नहीं")}
+          </button>
         </div>
       </aside>
     </div>

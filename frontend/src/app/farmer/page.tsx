@@ -49,6 +49,7 @@ import {
   Navigation,
 } from "lucide-react";
 
+import { LiveCameraCapture } from "@/components/farmer/LiveCameraCapture";
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
   ssr: false,
   loading: () => (
@@ -72,6 +73,7 @@ type QualityState = {
   uploading: boolean;
   gradeResult: any | null;
   error?: string | null;
+  captureToken?: string;
 };
 
 const makeEmptyQualityState = (): QualityState => ({
@@ -131,6 +133,8 @@ export default function FarmerPage() {
   });
 
   const fileRefs = useRef<Partial<Record<CropType, HTMLInputElement | null>>>({});
+
+  const [activeCameraCrop, setActiveCameraCrop] = useState<CropType | null>(null);
 
   const [activeCertCrop, setActiveCertCrop] = useState<CropType | null>(null);
   const [scanStageMap, setScanStageMap] = useState<Partial<Record<CropType, string>>>({});
@@ -647,6 +651,60 @@ export default function FarmerPage() {
     }, 400);
   };
 
+  const handleLiveCaptureForCrop = (crop_type: CropType) => {
+    return async (data: {
+      photoUrl: string;
+      photos?: string[];
+      captureToken: string;
+      calibrationConfidence: number;
+      captureMode: "multi_angle" | "video_sweep";
+      antiFraudSummary?: any;
+    }) => {
+      setActiveCameraCrop(null);
+      setQualityByCrop((prev) => ({
+        ...prev,
+        [crop_type]: {
+          ...prev[crop_type],
+          uploading: true,
+          previewUrl: data.photoUrl,
+          previewType: data.captureMode === "video_sweep" ? "video" : "image",
+          gradeResult: null,
+          captureToken: data.captureToken,
+        },
+      }));
+      setScanStageMap((prev) => ({ ...prev, [crop_type]: "Validating anti-spoof signed token..." }));
+      setTimeout(() => setScanStageMap((prev) => ({ ...prev, [crop_type]: "2D-FFT Moiré & spectral peak verification..." })), 1000);
+      setTimeout(() => setScanStageMap((prev) => ({ ...prev, [crop_type]: "Optical coin scale & 3D produce volume estimation..." })), 2200);
+      setTimeout(() => setScanStageMap((prev) => ({ ...prev, [crop_type]: "Finalizing multi-angle Agmarknet certification..." })), 3500);
+
+      try {
+        const grading = await apiService.gradeProducePhoto(`demo-lot-${Date.now()}`, data.photoUrl, crop_type);
+        setScanStageMap((prev) => ({ ...prev, [crop_type]: undefined }));
+        setQualityByCrop((prev) => ({
+          ...prev,
+          [crop_type]: {
+            ...prev[crop_type],
+            gradeResult: grading,
+            uploading: false,
+            error: null,
+            captureToken: data.captureToken,
+          },
+        }));
+      } catch (e) {
+        console.error("Grading failed", e);
+        setScanStageMap((prev) => ({ ...prev, [crop_type]: undefined }));
+        setQualityByCrop((prev) => ({
+          ...prev,
+          [crop_type]: {
+            ...prev[crop_type],
+            uploading: false,
+            error: "Failed to grade image. Please try again or check your network.",
+          },
+        }));
+      }
+    };
+  };
+
   const allHaveMedia = cropLines.every((l) => !!qualityByCrop[l.crop_type]?.previewUrl);
   const allGradingPassed = cropLines.every((l) => {
     const qc = qualityByCrop[l.crop_type];
@@ -679,6 +737,7 @@ export default function FarmerPage() {
 
       for (const line of cropLines) {
         const media = qualityByCrop[line.crop_type]?.previewUrl;
+        const captureToken = qualityByCrop[line.crop_type]?.captureToken;
         const reqData: CreateListingRequest = {
           crop_type: line.crop_type,
           quantity_kg: line.quantity_kg,
@@ -687,6 +746,7 @@ export default function FarmerPage() {
           farmer_phone: currentUser?.phone || "+91 98271 23456",
           location: { ...location, address },
           photo_url: media || undefined,
+          capture_token: captureToken,
           language: "hi",
         };
 
@@ -1363,78 +1423,106 @@ export default function FarmerPage() {
                       ) : null}
                     </div>
 
-                    <div
-                      className="relative overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-4 sm:p-6 text-center cursor-pointer hover:bg-slate-100/70 transition-all group"
-                      onClick={() => !qc.uploading && fileRefs.current[line.crop_type]?.click()}
-                    >
-                      {qc.previewUrl ? (
-                        <div className="relative mx-auto rounded-lg border border-slate-200 overflow-hidden shadow-xs max-w-xl">
-                          {qc.previewType === "video" ? (
-                            <video
-                              src={qc.previewUrl}
-                              controls
-                              className="w-full h-56 object-cover bg-black"
-                              onClick={(e) => e.stopPropagation()}
-                            />
-                          ) : (
-                            <img src={qc.previewUrl} alt="Crop sample" className="w-full h-56 object-cover bg-black" />
-                          )}
+                    {activeCameraCrop === line.crop_type ? (
+                      <div className="mb-4">
+                        <LiveCameraCapture
+                          cropType={line.crop_type}
+                          onCaptureComplete={handleLiveCaptureForCrop(line.crop_type)}
+                          onCancel={() => setActiveCameraCrop(null)}
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className="relative overflow-hidden rounded-xl border-2 border-dashed border-emerald-300 bg-emerald-50/20 p-4 sm:p-6 text-center cursor-pointer hover:bg-emerald-50/50 transition-all group"
+                        onClick={() => !qc.uploading && setActiveCameraCrop(line.crop_type)}
+                      >
+                        {qc.previewUrl ? (
+                          <div className="relative mx-auto rounded-lg border border-slate-200 overflow-hidden shadow-xs max-w-xl">
+                            {qc.previewType === "video" ? (
+                              <video
+                                src={qc.previewUrl}
+                                controls
+                                className="w-full h-56 object-cover bg-black"
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            ) : (
+                              <img src={qc.previewUrl} alt="Crop sample" className="w-full h-56 object-cover bg-black" />
+                            )}
 
-                          {qc.uploading && (
-                            <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-xs flex flex-col items-center justify-center p-4 text-white">
-                              {/* Laser scan line animation */}
-                              <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent animate-[scan_2s_ease-in-out_infinite] top-0 shadow-[0_0_12px_#34d399]" />
+                            {qc.uploading && (
+                              <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-xs flex flex-col items-center justify-center p-4 text-white">
+                                {/* Laser scan line animation */}
+                                <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent animate-[scan_2s_ease-in-out_infinite] top-0 shadow-[0_0_12px_#34d399]" />
 
-                              <div className="bg-white/10 border border-white/20 px-4 py-3 rounded-xl backdrop-blur-md max-w-sm w-full space-y-2 shadow-2xl">
-                                <div className="flex items-center gap-2 justify-center text-xs font-bold text-emerald-400 uppercase tracking-wide">
-                                  <Sparkles className="h-4 w-4 animate-spin text-emerald-300" />
-                                  <span>{t("AI Vision Analysis Running", "AI विज़न विश्लेषण जारी", "AI विज़न जांच चालू हे")}</span>
-                                </div>
-                                <p className="text-xs text-slate-200 font-medium text-center">
-                                  {stageText || t("Analyzing produce pixels with Computer Vision...", "फसल विज़न विश्लेषण कर रहे हैं...", "फसल जांचत हन...")}
-                                </p>
-                                <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden">
-                                  <div className="bg-emerald-400 h-full rounded-full animate-[pulse_1.5s_ease-in-out_infinite] w-3/4" />
+                                <div className="bg-white/10 border border-white/20 px-4 py-3 rounded-xl backdrop-blur-md max-w-sm w-full space-y-2 shadow-2xl">
+                                  <div className="flex items-center gap-2 justify-center text-xs font-bold text-emerald-400 uppercase tracking-wide">
+                                    <Sparkles className="h-4 w-4 animate-spin text-emerald-300" />
+                                    <span>{t("AI Vision Analysis Running", "AI विज़न विश्लेषण जारी", "AI विज़न जांच चालू हे")}</span>
+                                  </div>
+                                  <p className="text-xs text-slate-200 font-medium text-center">
+                                    {stageText || t("Analyzing produce pixels with Computer Vision...", "फसल विज़न विश्लेषण कर रहे हैं...", "फसल जांचत हन...")}
+                                  </p>
+                                  <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden">
+                                    <div className="bg-emerald-400 h-full rounded-full animate-[pulse_1.5s_ease-in-out_infinite] w-3/4" />
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          )}
+                            )}
 
-                          {!qc.uploading && (
-                            <button
+                            {!qc.uploading && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveCameraCrop(line.crop_type);
+                                }}
+                                className="absolute bottom-2 right-2 bg-emerald-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-emerald-700 shadow-xs hover:bg-emerald-900 transition-colors cursor-pointer min-h-[36px] flex items-center gap-1.5"
+                              >
+                                <Camera className="w-3.5 h-3.5" />
+                                {t("Retake 4-Angle Sweep", "4-कोणीय फोटो फिर से लें", "4-कोना फोटो फिर लेव")}
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center gap-3 py-6">
+                            <div className="h-14 w-14 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+                              <Camera className="h-7 w-7" />
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-sm font-black text-slate-900">
+                                {t("Launch 4-Angle Guided Live Camera / 5s Video Sweep", "4-कोणीय लाइव कैमरा / 5s वीडियो स्वीप शुरू करें", "4-कोना लाइव कैमरा / 5s वीडियो स्वीप चालू करव")}
+                              </p>
+                              <p className="text-xs text-slate-600 font-medium max-w-md mx-auto">
+                                {t("Enforces Top, Side, Sliced & Bulk pile photos with ₹5/₹10 coin scale calibration. Gallery uploads disabled for anti-fraud.", "नकली फोटो रोकने के लिए 4 कोण (ऊपर, बाजू, कटा हुआ, ढेर) और ₹5/₹10 सिक्का माप अनिवार्य है।", "फर्जीवाड़ा रोके बर 4 कोना आ सिक्का नाप जरूरी हे।")}
+                              </p>
+                            </div>
+                            <Button
                               type="button"
+                              variant="primary"
+                              size="sm"
+                              className="bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs mt-1"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                fileRefs.current[line.crop_type]?.click();
+                                setActiveCameraCrop(line.crop_type);
                               }}
-                              className="absolute bottom-2 right-2 bg-white text-xs font-bold text-slate-800 px-3 py-1.5 rounded-lg border border-slate-300 shadow-xs hover:bg-slate-50 transition-colors cursor-pointer min-h-[36px]"
                             >
-                              {t("Change Photo", "फोटो बदलें", "फोटो बदलव")}
-                            </button>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center gap-3 py-6">
-                          <div className="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 shadow-2xs group-hover:scale-105 transition-transform">
-                            <Camera className="h-6 w-6 text-emerald-800" />
+                              <Camera className="w-3.5 h-3.5 mr-1.5" />
+                              {t("Open 4-Angle Live Camera Rig", "4-कोणीय लाइव कैमरा रिग खोलें", "4-कोना कैमरा रिग खोलव")}
+                            </Button>
                           </div>
-                          <div>
-                            <p className="text-sm font-bold text-slate-900">{t("Tap to take photo or upload crop video", "फोटो लेने या वीडियो अपलोड करने के लिए टैप करें", "फोटो लेहे या वीडियो डाले बर टैप करव")}</p>
-                            <p className="text-xs text-slate-500 font-medium mt-0.5">JPEG, PNG, MP4 • {t("Max 50MB", "अधिकतम 50MB", "ज्यादा से ज्यादा 50MB")}</p>
-                          </div>
-                        </div>
-                      )}
+                        )}
 
-                      <input
-                        ref={(el) => {
-                          fileRefs.current[line.crop_type] = el;
-                        }}
-                        type="file"
-                        accept="image/*,video/*"
-                        onChange={handleMediaForCrop(line.crop_type)}
-                        className="hidden"
-                      />
-                    </div>
+                        <input
+                          ref={(el) => {
+                            fileRefs.current[line.crop_type] = el;
+                          }}
+                          type="file"
+                          accept="image/*,video/*"
+                          onChange={handleMediaForCrop(line.crop_type)}
+                          className="hidden"
+                        />
+                      </div>
+                    )}
 
                     {/* Quick Demo Benchmarks for Testing */}
                     <div className="mt-3 p-3 rounded-xl border border-slate-200 bg-slate-50/80 space-y-2 text-left">

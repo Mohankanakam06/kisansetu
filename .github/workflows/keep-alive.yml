@@ -1,0 +1,20 @@
+name: Keep Render Backend Alive
+
+on:
+  schedule:
+    # Run every 10 minutes to prevent the Render 15-minute inactivity spin-down
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+    # Allow manual triggering from the GitHub Actions UI
+
+jobs:
+  ping-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Backend Health Endpoint
+        # Change 'your-render-app' below to your actual backend URL, or use a GitHub Secret.
+        run: |
+          BACKEND_URL=${{ secrets.RENDER_BACKEND_URL }}
+          BACKEND_URL="${BACKEND_URL:-https://kisansetu-backend.onrender.com}"
+          echo "Pinging health endpoint: $BACKEND_URL/api/health"
+          curl -f -s "$BACKEND_URL/api/health" || echo "Ping failed, but checking continued."

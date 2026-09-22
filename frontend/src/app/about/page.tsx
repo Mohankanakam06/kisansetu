@@ -16,7 +16,7 @@ import {
   Target,
   Sparkles,
 } from "lucide-react";
-import { Button, Card } from "@/components/ui";
+import { Button, Card, InteractiveHoverButton } from "@/components/ui";
 import { useLanguage } from "@/lib/language";
 
 export default function AboutPage() {
@@ -291,16 +291,22 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link href="/farmer">
-              <Button size="lg" variant="primary" className="bg-white text-emerald-950 hover:bg-emerald-50 font-bold px-6 shadow-md">
-                <Sprout className="w-4 h-4 mr-2 text-emerald-700" />
+              <InteractiveHoverButton
+                variant="primary"
+                icon={<Sprout className="h-4 w-4" />}
+                className="font-bold px-6 h-[48px] bg-white text-emerald-950 border-white/80 hover:border-white"
+              >
                 {t("Sell Produce as Farmer", "किसान के रूप में फसल बेचें", "किसान बनके फसल बेचव")}
-              </Button>
+              </InteractiveHoverButton>
             </Link>
             <Link href="/buyer">
-              <Button size="lg" variant="secondary" className="bg-emerald-900/80 text-white border-emerald-700 hover:bg-emerald-800 font-bold px-6">
-                <ShieldCheck className="w-4 h-4 mr-2 text-amber-300" />
+              <InteractiveHoverButton
+                variant="harvest"
+                icon={<ShieldCheck className="h-4 w-4" />}
+                className="font-bold px-6 h-[48px]"
+              >
                 {t("Explore Buyer Marketplace", "थोक मंडी बाज़ार देखें", "थोक बाजार देखव")}
-              </Button>
+              </InteractiveHoverButton>
             </Link>
           </div>
         </div>

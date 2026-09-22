@@ -5,6 +5,7 @@ import { apiService } from "@/services/api";
 import { Button, Card, Badge } from "@/components/ui";
 import { useLanguage } from "@/lib/language";
 import { LiveCameraCapture } from "@/components/farmer/LiveCameraCapture";
+import { PhygitalStatusCard } from "@/components/farmer/PhygitalStatusCard";
 import {
   MapPin,
   Camera,
@@ -288,6 +289,15 @@ export default function FarmerListingForm() {
                 </div>
               </div>
             </div>
+
+            {/* Phygital Two-Stage Workflow & Escrow Card */}
+            <PhygitalStatusCard
+              listingId={result.listing_id || "list-demo-01"}
+              stage="pregrade"
+              escrowPickupReleased={false}
+              escrowFinalReleased={false}
+              preGrade="A"
+            />
           </div>
         </Card>
 

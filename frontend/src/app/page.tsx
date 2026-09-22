@@ -24,7 +24,7 @@ import {
   CircleDot,
   FileCheck,
 } from "lucide-react";
-import { Button, Card, Badge, cn } from "@/components/ui";
+import { Button, Card, Badge, cn, InteractiveHoverButton, GradientBackground, Compare1, VariableLetterText } from "@/components/ui";
 import { useLanguage } from "@/lib/language";
 import ProfitImpactSimulator from "@/components/simulator/ProfitImpactSimulator";
 
@@ -85,8 +85,11 @@ export default function Home() {
   return (
     <div className="flex-1 flex flex-col bg-[#F8FAFC]">
       {/* Hero Section: Asymmetric Split Hero with Live Mandi Trading Terminal */}
-      <section className="relative overflow-hidden bg-white border-b border-slate-200/90 py-12 lg:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden border-b border-slate-200/90 py-12 lg:py-16">
+        <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
+          <GradientBackground className="w-full h-full" />
+        </div>
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left Column: Core Value Proposition */}
             <div className="lg:col-span-7 space-y-6">
@@ -96,11 +99,18 @@ export default function Home() {
               </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 font-display leading-[1.15]">
-                {t(
-                  "Direct Agri Marketplace Connecting Farmers to Wholesale Buyers.",
-                  "किसानों को थोक खरीदारों से सीधे जोड़ने वाला कृषि बाज़ार।",
-                  "किसान ला थोक खरीदार ले सीधा जोड़े वाला कृषि बाज़ार।"
-                )}
+                <VariableLetterText
+                  label={t(
+                    "Direct Agri Marketplace Connecting Farmers to Wholesale Buyers.",
+                    "किसानों को थोक खरीदारों से सीधे जोड़ने वाला कृषि बाज़ार।",
+                    "किसान ला थोक खरीदार ले सीधा जोड़े वाला कृषि बाज़ार।"
+                  )}
+                  duration={0.6}
+                  staggerDuration={0.02}
+                  staggerFrom="first"
+                  fromFontWeight={700}
+                  toFontWeight={900}
+                />
               </h1>
 
               <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
@@ -114,16 +124,22 @@ export default function Home() {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                 <Link href="/farmer" className="sm:w-auto">
-                  <Button size="lg" variant="primary" className="w-full sm:w-auto px-6 py-3 text-sm font-bold bg-emerald-800 hover:bg-emerald-900 text-white flex items-center justify-center gap-2 shadow-xs min-h-[48px]">
-                    <Mic className="h-4 w-4" />
+                  <InteractiveHoverButton
+                    variant="solid-primary"
+                    icon={<Mic className="h-4 w-4" />}
+                    className="w-full sm:w-auto h-[48px]"
+                  >
                     {t("Sell Produce", "फसल दर्ज करें", "फसल दर्ज करव")}
-                  </Button>
+                  </InteractiveHoverButton>
                 </Link>
                 <Link href="/buyer" className="sm:w-auto">
-                  <Button size="lg" variant="secondary" className="w-full sm:w-auto px-6 py-3 text-sm font-bold bg-white border-slate-300 text-slate-800 hover:bg-slate-50 flex items-center justify-center gap-2 shadow-xs min-h-[48px]">
-                    <Store className="h-4 w-4 text-emerald-800" />
+                  <InteractiveHoverButton
+                    variant="secondary"
+                    icon={<Store className="h-4 w-4" />}
+                    className="w-full sm:w-auto h-[48px]"
+                  >
                     {t("Explore Wholesale Lots", "थोक लॉट बाजार देखें", "थोक लॉट बाजार देखव")}
-                  </Button>
+                  </InteractiveHoverButton>
                 </Link>
               </div>
 
@@ -221,9 +237,12 @@ export default function Home() {
 
                   <div className="pt-2">
                     <Link href="/buyer" className="w-full block">
-                      <Button variant="outline" size="sm" className="w-full justify-center text-xs font-bold border-slate-300 text-slate-800 hover:bg-slate-100">
+                      <InteractiveHoverButton
+                        variant="buyer"
+                        className="w-full justify-center text-xs font-bold"
+                      >
                         View All 14 Active Mandi Lots ({t("Live", "लाइव", "लाइव")})
-                      </Button>
+                      </InteractiveHoverButton>
                     </Link>
                   </div>
                 </div>
@@ -266,94 +285,8 @@ export default function Home() {
       </section>
 
       {/* Architectural Benchmark: Why KisanSetu Beats Mandis & Intermediaries */}
-      <section id="how-it-works" className="py-14 lg:py-18 bg-[#F8FAFC] scroll-mt-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="text-center max-w-3xl mx-auto space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md border border-emerald-200">
-              {t("Architectural Verification", "वास्तुकला सत्यापन", "आर्किटेक्चर सत्यापन")}
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">
-              {t("Direct Comparison with Mandis & Centralized AgriTech", "पारंपरिक मंडियों एवं केंद्रीकृत एग्रीटेक से तुलना", "मंडी आ एग्रीटेक ले तुलना")}
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600">
-              {t(
-                "How KisanSetu removes middleman markups while ensuring zero-delay UPI milestone settlement.",
-                "KisanSetu कैसे बिचौलियों के कमीशन को हटाकर त्वरित UPI भुगतान सुनिश्चित करता है।",
-                "KisanSetu कइसे बिचौलिया के कमीशन हटा के तुरत UPI पइसा देथे।"
-              )}
-            </p>
-          </div>
-
-          <div className="overflow-x-auto rounded-xl border border-slate-300 bg-white shadow-card">
-            <table className="w-full text-left border-collapse text-xs sm:text-sm">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50">
-                  <th className="p-4 font-bold text-slate-800 uppercase text-[11px] tracking-wider">{t("Trade Dimension", "व्यापार आयाम", "व्यापार आयाम")}</th>
-                  <th className="p-4 font-bold text-slate-600 uppercase text-[11px] tracking-wider">{t("Traditional Mandi (APMC)", "पारंपरिक मंडी", "पारंपरिक मंडी")}</th>
-                  <th className="p-4 font-bold text-slate-600 uppercase text-[11px] tracking-wider">{t("Centralized Agritech", "केंद्रीकृत एग्रीटेक", "एग्रीटेक कंपनी")}</th>
-                  <th className="p-4 font-bold text-emerald-900 bg-emerald-50/80 uppercase text-[11px] tracking-wider border-l border-emerald-200">{t("KisanSetu Direct Platform", "KisanSetu डायरेक्ट", "KisanSetu")}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
-                <tr>
-                  <td className="p-4 font-bold text-slate-900">{t("Intermediary Commission", "बिचौलिया कमीशन", "बिचौलिया कमीशन")}</td>
-                  <td className="p-4 text-rose-700 font-semibold">15%–25% (Arhatiya + Traders)</td>
-                  <td className="p-4 text-amber-800 font-semibold">8%–15% Platform Take-Rate</td>
-                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-900 border-l border-emerald-200">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Check className="w-4 h-4 text-emerald-700 shrink-0" />
-                      0% Broker Cut (Protected Direct Settlement)
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 font-bold text-slate-900">{t("Quality Grading & Certification", "गुणवत्ता जांच एवं ग्रेडिंग", "क्वालिटी जांच")}</td>
-                  <td className="p-4 text-slate-600">Subjective visual glance by trader</td>
-                  <td className="p-4 text-slate-600">Central warehouse manual grading</td>
-                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-900 border-l border-emerald-200">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Check className="w-4 h-4 text-emerald-700 shrink-0" />
-                      Instant Quality Assessment (Grade A/B/C/D)
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 font-bold text-slate-900">{t("Logistics Consolidation", "लॉजिस्टिक्स एकत्रीकरण", "गाड़ी एकत्रीकरण")}</td>
-                  <td className="p-4 text-slate-600">Each farmer hires separate tractor</td>
-                  <td className="p-4 text-slate-600">Central collection center haulage</td>
-                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-900 border-l border-emerald-200">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Check className="w-4 h-4 text-emerald-700 shrink-0" />
-                      Consolidated 1-Truck Multi-Pickup
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 font-bold text-slate-900">{t("Payment & Settlement Release", "सुरक्षित भुगतान एवं निपटान", "पइसा भुगतान")}</td>
-                  <td className="p-4 text-rose-700 font-semibold">15–45 days delayed credit</td>
-                  <td className="p-4 text-amber-800 font-semibold">3–7 banking days</td>
-                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-900 border-l border-emerald-200">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Check className="w-4 h-4 text-emerald-700 shrink-0" />
-                      Instant 2-Stage UPI (40% load / 60% delivery)
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 font-bold text-slate-900">{t("Voice & Multilingual Accessibility", "आवाज़ एवं बहुभाषी सुविधा", "आवाज आ भाषा")}</td>
-                  <td className="p-4 text-slate-600">Physical attendance required</td>
-                  <td className="p-4 text-slate-600">Complex app forms only</td>
-                  <td className="p-4 bg-emerald-50/50 font-bold text-emerald-900 border-l border-emerald-200">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Check className="w-4 h-4 text-emerald-700 shrink-0" />
-                      Voice Assistant (Hindi, CG, English)
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <section id="how-it-works" className="scroll-mt-16 bg-[#F8FAFC]">
+        <Compare1 />
       </section>
 
       {/* The 4 Autonomous AI Agent Pillars */}

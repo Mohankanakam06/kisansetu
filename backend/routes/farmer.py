@@ -124,9 +124,9 @@ def farmer_listing(body: FarmerListingRequest, auth_payload: dict = Depends(requ
             transcript = transcribe_audio(media_url, body.language or "hi")
 
         parsed = parse_listing(transcript or "do quintal tamatar", body.language or "hi")
-        crop_val = parsed.get("crop") or "Tomato"
-        qty_val = float(parsed.get("quantity") or 100.0)
-        price_val = float(parsed.get("price") or 25.0)
+        crop_val = parsed.get("crop_type") or parsed.get("crop") or "Tomato"
+        qty_val = float(parsed.get("quantity_kg") or parsed.get("quantity") or 100.0)
+        price_val = float(parsed.get("price_expectation") or parsed.get("price") or 25.0)
 
     crop_val = str(crop_val).strip().capitalize()
     qty_val = float(qty_val)

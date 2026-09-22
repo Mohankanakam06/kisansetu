@@ -37,6 +37,7 @@ interface NavItem {
 const PUBLIC_NAV: NavItem[] = [
   { href: "/pricing", label: "Dynamic Pricing", labelHi: "डायनामिक मूल्य", labelCg: "भाव इंजन", icon: TrendingUp },
   { href: "/buyer", label: "Wholesale Marketplace", labelHi: "थोक बाजार", labelCg: "थोक बाजार", icon: Store },
+  { href: "/driver", label: "Pickup Audit", labelHi: "पिकअप ऑडिट", labelCg: "पिकअप जांच", icon: Layers },
   { href: "/#how-it-works", label: "Mandi Comparison", labelHi: "मंडी तुलना", labelCg: "मंडी तुलना", icon: Scale },
 ];
 
@@ -45,6 +46,7 @@ const FARMER_NAV: NavItem[] = [
   { href: "/farmer", label: "Sell Produce", labelHi: "फसल दर्ज करें", labelCg: "फसल बेचंव", icon: Sprout },
   { href: "/pricing", label: "Dynamic Pricing", labelHi: "डायनामिक मूल्य", labelCg: "भाव इंजन", icon: TrendingUp },
   { href: "/orders", label: "Pickup & Logistics", labelHi: "पिकअप और वाहन", labelCg: "पिकअप आ गाड़ी", icon: LayoutDashboard },
+  { href: "/driver", label: "Physical Audit", labelHi: "फिजिकल ऑडिट", labelCg: "जांच केंद्र", icon: Layers },
   { href: "/earnings", label: "Earnings & UPI", labelHi: "कमाई और UPI", labelCg: "कमाई आ पइसा", icon: Wallet },
 ];
 

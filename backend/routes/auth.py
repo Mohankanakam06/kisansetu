@@ -143,9 +143,18 @@ class RegisterRequest(BaseModel):
 
 
 def _normalize_user(row, fallback_name="Farmer User", fallback_role="farmer", phone="", email=None):
-    """Tolerate minimal/mock DB rows that may lack name/phone/role/language_pref keys."""
+    """Tolerate minimal/mock DB rows that may lack name/phone/role/language_pref keys.
+    If row is None or empty, construct a synthetic user using fallback values.
+    """
     if not row:
-        return None
+        return {
+            "id": str(uuid.uuid4()),
+            "name": fallback_name,
+            "phone": phone,
+            "email": email,
+            "role": fallback_role,
+            "language_pref": "hi",
+        }
     role = row.get("role") or fallback_role
     return {
         "id": str(row.get("id") or uuid.uuid4()),
