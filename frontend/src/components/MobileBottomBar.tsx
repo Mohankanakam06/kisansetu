@@ -13,6 +13,7 @@ import {
   CircleUser,
   Layers,
   Package,
+  Sparkles,
 } from "lucide-react";
 import { useLanguage } from "@/lib/language";
 
@@ -55,6 +56,7 @@ export default function MobileBottomBar() {
   const isEarningsActive = pathname === "/earnings" || pathname.startsWith("/earnings/");
   const isPricingActive = pathname === "/pricing" || pathname.startsWith("/pricing/");
   const isDriverActive = pathname === "/driver" || pathname.startsWith("/driver/");
+  const isAboutActive = pathname === "/about" || pathname.startsWith("/about/");
 
   return (
     <nav
@@ -76,7 +78,7 @@ export default function MobileBottomBar() {
           {isMarketActive && <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />}
         </Link>
 
-        {/* Item 2: Role-dependent: Pricing for Buyer / Orders for Farmer */}
+        {/* Item 2: Role-dependent */}
         {isBuyer ? (
           <Link
             href="/pricing"
@@ -90,7 +92,7 @@ export default function MobileBottomBar() {
             <span className="text-[10px] tracking-tight mt-1 leading-none">{t("Pricing", "भाव", "भाव")}</span>
             {isPricingActive && <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />}
           </Link>
-        ) : (
+        ) : isFarmer ? (
           <Link
             href="/orders"
             className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-all relative ${
@@ -106,6 +108,19 @@ export default function MobileBottomBar() {
             </div>
             <span className="text-[10px] tracking-tight mt-1 leading-none">{t("Orders", "ऑर्डर", "ऑर्डर")}</span>
             {isOrdersActive && <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />}
+          </Link>
+        ) : (
+          <Link
+            href="/pricing"
+            className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-all relative ${
+              isPricingActive ? "text-emerald-800 font-extrabold" : "text-slate-500 hover:text-slate-900 font-medium"
+            }`}
+          >
+            <div className="relative">
+              <TrendingUp className={`h-5 w-5 transition-transform ${isPricingActive ? "scale-110 text-emerald-800" : ""}`} />
+            </div>
+            <span className="text-[10px] tracking-tight mt-1 leading-none">{t("Pricing", "भाव", "भाव")}</span>
+            {isPricingActive && <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />}
           </Link>
         )}
 
@@ -171,16 +186,16 @@ export default function MobileBottomBar() {
           </Link>
         ) : (
           <Link
-            href="/pricing"
+            href="/about"
             className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-all relative ${
-              isPricingActive ? "text-emerald-800 font-extrabold" : "text-slate-500 hover:text-slate-900 font-medium"
+              isAboutActive ? "text-emerald-800 font-extrabold" : "text-slate-500 hover:text-slate-900 font-medium"
             }`}
           >
             <div className="relative">
-              <TrendingUp className={`h-5 w-5 transition-transform ${isPricingActive ? "scale-110 text-emerald-800" : ""}`} />
+              <Sparkles className={`h-5 w-5 transition-transform ${isAboutActive ? "scale-110 text-emerald-800" : ""}`} />
             </div>
-            <span className="text-[10px] tracking-tight mt-1 leading-none">{t("Pricing", "भाव", "भाव")}</span>
-            {isPricingActive && <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />}
+            <span className="text-[10px] tracking-tight mt-1 leading-none">{t("About", "जानकारी", "जानकारी")}</span>
+            {isAboutActive && <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />}
           </Link>
         )}
 

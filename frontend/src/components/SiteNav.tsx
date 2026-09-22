@@ -38,12 +38,18 @@ interface NavItem {
 }
 
 // Role-specific desktop top navigation
+const DESKTOP_NAV_GUEST: NavItem[] = [
+  { href: "/buyer", label: "Wholesale Lots", labelHi: "थोक लॉट बाजार", labelCg: "थोक लॉट बाजार", icon: Store },
+  { href: "/pricing", label: "Dynamic Pricing", labelHi: "डायनामिक मूल्य", labelCg: "भाव इंजन", icon: TrendingUp },
+  { href: "/farmer", label: "Sell Produce", labelHi: "फसल दर्ज करें", labelCg: "फसल बेचंव", icon: Sprout },
+  { href: "/about", label: "How It Works", labelHi: "यह कैसे काम करता है", labelCg: "कइसे काम करथे", icon: Sparkles },
+];
+
 const DESKTOP_NAV_FARMER: NavItem[] = [
   { href: "/farmer", label: "Sell Produce", labelHi: "फसल दर्ज करें", labelCg: "फसल बेचंव", icon: Sprout },
   { href: "/buyer", label: "Wholesale Lots", labelHi: "थोक लॉट बाजार", labelCg: "थोक लॉट बाजार", icon: Store },
   { href: "/pricing", label: "Dynamic Pricing", labelHi: "डायनामिक मूल्य", labelCg: "भाव इंजन", icon: TrendingUp },
   { href: "/orders", label: "Orders & Logistics", labelHi: "ऑर्डर और लॉजिस्टिक्स", labelCg: "ऑर्डर आ गाड़ी", icon: LayoutDashboard },
-  { href: "/driver", label: "Pickup Audit", labelHi: "पिकअप ऑडिट", labelCg: "जांच केंद्र", icon: Layers },
   { href: "/earnings", label: "Earnings", labelHi: "कमाई", labelCg: "कमाई", icon: Wallet },
 ];
 
@@ -55,6 +61,39 @@ const DESKTOP_NAV_BUYER: NavItem[] = [
 ];
 
 // Categorized navigation for comprehensive Mobile & PWA drawer
+const DRAWER_MARKETPLACE_GUEST: NavItem[] = [
+  {
+    href: "/buyer",
+    label: "Wholesale Marketplace",
+    labelHi: "थोक मंडी बाजार",
+    labelCg: "थोक मंडी बाजार",
+    desc: "Browse aggregated lots with guaranteed escrow",
+    descHi: "सुरक्षित एस्क्रो के साथ थोक लॉट खरीदें",
+    descCg: "सुरक्षित एस्क्रो संग थोक लॉट बिसाव",
+    icon: Store,
+  },
+  {
+    href: "/pricing",
+    label: "Dynamic Pricing Engine",
+    labelHi: "डायनामिक मूल्य इंजन",
+    labelCg: "भाव इंजन",
+    desc: "Real-time mandi benchmarks & quality multipliers",
+    descHi: "लाइव मंडी दर और गुणवत्ता आधारित मूल्यांकन",
+    descCg: "लाइव मंडी भाव आ गुणवत्ता जांच",
+    icon: TrendingUp,
+  },
+  {
+    href: "/farmer",
+    label: "Sell Produce & AI Grading",
+    labelHi: "फसल दर्ज करें व AI ग्रेडिंग",
+    labelCg: "फसल बेचंव आ AI जांच",
+    desc: "List harvest, test moisture & get fair price",
+    descHi: "फसल लिस्ट करें, नमी जांचें और सही मूल्य पाएं",
+    descCg: "फसल दर्ज करव, नमी नापव आ सही भाव पाव",
+    icon: Sprout,
+  },
+];
+
 const DRAWER_MARKETPLACE_FARMER: NavItem[] = [
   {
     href: "/farmer",
@@ -118,6 +157,39 @@ const DRAWER_MARKETPLACE_BUYER: NavItem[] = [
     descHi: "किसान फसल लिस्टिंग और नमी जांच",
     descCg: "किसान फसल आ नमी जांच",
     icon: Sprout,
+  },
+];
+
+const DRAWER_GUEST_INFO: NavItem[] = [
+  {
+    href: "/about",
+    label: "How KisanSetu Works",
+    labelHi: "KisanSetu कैसे काम करता है",
+    labelCg: "KisanSetu कइसे काम करथे",
+    desc: "Direct farmer-to-buyer aggregation & 1-truck logistics",
+    descHi: "सीधा किसान-खरीदार एकत्रीकरण व 1-ट्रक लॉजिस्टिक्स",
+    descCg: "सीधा किसान-खरीदार मेल आ 1-गाड़ी लॉजिस्टिक्स",
+    icon: Sparkles,
+  },
+  {
+    href: "/quality",
+    label: "AI Quality & Grading Demo",
+    labelHi: "AI गुणवत्ता व ग्रेडिंग डेमो",
+    labelCg: "AI गुणवत्ता जांच डेमो",
+    desc: "Computer vision moisture and defect assessment",
+    descHi: "कंप्यूटर विज़न नमी व डिफेक्ट मूल्यांकन",
+    descCg: "कंप्यूटर विज़न नमी आ खराबी जांच",
+    icon: ShieldCheck,
+  },
+  {
+    href: "/support",
+    label: "Support & Help Center",
+    labelHi: "सहायता और सपोर्ट केंद्र",
+    labelCg: "मदद आ सहायता केंद्र",
+    desc: "24x7 farmer assistance in Hindi and Chhattisgarhi",
+    descHi: "24x7 किसान सहायता और समाधान",
+    descCg: "24x7 किसान मदद आ समाधान",
+    icon: Layers,
   },
 ];
 
@@ -233,8 +305,27 @@ export default function SiteNav() {
   };
 
   const isBuyer = user?.role === "buyer";
-  const desktopNav = isBuyer ? DESKTOP_NAV_BUYER : DESKTOP_NAV_FARMER;
-  const drawerMarketplace = isBuyer ? DRAWER_MARKETPLACE_BUYER : DRAWER_MARKETPLACE_FARMER;
+  const isFarmer = user?.role === "farmer";
+
+  const desktopNav = isBuyer
+    ? DESKTOP_NAV_BUYER
+    : isFarmer
+    ? DESKTOP_NAV_FARMER
+    : DESKTOP_NAV_GUEST;
+
+  const drawerMarketplace = isBuyer
+    ? DRAWER_MARKETPLACE_BUYER
+    : isFarmer
+    ? DRAWER_MARKETPLACE_FARMER
+    : DRAWER_MARKETPLACE_GUEST;
+
+  const drawerSecondary = user
+    ? DRAWER_OPERATIONS
+    : DRAWER_GUEST_INFO;
+
+  const drawerSecondaryTitle = user
+    ? t("Logistics & Settlements", "लॉजिस्टिक्स और भुगतान", "लॉजिस्टिक्स आ पइसा")
+    : t("About Platform & Security", "प्लेटफॉर्म और सुरक्षा", "प्लेटफॉर्म आ सुरक्षा");
 
   return (
     <nav aria-label="Primary Navigation" className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
@@ -373,7 +464,7 @@ export default function SiteNav() {
                 </button>
               </div>
 
-              {/* User status card */}
+              {/* User status card or Guest Banner */}
               {user ? (
                 <div className="mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
@@ -393,7 +484,30 @@ export default function SiteNav() {
                     {t("Profile", "प्रोफ़ाइल", "प्रोफ़ाइल")}
                   </Link>
                 </div>
-              ) : null}
+              ) : (
+                <div className="mt-4 p-3.5 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 rounded-xl">
+                  <p className="text-xs font-bold text-emerald-950">{t("Welcome to KisanSetu", "KisanSetu में आपका स्वागत है", "KisanSetu म स्वागत हे")}</p>
+                  <p className="text-[11px] text-emerald-800/80 mt-0.5 leading-snug">
+                    {t("Sign in to access your farm listings, orders, and UPI settlements.", "अपनी फसल लिस्टिंग, ऑर्डर और UPI भुगतान के लिए साइन इन करें।", "अपन फसल, ऑर्डर आ UPI भुगतान बर साइन इन करव।")}
+                  </p>
+                  <div className="mt-2.5 flex items-center gap-2">
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex-1 text-center py-1.5 px-3 rounded-lg bg-emerald-800 text-white text-xs font-bold hover:bg-emerald-900 transition-colors shadow-2xs"
+                    >
+                      {t("Sign In", "साइन इन", "साइन इन")}
+                    </Link>
+                    <Link
+                      href="/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex-1 text-center py-1.5 px-3 rounded-lg bg-white border border-emerald-300 text-emerald-900 text-xs font-bold hover:bg-emerald-50 transition-colors shadow-2xs"
+                    >
+                      {t("Register", "रजिस्टर", "रजिस्टर")}
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Drawer Body with Categorized Options */}
@@ -431,13 +545,13 @@ export default function SiteNav() {
                 </div>
               </div>
 
-              {/* Category 2: Operations & Logistics */}
+              {/* Category 2: Operations / Platform Info */}
               <div className="space-y-2">
                 <p className="px-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  {t("Logistics & Settlements", "लॉजिस्टिक्स और भुगतान", "लॉजिस्टिक्स आ पइसा")}
+                  {drawerSecondaryTitle}
                 </p>
                 <div className="space-y-1.5">
-                  {DRAWER_OPERATIONS.map((item) => {
+                  {drawerSecondary.map((item) => {
                     const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
                     const Icon = item.icon;
                     return (
