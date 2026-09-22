@@ -37,8 +37,8 @@ interface NavItem {
   icon?: any;
 }
 
-// Universal navigation for top bar
-const DESKTOP_NAV: NavItem[] = [
+// Role-specific desktop top navigation
+const DESKTOP_NAV_FARMER: NavItem[] = [
   { href: "/farmer", label: "Sell Produce", labelHi: "फसल दर्ज करें", labelCg: "फसल बेचंव", icon: Sprout },
   { href: "/buyer", label: "Wholesale Lots", labelHi: "थोक लॉट बाजार", labelCg: "थोक लॉट बाजार", icon: Store },
   { href: "/pricing", label: "Dynamic Pricing", labelHi: "डायनामिक मूल्य", labelCg: "भाव इंजन", icon: TrendingUp },
@@ -47,8 +47,15 @@ const DESKTOP_NAV: NavItem[] = [
   { href: "/earnings", label: "Earnings", labelHi: "कमाई", labelCg: "कमाई", icon: Wallet },
 ];
 
+const DESKTOP_NAV_BUYER: NavItem[] = [
+  { href: "/buyer", label: "Wholesale Lots", labelHi: "थोक लॉट बाजार", labelCg: "थोक लॉट बाजार", icon: Store },
+  { href: "/pricing", label: "Dynamic Pricing", labelHi: "डायनामिक मूल्य", labelCg: "भाव इंजन", icon: TrendingUp },
+  { href: "/orders", label: "Orders & Logistics", labelHi: "ऑर्डर और लॉजिस्टिक्स", labelCg: "ऑर्डर आ गाड़ी", icon: LayoutDashboard },
+  { href: "/driver", label: "Pickup Audit", labelHi: "पिकअप ऑडिट", labelCg: "जांच केंद्र", icon: Layers },
+];
+
 // Categorized navigation for comprehensive Mobile & PWA drawer
-const DRAWER_MARKETPLACE: NavItem[] = [
+const DRAWER_MARKETPLACE_FARMER: NavItem[] = [
   {
     href: "/farmer",
     label: "Sell Produce & AI Grading",
@@ -78,6 +85,39 @@ const DRAWER_MARKETPLACE: NavItem[] = [
     descHi: "लाइव मंडी दर और गुणवत्ता आधारित मूल्यांकन",
     descCg: "लाइव मंडी भाव आ गुणवत्ता जांच",
     icon: TrendingUp,
+  },
+];
+
+const DRAWER_MARKETPLACE_BUYER: NavItem[] = [
+  {
+    href: "/buyer",
+    label: "Wholesale Marketplace",
+    labelHi: "थोक मंडी बाजार",
+    labelCg: "थोक मंडी बाजार",
+    desc: "Browse aggregated lots with guaranteed escrow",
+    descHi: "सुरक्षित एस्क्रो के साथ थोक लॉट खरीदें",
+    descCg: "सुरक्षित एस्क्रो संग थोक लॉट बिसाव",
+    icon: Store,
+  },
+  {
+    href: "/pricing",
+    label: "Dynamic Pricing Engine",
+    labelHi: "डायनामिक मूल्य इंजन",
+    labelCg: "भाव इंजन",
+    desc: "Real-time mandi benchmarks & quality multipliers",
+    descHi: "लाइव मंडी दर और गुणवत्ता आधारित मूल्यांकन",
+    descCg: "लाइव मंडी भाव आ गुणवत्ता जांच",
+    icon: TrendingUp,
+  },
+  {
+    href: "/farmer",
+    label: "Farmer Produce Listing",
+    labelHi: "फसल दर्ज करें",
+    labelCg: "फसल बेचंव",
+    desc: "Direct farm listings & moisture grading",
+    descHi: "किसान फसल लिस्टिंग और नमी जांच",
+    descCg: "किसान फसल आ नमी जांच",
+    icon: Sprout,
   },
 ];
 
@@ -192,11 +232,15 @@ export default function SiteNav() {
     router.push("/login");
   };
 
+  const isBuyer = user?.role === "buyer";
+  const desktopNav = isBuyer ? DESKTOP_NAV_BUYER : DESKTOP_NAV_FARMER;
+  const drawerMarketplace = isBuyer ? DRAWER_MARKETPLACE_BUYER : DRAWER_MARKETPLACE_FARMER;
+
   return (
     <nav aria-label="Primary Navigation" className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
       {/* Desktop navigation links */}
       <div className="hidden lg:flex items-center gap-1">
-        {DESKTOP_NAV.map((item) => {
+        {desktopNav.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
           const Icon = item.icon;
           return (
@@ -360,7 +404,7 @@ export default function SiteNav() {
                   {t("Marketplace & Trade", "मंडी और व्यापार", "मंडी आ व्यापार")}
                 </p>
                 <div className="space-y-1.5">
-                  {DRAWER_MARKETPLACE.map((item) => {
+                  {drawerMarketplace.map((item) => {
                     const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
                     const Icon = item.icon;
                     return (

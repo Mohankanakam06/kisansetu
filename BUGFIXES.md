@@ -16,3 +16,4 @@
 | MobileBottomBar | Navigation ergonomics in mobile PWA | Implemented universal 5-item bottom bar with center-raised "+ Sell" quick action, direct Marketplace/Orders/Earnings tabs, and options menu trigger | Fixed |
 | Auth & State Pages | Destructive `window.location.href` hard refreshes | Replaced all `window.location.href` calls with client-side Next.js `useRouter().push()` and `<Link>` components to maintain in-memory state | Fixed |
 | useRoleGuard | Hard redirect errors on soft client navigation | Softened client authorization checks to prevent redirect loops while preserving authenticated user state | Fixed |
+| SiteNav / MobileBottomBar | Farmer-specific 'Sell Produce' prominent for Buyer Demo accounts | Made navigation dynamically role-aware via \user?.role === 'buyer'\; Buyer sees dedicated Marketplace, Dynamic Pricing, and Orders tabs without confusing farmer tools | Fixed |

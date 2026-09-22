@@ -11,6 +11,8 @@ import {
   Home,
   TrendingUp,
   CircleUser,
+  Layers,
+  Package,
 } from "lucide-react";
 import { useLanguage } from "@/lib/language";
 
@@ -38,6 +40,9 @@ export default function MobileBottomBar() {
     }
   };
 
+  const isBuyer = user?.role === "buyer";
+  const isFarmer = user?.role === "farmer";
+
   // Hide on standalone login / registration screens
   if (pathname === "/login" || pathname === "/register") {
     return null;
@@ -49,7 +54,7 @@ export default function MobileBottomBar() {
   const isSellActive = pathname === "/farmer" || pathname.startsWith("/farmer/");
   const isEarningsActive = pathname === "/earnings" || pathname.startsWith("/earnings/");
   const isPricingActive = pathname === "/pricing" || pathname.startsWith("/pricing/");
-  const isHomeActive = pathname === "/";
+  const isDriverActive = pathname === "/driver" || pathname.startsWith("/driver/");
 
   return (
     <nav
@@ -71,42 +76,87 @@ export default function MobileBottomBar() {
           {isMarketActive && <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />}
         </Link>
 
-        {/* Item 2: Orders / Logistics */}
-        <Link
-          href="/orders"
-          className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-all relative ${
-            isOrdersActive ? "text-emerald-800 font-extrabold" : "text-slate-500 hover:text-slate-900 font-medium"
-          }`}
-        >
-          <div className="relative">
-            <LayoutDashboard className={`h-5 w-5 transition-transform ${isOrdersActive ? "scale-110 text-emerald-800" : ""}`} />
-            <span className="absolute -top-1 -right-1.5 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
-            </span>
-          </div>
-          <span className="text-[10px] tracking-tight mt-1 leading-none">{t("Orders", "ऑर्डर", "ऑर्डर")}</span>
-          {isOrdersActive && <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />}
-        </Link>
-
-        {/* Item 3 (Center Raised Action): + Sell Produce */}
-        <div className="flex flex-col items-center justify-center px-1 -mt-4">
+        {/* Item 2: Role-dependent: Pricing for Buyer / Orders for Farmer */}
+        {isBuyer ? (
           <Link
-            href="/farmer"
-            aria-label={t("Sell Produce", "फसल बेचें", "फसल बेचंव")}
-            className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-800 to-emerald-600 text-white shadow-md shadow-emerald-950/20 ring-4 ring-white active:scale-95 transition-transform ${
-              isSellActive ? "ring-emerald-200" : ""
+            href="/pricing"
+            className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-all relative ${
+              isPricingActive ? "text-emerald-800 font-extrabold" : "text-slate-500 hover:text-slate-900 font-medium"
             }`}
           >
-            <Sprout className="h-6 w-6" />
+            <div className="relative">
+              <TrendingUp className={`h-5 w-5 transition-transform ${isPricingActive ? "scale-110 text-emerald-800" : ""}`} />
+            </div>
+            <span className="text-[10px] tracking-tight mt-1 leading-none">{t("Pricing", "भाव", "भाव")}</span>
+            {isPricingActive && <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />}
           </Link>
-          <span className="text-[10px] font-black tracking-tight text-emerald-900 mt-1">
-            + {t("Sell", "बेचें", "बेचंव")}
-          </span>
-        </div>
+        ) : (
+          <Link
+            href="/orders"
+            className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-all relative ${
+              isOrdersActive ? "text-emerald-800 font-extrabold" : "text-slate-500 hover:text-slate-900 font-medium"
+            }`}
+          >
+            <div className="relative">
+              <LayoutDashboard className={`h-5 w-5 transition-transform ${isOrdersActive ? "scale-110 text-emerald-800" : ""}`} />
+              <span className="absolute -top-1 -right-1.5 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+              </span>
+            </div>
+            <span className="text-[10px] tracking-tight mt-1 leading-none">{t("Orders", "ऑर्डर", "ऑर्डर")}</span>
+            {isOrdersActive && <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />}
+          </Link>
+        )}
 
-        {/* Item 4: Earnings or Fair Price */}
-        {user ? (
+        {/* Item 3 (Center Raised Action): + Buy (for Buyer) OR + Sell (for Farmer/Guest) */}
+        {isBuyer ? (
+          <div className="flex flex-col items-center justify-center px-1 -mt-4">
+            <Link
+              href="/buyer"
+              aria-label={t("Explore Lots", "लॉट खरीदें", "लॉट बिसाहव")}
+              className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-800 to-emerald-600 text-white shadow-md shadow-emerald-950/20 ring-4 ring-white active:scale-95 transition-transform ${
+                isMarketActive ? "ring-emerald-200" : ""
+              }`}
+            >
+              <Package className="h-6 w-6" />
+            </Link>
+            <span className="text-[10px] font-black tracking-tight text-emerald-900 mt-1">
+              + {t("Buy", "खरीदें", "बिसाहव")}
+            </span>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center px-1 -mt-4">
+            <Link
+              href="/farmer"
+              aria-label={t("Sell Produce", "फसल बेचें", "फसल बेचंव")}
+              className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-800 to-emerald-600 text-white shadow-md shadow-emerald-950/20 ring-4 ring-white active:scale-95 transition-transform ${
+                isSellActive ? "ring-emerald-200" : ""
+              }`}
+            >
+              <Sprout className="h-6 w-6" />
+            </Link>
+            <span className="text-[10px] font-black tracking-tight text-emerald-900 mt-1">
+              + {t("Sell", "बेचें", "बेचंव")}
+            </span>
+          </div>
+        )}
+
+        {/* Item 4: Orders (for Buyer) / Earnings or Pricing (for Farmer/Guest) */}
+        {isBuyer ? (
+          <Link
+            href="/orders"
+            className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-all relative ${
+              isOrdersActive ? "text-emerald-800 font-extrabold" : "text-slate-500 hover:text-slate-900 font-medium"
+            }`}
+          >
+            <div className="relative">
+              <LayoutDashboard className={`h-5 w-5 transition-transform ${isOrdersActive ? "scale-110 text-emerald-800" : ""}`} />
+            </div>
+            <span className="text-[10px] tracking-tight mt-1 leading-none">{t("Orders", "ऑर्डर", "ऑर्डर")}</span>
+            {isOrdersActive && <span className="absolute -bottom-1 h-1 w-6 rounded-full bg-emerald-700" />}
+          </Link>
+        ) : user ? (
           <Link
             href="/earnings"
             className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-all relative ${
