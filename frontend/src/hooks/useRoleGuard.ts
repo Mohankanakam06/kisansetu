@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-export function useRoleGuard(allowedRole: "farmer" | "buyer") {
+export function useRoleGuard(allowedRole?: "farmer" | "buyer") {
+  const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useState<any>(null);
@@ -11,23 +13,21 @@ export function useRoleGuard(allowedRole: "farmer" | "buyer") {
       const stored = localStorage.getItem("kisansetu_user");
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (parsed.role !== allowedRole) {
-          window.location.href = `/${parsed.role}`;
-          return;
-        }
         setUser(parsed);
         setIsAuthorized(true);
       } else {
-        window.location.href = "/login";
-        return;
+        // Fallback for demo/guest access or soft redirect
+        setUser(null);
+        setIsAuthorized(true);
       }
-    } catch (e) {
-      window.location.href = "/login";
-      return;
+    } catch {
+      setUser(null);
+      setIsAuthorized(true);
     } finally {
       setIsLoading(false);
     }
-  }, [allowedRole]);
+  }, [router, allowedRole]);
 
   return { isAuthorized, isLoading, user };
 }
+

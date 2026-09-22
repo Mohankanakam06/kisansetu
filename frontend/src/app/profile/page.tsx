@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useLanguage } from "@/lib/language";
-import { User, Phone, MapPin, Shield, LogOut, ArrowRightLeft, Sprout, Store, CheckCircle } from "lucide-react";
+import { User, Phone, MapPin, Shield, LogOut, Sprout, Store, CheckCircle, ArrowRight, LayoutDashboard, Wallet, TrendingUp } from "lucide-react";
 import { Button, Badge, Card, cn } from "@/components/ui";
 
 export default function ProfilePage() {
@@ -30,19 +31,7 @@ export default function ProfilePage() {
     localStorage.removeItem("kisansetu_token");
     localStorage.removeItem("kisansetu_user");
     document.cookie = "kisansetu_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    window.location.href = "/login";
-  };
-
-  const handleSwitchRole = (newRole: "farmer" | "buyer") => {
-    if (!user) return;
-    const updatedUser = { ...user, role: newRole };
-    localStorage.setItem("kisansetu_user", JSON.stringify(updatedUser));
-    setUser(updatedUser);
-    if (newRole === "farmer") {
-      router.push("/farmer");
-    } else {
-      router.push("/buyer");
-    }
+    router.push("/login");
   };
 
   if (loading || !user) {
@@ -66,17 +55,15 @@ export default function ProfilePage() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 pb-8 border-b border-slate-100">
             <div className="flex items-center gap-5">
               <div
-                className={`h-16 w-16 rounded-xl flex items-center justify-center text-3xl shadow-xs border ${
-                  isFarmer ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-blue-50 text-blue-900 border-blue-200"
-                }`}
+                className="h-16 w-16 rounded-xl flex items-center justify-center text-3xl shadow-xs border bg-emerald-50 text-emerald-800 border-emerald-200"
               >
-                {isFarmer ? "🌾" : "🏪"}
+                🌾
               </div>
               <div>
                 <h1 className="font-display text-2xl font-extrabold text-slate-900">{user.name || "KisanSetu User"}</h1>
                 <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                  <Badge variant={isFarmer ? "farmer" : "buyer"}>
-                    {isFarmer ? t("Farmer Account", "किसान खाता", "किसान खाता") : t("Buyer / Trader Account", "व्यापारी खाता", "व्यापारी खाता")}
+                  <Badge variant="farmer">
+                    {user.phone ? `+91 ${user.phone}` : t("Verified User", "सत्यापित उपयोगकर्ता", "सत्यापित यूजर")}
                   </Badge>
                   <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 uppercase tracking-wide">
                     <CheckCircle className="h-3 w-3" /> {t("Verified KYC", "सत्यापित KYC", "सत्यापित KYC")}
@@ -138,63 +125,76 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Role Switching */}
+          {/* Quick Shortcuts */}
           <div className="space-y-4">
-            <div>
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                {t("Demo View Switcher", "मोड बदलें (डेमो)", "मोड बदलव (डेमो)")}
-              </h2>
-              <p className="text-[11px] font-medium text-slate-500">
-                {t(
-                  "Instantly toggle between Farmer (App) and Buyer (Dashboard) perspectives for evaluation.",
-                  "मूल्यांकन के लिए किसान और व्यापारी मोड के बीच तुरंत बदलें।",
-                  "परीक्षण बर किसान आ व्यापारी मोड म बदल सकत हव।"
-                )}
-              </p>
-            </div>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+              {t("Quick Services", "त्वरित सेवाएं", "जल्दी काम")}
+            </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => handleSwitchRole("farmer")}
-                className={`p-4 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer min-h-[64px] ${
-                  isFarmer
-                    ? "bg-emerald-50/70 border-emerald-600 shadow-xs ring-1 ring-emerald-600/20 text-emerald-950"
-                    : "bg-white border-slate-200 hover:bg-slate-50 text-slate-700"
-                }`}
+              <Link
+                href="/farmer"
+                className="p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 flex items-center justify-between transition-all shadow-2xs"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`p-1.5 rounded-md ${isFarmer ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-500"}`}>
+                  <div className="p-2 rounded-lg bg-emerald-100 text-emerald-800">
                     <Sprout className="h-4 w-4" />
                   </div>
                   <div>
-                    <span className="text-sm font-bold block leading-none mb-1">{t("Farmer Mode", "किसान मोड", "किसान मोड")}</span>
-                    <span className="text-[10px] font-medium opacity-70">List crop & track</span>
+                    <span className="text-sm font-bold block">{t("Sell Produce", "फसल दर्ज करें", "फसल बेचंव")}</span>
+                    <span className="text-[10px] text-slate-500">List crops & AI grading</span>
                   </div>
                 </div>
-                {isFarmer && <CheckCircle className="h-5 w-5 text-emerald-700" />}
-              </button>
+                <ArrowRight className="h-4 w-4 text-slate-400" />
+              </Link>
 
-              <button
-                type="button"
-                onClick={() => handleSwitchRole("buyer")}
-                className={`p-4 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer min-h-[64px] ${
-                  !isFarmer
-                    ? "bg-blue-50/70 border-blue-600 shadow-xs ring-1 ring-blue-600/20 text-blue-950"
-                    : "bg-white border-slate-200 hover:bg-slate-50 text-slate-700"
-                }`}
+              <Link
+                href="/buyer"
+                className="p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 flex items-center justify-between transition-all shadow-2xs"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`p-1.5 rounded-md ${!isFarmer ? "bg-blue-100 text-blue-900" : "bg-slate-100 text-slate-500"}`}>
+                  <div className="p-2 rounded-lg bg-blue-100 text-blue-800">
                     <Store className="h-4 w-4" />
                   </div>
                   <div>
-                    <span className="text-sm font-bold block leading-none mb-1">{t("Buyer Mode", "व्यापारी मोड", "व्यापारी मोड")}</span>
-                    <span className="text-[10px] font-medium opacity-70">Wholesale discovery</span>
+                    <span className="text-sm font-bold block">{t("Wholesale Marketplace", "थोक बाजार", "थोक बाजार")}</span>
+                    <span className="text-[10px] text-slate-500">Discover aggregated lots</span>
                   </div>
                 </div>
-                {!isFarmer && <CheckCircle className="h-5 w-5 text-blue-700" />}
-              </button>
+                <ArrowRight className="h-4 w-4 text-slate-400" />
+              </Link>
+
+              <Link
+                href="/orders"
+                className="p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 flex items-center justify-between transition-all shadow-2xs"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-amber-100 text-amber-800">
+                    <LayoutDashboard className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <span className="text-sm font-bold block">{t("Track Orders & Logistics", "ऑर्डर और लॉजिस्टिक्स", "ऑर्डर आ गाड़ी")}</span>
+                    <span className="text-[10px] text-slate-500">Real-time status & escrow</span>
+                  </div>
+                </div>
+                <ArrowRight className="h-4 w-4 text-slate-400" />
+              </Link>
+
+              <Link
+                href="/earnings"
+                className="p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 flex items-center justify-between transition-all shadow-2xs"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-purple-100 text-purple-800">
+                    <Wallet className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <span className="text-sm font-bold block">{t("Earnings & Settlements", "कमाई और भुगतान", "कमाई आ पइसा")}</span>
+                    <span className="text-[10px] text-slate-500">Instant UPI disbursements</span>
+                  </div>
+                </div>
+                <ArrowRight className="h-4 w-4 text-slate-400" />
+              </Link>
             </div>
           </div>
         </Card>
@@ -202,3 +202,4 @@ export default function ProfilePage() {
     </div>
   );
 }
+

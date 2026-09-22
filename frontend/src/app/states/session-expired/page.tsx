@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import { Clock, LogIn, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui";
 
@@ -17,12 +18,16 @@ export default function SessionExpiredPage() {
           Your sign-in timed out to keep your account secure. Sign in again — your lots and orders are saved.
         </p>
         <div className="mt-6 flex flex-col gap-2">
-          <Button variant="primary" onClick={() => (window.location.href = "/login")}>
-            <LogIn className="h-4 w-4" /> Sign in again
-          </Button>
-          <Button variant="ghost" onClick={() => (window.location.href = "/")}>
-            <ArrowLeft className="h-4 w-4" /> Go home
-          </Button>
+          <Link href="/login" className="w-full">
+            <Button variant="primary" className="w-full">
+              <LogIn className="h-4 w-4 mr-1.5" /> Sign in again
+            </Button>
+          </Link>
+          <Link href="/" className="w-full">
+            <Button variant="ghost" className="w-full">
+              <ArrowLeft className="h-4 w-4 mr-1.5" /> Go home
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

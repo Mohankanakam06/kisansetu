@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { AlertTriangle, RefreshCw } from "lucide-react";
+import Link from "next/link";
+import { AlertTriangle, RefreshCw, Store } from "lucide-react";
 import { Button } from "@/components/ui";
 
 export default function ErrorStatePage() {
@@ -18,11 +19,13 @@ export default function ErrorStatePage() {
         </p>
         <div className="mt-6 flex flex-col gap-2">
           <Button variant="primary" onClick={() => window.location.reload()}>
-            <RefreshCw className="h-4 w-4" /> Try again
+            <RefreshCw className="h-4 w-4 mr-1.5" /> Try again
           </Button>
-          <Button variant="ghost" onClick={() => (window.location.href = "/buyer")}>
-            Back to marketplace
-          </Button>
+          <Link href="/buyer" className="w-full">
+            <Button variant="ghost" className="w-full">
+              <Store className="h-4 w-4 mr-1.5" /> Back to marketplace
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

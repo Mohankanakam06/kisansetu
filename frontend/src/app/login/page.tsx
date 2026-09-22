@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Sprout,
   Smartphone,
@@ -26,6 +26,7 @@ type LoginState = "idle" | "submitting" | "otp_verify";
 const API_BASE = "/api";
 
 function LoginForm() {
+  const router = useRouter();
   const { t } = useLanguage();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirect") || "";
@@ -75,7 +76,7 @@ function LoginForm() {
       document.cookie = `kisansetu_token=${data.token}; path=/; max-age=604800; SameSite=Lax`;
     }
     const target = redirectPath || data.redirect || (data.user?.role === "farmer" ? "/farmer" : "/buyer");
-    window.location.href = target;
+    router.push(target);
   };
 
   const handlePasswordLogin = async (e: React.FormEvent) => {

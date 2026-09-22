@@ -66,10 +66,12 @@ export default function PaymentPendingPage() {
         </Card>
 
         <div className="mt-6 space-y-3">
-          <Button variant="primary" className="w-full" onClick={() => (window.location.href = "/payment/success")}>
-            I&apos;ll check the status
-            <ArrowRight className="h-4 w-4" />
-          </Button>
+          <Link href="/payment/success" className="w-full block">
+            <Button variant="primary" className="w-full">
+              I&apos;ll check the status
+              <ArrowRight className="h-4 w-4 ml-1.5" />
+            </Button>
+          </Link>
           <div className="flex items-center justify-center gap-1.5 text-caption text-on-surface-variant">
             <Bell className="h-3.5 w-3.5" />
             We&apos;ll SMS you the instant the payout lands.

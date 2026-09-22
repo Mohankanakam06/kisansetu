@@ -11,3 +11,8 @@
 | BuyerPage | Unnecessary debug console logging | Cleaned noisy development console output | Verified |
 | States/Fallbacks | Unverified fallback page accessibility | Audited `/states/*`, `/offline`, `/orders`, `/forbidden`, `/_not-found`, and auth pages. Verified robust Next.js routing & responsive empty state fallbacks | Verified |
 | App E2E Build | Turbopack compilation | Ran `npm run build` with strict types; Next.js 16.3.3 built successfully (40/40 routes static/SSR compliant) | Verified |
+| SiteNav / PWA Drawer | Incomplete / limited navigation options in mobile PWA drawer | Re-architected mobile drawer with categorized sections (Marketplace & Trade, Operations & Settlements), direct PWA app install action, language toggle (EN/HI/CG), and profile badge | Fixed |
+| ProfilePage | Redundant mode switcher causing page reload loops & errors | Removed artificial "Farmer vs Buyer" toggle; replaced with universal Quick Services shortcuts for seamless access to all platform features | Fixed |
+| MobileBottomBar | Navigation ergonomics in mobile PWA | Implemented universal 5-item bottom bar with center-raised "+ Sell" quick action, direct Marketplace/Orders/Earnings tabs, and options menu trigger | Fixed |
+| Auth & State Pages | Destructive `window.location.href` hard refreshes | Replaced all `window.location.href` calls with client-side Next.js `useRouter().push()` and `<Link>` components to maintain in-memory state | Fixed |
+| useRoleGuard | Hard redirect errors on soft client navigation | Softened client authorization checks to prevent redirect loops while preserving authenticated user state | Fixed |

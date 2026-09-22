@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Sprout,
   ArrowRight,
@@ -22,6 +23,7 @@ import { Button, Card, Badge } from "@/components/ui";
 import { useLanguage } from "@/lib/language";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const { t, language, setLanguage } = useLanguage();
   const [step, setStep] = useState<0 | 1>(0);
   const [form, setForm] = useState({
@@ -94,7 +96,7 @@ export default function RegisterPage() {
         const isHttps = window.location.protocol === "https:";
         document.cookie = `kisansetu_token=${data.token}; path=/; max-age=604800; SameSite=Lax${isHttps ? "; Secure" : ""}`;
       }
-      window.location.href = data.redirect || `/${data.user?.role || form.role}`;
+      router.push(data.redirect || `/${data.user?.role || form.role}`);
     } catch (err: any) {
       if (typeof window !== "undefined") {
         const demoUser = { name: form.name, phone: form.phone, role: form.role };
@@ -102,7 +104,7 @@ export default function RegisterPage() {
         const isHttps = window.location.protocol === "https:";
         document.cookie = `kisansetu_token=demo-fallback-token; path=/; max-age=604800; SameSite=Lax${isHttps ? "; Secure" : ""}`;
       }
-      window.location.href = `/${form.role}`;
+      router.push(`/${form.role}`);
     }
   };
 
