@@ -2,12 +2,13 @@ services:
   - type: web
     name: kisansetu-api
     runtime: python
-    rootDir: frontend
-    buildCommand: pip install -r backend/requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
+      - key: KEEP_ALIVE_INTERVAL_SECONDS
+        value: 600
       - key: DATABASE_URL
         sync: false
       - key: GEMINI_API_KEY
