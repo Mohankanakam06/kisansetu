@@ -25,8 +25,7 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
-    "next-env.d.ts",
-    "src/app/legal/fix-tokens.js"
+    "next-env.d.ts"
   ]),
 ]);
 
