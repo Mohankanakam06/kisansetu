@@ -172,8 +172,8 @@ export default function RootLayout({
           </header>
 
           {/* Main Content Area */}
-          <DemoModeBanner />
           <main id="main-content" className="flex-1 flex flex-col pt-[5.75rem] pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
+            <DemoModeBanner />
             {children}
             <RegisterSW />
             <PWAInstallPrompt />

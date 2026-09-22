@@ -151,7 +151,7 @@ export default function PWAInstallPrompt() {
           setIsOpen(true);
         }}
         aria-label={t("Open App Install Guide", "ऐप इंस्टॉल गाइड खोलें", "ऐप इंस्टॉल गाइड खोलव")}
-        className="fixed bottom-20 left-4 z-[140] flex items-center gap-2 rounded-full bg-slate-900 text-white px-3.5 py-2 text-xs font-semibold shadow-lg border border-slate-700 hover:bg-slate-800 transition-colors active:scale-95"
+        className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-4 z-[140] flex items-center gap-2 rounded-full bg-slate-900 text-white px-3.5 py-2 text-xs font-semibold shadow-lg border border-slate-700 hover:bg-slate-800 transition-colors active:scale-95"
       >
         <Smartphone className="w-3.5 h-3.5 text-slate-300" />
         <span>{t("Install App", "ऐप इंस्टॉल करें", "ऐप डालव")}</span>

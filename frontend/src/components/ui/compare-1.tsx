@@ -169,8 +169,78 @@ const Compare1: React.FC<Compare1Props> = ({
 
           {Object.entries(competitors).map(([key, competitor]) => (
             <TabsContent key={key} value={key} className="mt-0 focus-visible:outline-none">
-              <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-xs bg-white">
-                {/* Comparison Table */}
+              {/* Mobile View: Stacked Comparison Cards (No horizontal scroll required) */}
+              <div className="md:hidden space-y-4">
+                {/* Header summary badge */}
+                <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="flex items-center gap-2">
+                    <div className="text-xl bg-emerald-100 border border-emerald-300 p-1.5 rounded-lg">🌱</div>
+                    <div>
+                      <span className="text-[10px] font-bold text-emerald-800 uppercase block">Choice</span>
+                      <span className="font-extrabold text-slate-900 text-sm">KisanSetu</span>
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-slate-400">VS</span>
+                  <div className="flex items-center gap-2 text-right">
+                    <div>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block">Alternative</span>
+                      <span className="font-bold text-slate-800 text-sm">{competitor.name}</span>
+                    </div>
+                    <div
+                      className="flex h-8 w-8 items-center justify-center rounded-lg font-bold text-sm shadow-xs text-white shrink-0"
+                      style={{ backgroundColor: competitor.color }}
+                    >
+                      {competitor.icon}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Category Cards */}
+                {categories.map((category) => {
+                  const Icon = category.icon;
+                  return (
+                    <div key={category.key} className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs">
+                      <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border-b border-slate-150">
+                        <div className="flex items-center justify-center bg-white border border-slate-200 rounded-md p-1 shadow-2xs text-slate-600">
+                          <Icon className="h-3.5 w-3.5" />
+                        </div>
+                        <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wide">
+                          {category.label}
+                        </h4>
+                      </div>
+                      <div className="p-4 space-y-3">
+                        {/* KisanSetu Item */}
+                        <div className="p-3 rounded-lg bg-emerald-50/70 border border-emerald-200/80">
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <Check className="w-4 h-4 text-emerald-700 shrink-0" />
+                            <span className="font-bold text-emerald-950 text-xs">KisanSetu Advantage</span>
+                          </div>
+                          <p className="text-xs text-slate-800 font-medium leading-relaxed pl-5.5">
+                            {category.key === "general"
+                              ? basePlatform.description
+                              : basePlatform.features[category.key]}
+                          </p>
+                        </div>
+                        {/* Alternative Item */}
+                        <div className="p-3 rounded-lg bg-rose-50/40 border border-rose-150">
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <X className="w-4 h-4 text-rose-500 shrink-0" />
+                            <span className="font-semibold text-rose-900 text-xs">{competitor.name}</span>
+                          </div>
+                          <p className="text-xs text-slate-600 leading-relaxed pl-5.5">
+                            {category.key === "general"
+                              ? competitor.description
+                              : competitor.features[category.key]}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Desktop View: Full Table */}
+              <div className="hidden md:block overflow-hidden rounded-2xl border border-slate-200 shadow-xs bg-white">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
@@ -178,7 +248,7 @@ const Compare1: React.FC<Compare1Props> = ({
                         <th className="border-r border-slate-200 p-6 font-semibold text-slate-700 w-1/4 text-sm uppercase tracking-wider">
                           Compare
                         </th>
-                        <th className="min-w-[320px] border-r border-slate-200 p-6 text-left w-[37.5%] bg-emerald-50/60">
+                        <th className="min-w-[280px] border-r border-slate-200 p-6 text-left w-[37.5%] bg-emerald-50/60">
                           <div className="flex items-center gap-3">
                             <div className="text-3xl bg-emerald-100 border border-emerald-300 p-2 rounded-xl text-emerald-800 shrink-0">
                               🌱
@@ -193,7 +263,7 @@ const Compare1: React.FC<Compare1Props> = ({
                             </div>
                           </div>
                         </th>
-                        <th className="min-w-[320px] p-6 text-left w-[37.5%] bg-slate-50/40">
+                        <th className="min-w-[280px] p-6 text-left w-[37.5%] bg-slate-50/40">
                           <div className="flex items-center gap-3">
                             <div
                               className="flex h-10 w-10 items-center justify-center rounded-xl font-bold text-lg shadow-xs text-white shrink-0"

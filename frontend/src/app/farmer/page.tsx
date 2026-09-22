@@ -988,7 +988,7 @@ export default function FarmerPage() {
 
         {/* Stepper Header */}
         <div className="mb-6">
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
             {STEPS.map((s, i) => {
               const isActive = i === step;
               const isPast = i < step;
@@ -997,7 +997,7 @@ export default function FarmerPage() {
                   key={s.label}
                   type="button"
                   onClick={() => i <= step && setStep(i)}
-                  className={`flex flex-col items-center text-center p-3 rounded-xl border transition-all cursor-pointer min-h-[64px] ${
+                  className={`flex flex-col items-center text-center p-1.5 sm:p-3 rounded-xl border transition-all cursor-pointer min-h-[56px] sm:min-h-[64px] ${
                     isActive
                       ? "border-emerald-700 bg-emerald-50 text-emerald-950 font-bold shadow-xs ring-1 ring-emerald-700/20"
                       : isPast
@@ -1006,7 +1006,7 @@ export default function FarmerPage() {
                   }`}
                 >
                   <span
-                    className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold mb-1 ${
+                    className={`flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-[11px] sm:text-xs font-bold mb-1 ${
                       isActive
                         ? "bg-emerald-800 text-white"
                         : isPast
@@ -1014,9 +1014,9 @@ export default function FarmerPage() {
                         : "bg-slate-100 text-slate-400"
                     }`}
                   >
-                    {isPast ? <Check className="h-3.5 w-3.5" /> : i + 1}
+                    {isPast ? <Check className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> : i + 1}
                   </span>
-                  <span className="text-[11px] font-bold leading-tight line-clamp-1">{s.label}</span>
+                  <span className="text-[9px] sm:text-[11px] font-bold leading-tight line-clamp-1">{s.label}</span>
                 </button>
               );
             })}

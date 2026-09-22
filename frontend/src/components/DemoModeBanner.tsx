@@ -72,18 +72,27 @@ export default function DemoModeBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed top-16 left-0 right-0 z-[60] flex items-center justify-center gap-2 bg-amber-50 text-amber-900 text-[11px] font-bold py-1.5 px-4 shadow-2xs border border-b-2 border-amber-200 border-b-amber-300">
-      {reason === "offline" ? (
-        <WifiOff className="w-4 h-4 text-amber-700 shrink-0" />
-      ) : (
-        <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
-      )}
-      <span>
+    <div className="relative w-full z-[40] flex items-start sm:items-center justify-center gap-2 bg-amber-50 text-amber-900 text-[11px] font-bold py-2 px-4 sm:px-8 border-b-2 border-amber-200">
+      <div className="flex items-center gap-2 mt-0.5 sm:mt-0">
+        {reason === "offline" ? (
+          <WifiOff className="w-4 h-4 text-amber-700 shrink-0" />
+        ) : (
+          <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
+        )}
+      </div>
+      <span className="leading-snug flex-1">
         ⚠️ DEMO MODE — {reason === "offline" ?
-          "Backend is unreachable. Showing simulated data. No real DB or API calls are being made."
-          : "NEXT_PUBLIC_USE_MOCK_API=true. Showing simulated data. No real DB or API calls are being made."
+          "Backend is unreachable. Showing simulated data."
+          : "Showing simulated data. No real DB or API calls are being made."
         }
       </span>
+      <button
+        onClick={() => setVisible(false)}
+        className="p-1 -mr-2 text-amber-700/70 hover:text-amber-900 bg-amber-100/50 hover:bg-amber-200/50 rounded transition-colors"
+        aria-label="Dismiss demo banner"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
     </div>
   );
 }

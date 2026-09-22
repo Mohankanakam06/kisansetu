@@ -90,19 +90,19 @@ export const InteractiveHoverButton = React.forwardRef<
         <div className="flex items-center justify-center gap-2">
           <div
             className={cn(
-              "h-2 w-2 rounded-full transition-all duration-300 group-hover:scale-[100.8]",
+              "h-2 w-2 rounded-full transition-all duration-300 md:group-hover:scale-[100.8]",
               selectedVariant.dot
             )}
           />
-          <span className="inline-block transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0">
+          <span className="inline-block transition-all duration-300 md:group-hover:translate-x-12 md:group-hover:opacity-0">
             {content}
           </span>
         </div>
 
-        {/* Hover State Animated Content */}
+        {/* Hover State Animated Content (active on desktop hover) */}
         <div
           className={cn(
-            "absolute inset-0 z-10 flex h-full w-full items-center justify-center gap-2 opacity-0 transition-all duration-300 translate-x-12 group-hover:translate-x-0 group-hover:opacity-100",
+            "absolute inset-0 z-10 hidden md:flex h-full w-full items-center justify-center gap-2 opacity-0 transition-all duration-300 translate-x-12 group-hover:translate-x-0 group-hover:opacity-100",
             selectedVariant.hoverText
           )}
         >
